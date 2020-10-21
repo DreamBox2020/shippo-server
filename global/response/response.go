@@ -1,7 +1,11 @@
 package response
 
 type Response struct {
-	Code int         `json:"code"`
-	Data interface{} `json:"data"`
-	Msg  string      `json:"msg"`
+	Code     int         `json:"code"`
+	Message  string      `json:"message"`
+	Success  bool        `json:"success"`
+	Session  string      `json:"session"`
+	Resource interface{} `json:"resource"`
+	Sign     string      `json:"sign"`
+	Other    interface{} `json:"other"`
 }
