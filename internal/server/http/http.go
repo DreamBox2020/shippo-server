@@ -20,7 +20,9 @@ func Init() {
 	engine := gin.Default()
 	outerRouter(engine)
 	server := initServer(":8233", engine)
-	server.ListenAndServe()
+	if err := server.ListenAndServe(); err != nil {
+		panic(err)
+	}
 }
 
 func outerRouter(Router *gin.Engine) {
