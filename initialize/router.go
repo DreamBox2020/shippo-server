@@ -6,8 +6,9 @@ import (
 )
 
 func Routers() *gin.Engine {
-	var Engine = gin.Default()
 	RootRouter := Engine.Group("")
 	user.InitUserRouter(RootRouter)
 	return Engine
 }
+
+var Engine = gin.Default()
