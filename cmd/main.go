@@ -1,8 +1,11 @@
 package main
 
-import "shippo-server/internal/server/http"
+import (
+	"shippo-server/internal/dao"
+)
 
 func main() {
 	//core.RunServer()
-	http.Init()
+	dao.New()
+	//http.Init()
 }
