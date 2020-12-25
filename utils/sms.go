@@ -3,13 +3,10 @@ package utils
 import (
 	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
-	"os"
 	"shippo-server/configs"
 )
 
 func SendSms(phone string, code string) {
-	dir, _ := os.Getwd()
-	fmt.Println("当前路径：", dir)
 	var configSms configs.Sms
 	ReadConfigFromFile("./configs/sms.json", &configSms)
 
@@ -27,5 +24,5 @@ func SendSms(phone string, code string) {
 	if err != nil {
 		fmt.Print(err.Error())
 	}
-	fmt.Printf("SendSms: %#v\n", response)
+	fmt.Printf("SendSms: %v\n", response)
 }
