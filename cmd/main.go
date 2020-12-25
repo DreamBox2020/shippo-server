@@ -1,17 +1,11 @@
 package main
 
 import (
-	"fmt"
-	"shippo-server/configs"
-	"shippo-server/utils"
+	"shippo-server/internal/server/http"
+	"shippo-server/internal/service"
 )
 
 func main() {
-	//core.RunServer()
-	//dao.New()
-	//http.Init()
-	var configSms configs.Sms
-	utils.ReadConfigFromFile("configs/sms.json", &configSms)
-	fmt.Printf("configSms: %v \n", configSms)
-	utils.SendSms(configSms.TestPhoneNumber, "888888")
+	svr := service.New()
+	http.Init(svr)
 }

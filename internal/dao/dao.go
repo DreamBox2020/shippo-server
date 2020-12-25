@@ -10,7 +10,11 @@ import (
 	"time"
 )
 
-func New() {
+type Dao struct {
+	db *gorm.DB
+}
+
+func New() (d *Dao) {
 
 	var configDB configs.DB
 	utils.ReadConfigFromFile("configs/db.json", &configDB)
@@ -44,4 +48,9 @@ func New() {
 	db.Find(&users)
 	fmt.Printf("%+v\n", users)
 
+	d = &Dao{
+		db: db,
+	}
+
+	return d
 }

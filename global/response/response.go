@@ -1,7 +1,7 @@
 package response
 
 type Response struct {
-	Code     int         `json:"code"`
+	Code     string      `json:"code"`
 	Message  string      `json:"message"`
 	Success  bool        `json:"success"`
 	Session  string      `json:"session"`
