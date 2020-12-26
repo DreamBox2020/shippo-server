@@ -7,9 +7,9 @@ import (
 )
 
 func initUserRouter(Router *gin.RouterGroup) {
-	user := Router.Group("user")
+	r := Router.Group("user")
 	{
-		user.GET("login", box.Handler(userLogin))
+		r.POST("login", box.Handler(userLogin))
 	}
 }
 

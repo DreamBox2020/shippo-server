@@ -30,6 +30,7 @@ func Init(s *service.Service) {
 func outerRouter(Router *gin.Engine) {
 	base := Router.Group("")
 	initUserRouter(base)
+	initFileRouter(base)
 }
 
 func initServer(address string, router *gin.Engine) *http.Server {

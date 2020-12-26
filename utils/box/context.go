@@ -51,6 +51,11 @@ func (context *Context) ShouldBindJSON(obj interface{}) {
 	json.Unmarshal([]byte(context.req.Resource), obj)
 }
 
+func (context *Context) Data(contentType string, data []byte, fileName string) {
+	context.ctx.Header("content-disposition", `attachment; filename=`+fileName)
+	context.ctx.Data(http.StatusOK, contentType, data)
+}
+
 type HandlerFunc func(context *Context)
 
 func Handler(h HandlerFunc) gin.HandlerFunc {
