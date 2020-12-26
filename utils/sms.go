@@ -7,6 +7,7 @@ import (
 )
 
 func SendSms(phone string, code string) {
+
 	var conf configs.Sms
 	ReadConfigFromFile("./configs/sms.json", &conf)
 

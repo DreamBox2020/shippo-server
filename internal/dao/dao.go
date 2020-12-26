@@ -19,6 +19,8 @@ func New() (d *Dao) {
 	var conf configs.DB
 	utils.ReadConfigFromFile("configs/db.json", &conf)
 
+	fmt.Printf("ReadConfigFromFile:%+v\n", conf)
+
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       conf.DSN, // DSN data source name
 		DefaultStringSize:         256,      // string 类型字段的默认长度
