@@ -2,12 +2,12 @@ package utils
 
 import (
 	"fmt"
-	"shippo-server/configs"
+	"shippo-server/testdata"
 	"testing"
 )
 
 func TestReadConfigFromFile(t *testing.T) {
-	var conf configs.DB
-	ReadConfigFromFile("configs/db.json", &conf)
-	fmt.Printf("配置项内容：%v\n", conf)
+	var conf testdata.Config
+	ReadConfigFromFile("testdata/config.json", &conf)
+	fmt.Printf("配置项内容：%+v\n", conf)
 }
