@@ -13,3 +13,12 @@ func TestDaoGetPassport(t *testing.T) {
 	}
 	fmt.Printf("TestDaoGetPassport:%+v\n", p)
 }
+
+func TestDaoCreatePassport(t *testing.T) {
+	d := New()
+	p, err := d.CreatePassport()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("TestDaoCreatePassport:%+v\n", p)
+}
