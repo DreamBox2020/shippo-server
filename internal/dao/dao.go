@@ -1,12 +1,10 @@
 package dao
 
 import (
-	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 	"shippo-server/configs"
-	"shippo-server/internal/model"
 	"shippo-server/utils"
 	"time"
 )
@@ -19,8 +17,6 @@ func New() (d *Dao) {
 
 	var conf configs.DB
 	utils.ReadConfigFromFile("configs/db.json", &conf)
-
-	fmt.Printf("ReadConfigFromFile:%+v\n", conf)
 
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       conf.DSN, // DSN data source name
@@ -51,10 +47,6 @@ func New() (d *Dao) {
 
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
-
-	var users []model.User
-	db.Find(&users)
-	fmt.Printf("%+v\n", users)
 
 	d = &Dao{
 		db: db,

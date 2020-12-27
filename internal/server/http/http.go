@@ -31,6 +31,8 @@ func outerRouter(Router *gin.Engine) {
 	base := Router.Group("")
 	initUserRouter(base)
 	initFileRouter(base)
+	initPassportRouter(base)
+
 }
 
 func initServer(address string, router *gin.Engine) *http.Server {

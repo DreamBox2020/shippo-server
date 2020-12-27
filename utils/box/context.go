@@ -25,35 +25,37 @@ type request struct {
 }
 
 type Context struct {
-	ctx *gin.Context
-	req *request
+	Ctx *gin.Context
+	Req *request
 }
 
 func New(ctx *gin.Context) *Context {
+	var req *request
+	ctx.ShouldBindJSON(&req)
 	return &Context{
-		ctx: ctx,
+		Ctx: ctx,
+		Req: req,
 	}
 }
 
 func (context *Context) JSON(data interface{}, err error) {
 	res, _ := json.Marshal(data)
-	context.ctx.JSON(http.StatusOK, &response{
+	context.Ctx.JSON(http.StatusOK, &response{
 		Code:     0,
 		Message:  "OK",
 		Success:  err == nil,
-		Session:  context.req.Session,
+		Session:  context.Req.Session,
 		Resource: string(res),
 	})
 }
 
 func (context *Context) ShouldBindJSON(obj interface{}) {
-	context.ctx.ShouldBindJSON(&context.req)
-	json.Unmarshal([]byte(context.req.Resource), obj)
+	json.Unmarshal([]byte(context.Req.Resource), obj)
 }
 
 func (context *Context) Data(contentType string, data []byte, fileName string) {
-	context.ctx.Header("content-disposition", `attachment; filename=`+fileName)
-	context.ctx.Data(http.StatusOK, contentType, data)
+	context.Ctx.Header("content-disposition", `attachment; filename=`+fileName)
+	context.Ctx.Data(http.StatusOK, contentType, data)
 }
 
 type HandlerFunc func(context *Context)
