@@ -32,6 +32,7 @@ func outerRouter(Router *gin.Engine) {
 	initUserRouter(base)
 	initFileRouter(base)
 	initPassportRouter(base)
+	initSmsRouter(base)
 
 }
 

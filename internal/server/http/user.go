@@ -20,6 +20,7 @@ func userLogin(c *box.Context) {
 	})
 	c.ShouldBindJSON(&param)
 	fmt.Printf("userLogin: %+v\n", param)
+
 	c.JSON(gin.H{
 		"message": "你好，世界",
 	}, nil)
