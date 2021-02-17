@@ -3,6 +3,7 @@ package dao
 import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 	"shippo-server/configs"
 	"shippo-server/utils"
@@ -30,6 +31,7 @@ func New() (d *Dao) {
 			TablePrefix:   "shippo_",
 			SingularTable: true, // 使用单数表名
 		},
+		Logger: logger.Default.LogMode(logger.Info),
 	})
 
 	if err != nil {

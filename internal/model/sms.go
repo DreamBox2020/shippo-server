@@ -6,4 +6,5 @@ type Sms struct {
 	gorm.Model
 	Phone string
 	Code  string
+	Token string
 }

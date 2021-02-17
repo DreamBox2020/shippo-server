@@ -8,12 +8,13 @@ import (
 )
 
 // 生成一个记录，验证码随机生成
-func (d *Dao) SmsInsert(phone string) (s model.Sms, err error) {
+func (d *Dao) SmsInsert(phone string, token string) (s model.Sms, err error) {
 	rand.Seed(time.Now().UnixNano())
-	code := strconv.Itoa(rand.Intn(999999))
+	code := strconv.Itoa(rand.Intn(899999) + 100000)
 
 	s.Phone = phone
 	s.Code = code
+	s.Token = token
 	err = d.db.Create(&s).Error
 	return
 }
@@ -24,10 +25,7 @@ func (d *Dao) SmsDel(phone string) error {
 }
 
 // 根据手机号和验证码查询一个记录
-func (d *Dao) SmsByPhoneAndCode(phone string, code string) (s model.Sms, err error) {
-	s.Phone = phone
-	s.Code = code
-
-	err = d.db.First(&s).Error
+func (d *Dao) SmsByPhoneAndCode(phone string, code string, token string) (s model.Sms, err error) {
+	err = d.db.Where("phone", phone).Where("code", code).Where("token", token).Limit(1).Find(&s).Error
 	return
 }

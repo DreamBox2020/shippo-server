@@ -2,23 +2,92 @@ package dao
 
 import (
 	"fmt"
+	"shippo-server/internal/model"
 	"testing"
 )
 
-func TestDaoGetPassport(t *testing.T) {
+func TestDaoPassportGet(t *testing.T) {
 	d := New()
-	p, err := d.GetPassport("ddd")
+
+	// 先创建一个通行证
+	p, err := d.PassportCreate(model.Passport{
+		UserId: 123456,
+		Ip:     "127.0.0.1",
+		Ua:     "",
+		Client: 1,
+	})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("TestDaoGetPassport:%+v\n", p)
+
+	// 然后查询
+	p, err = d.PassportGet(p.Token)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("TestDaoPassportGet:%+v\n", p)
 }
 
-func TestDaoCreatePassport(t *testing.T) {
+func TestDaoPassportCreate(t *testing.T) {
 	d := New()
-	p, err := d.CreatePassport()
+
+	p, err := d.PassportCreate(model.Passport{
+		UserId: 123456,
+		Ip:     "127.0.0.1",
+		Ua:     "",
+		Client: 1,
+	})
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("TestDaoCreatePassport:%+v\n", p)
+
+	fmt.Printf("TestDaoPassportCreate:%+v\n", p)
+}
+
+func TestDaoPassportDelete(t *testing.T) {
+	d := New()
+
+	p, err := d.PassportCreate(model.Passport{
+		UserId: 123456,
+		Ip:     "127.0.0.1",
+		Ua:     "",
+		Client: 1,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	err = d.PassportDelete(p.UserId, p.Client)
+	if err != nil {
+		panic(err)
+	}
+
+	p, err = d.PassportGet(p.Token)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("TestDaoPassportDelete:%+v\n", p)
+}
+
+func TestDaoPassportUpdate(t *testing.T) {
+	d := New()
+
+	p, err := d.PassportCreate(model.Passport{
+		UserId: 123456,
+		Ip:     "",
+		Ua:     "",
+		Client: 1,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	p, err = d.PassportUpdate(p.Token, model.Passport{Ip: "127.0.0.1"})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("TestDaoPassportUpdate:%+v\n", p)
 }

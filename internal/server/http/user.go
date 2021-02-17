@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
 
@@ -14,14 +15,10 @@ func initUserRouter(Router *gin.RouterGroup) {
 }
 
 func userLogin(c *box.Context) {
-	var param = new(struct {
-		Phone string `json:"phone"`
-		Code  string `json:"code"`
-	})
+	var param model.UserLoginParam
 	c.ShouldBindJSON(&param)
 	fmt.Printf("userLogin: %+v\n", param)
 
-	c.JSON(gin.H{
-		"message": "你好，世界",
-	}, nil)
+	data, err := svc.UserLogin(c, param, c.Req.Passport)
+	c.JSON(data, err)
 }

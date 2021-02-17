@@ -5,8 +5,8 @@ import "gorm.io/gorm"
 type Passport struct {
 	gorm.Model
 	Token  string
-	UserId int
+	UserId uint
 	Ip     string
 	Ua     string
-	Client int
+	Client uint
 }

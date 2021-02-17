@@ -20,6 +20,6 @@ func smsSend(c *box.Context) {
 	c.ShouldBindJSON(&param)
 	fmt.Printf("smsSend: %+v\n", param)
 
-	err := svc.SmsSend(c, param.Phone)
+	err := svc.SmsSend(c, param.Phone, c.Req.Passport)
 	c.JSON(nil, err)
 }

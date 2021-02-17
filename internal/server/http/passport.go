@@ -13,6 +13,6 @@ func initPassportRouter(Router *gin.RouterGroup) {
 }
 
 func passportCreate(c *box.Context) {
-	svc.PassportCreate(c, c.Req.Passport)
-	c.JSON(nil, nil)
+	data, err := svc.PassportCreate(c, c.Req.Passport, c.Ctx.ClientIP())
+	c.JSON(data, err)
 }

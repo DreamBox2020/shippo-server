@@ -5,7 +5,7 @@ import (
 	"shippo-server/utils/box"
 )
 
-func (s *Service) SmsSend(c *box.Context, phone string) (err error) {
+func (s *Service) SmsSend(c *box.Context, phone string, token string) (err error) {
 
 	// 过期所有验证码
 	err = s.dao.SmsDel(phone)
@@ -13,7 +13,7 @@ func (s *Service) SmsSend(c *box.Context, phone string) (err error) {
 		return
 	}
 	// 生成新的验证码
-	r, err := s.dao.SmsInsert(phone)
+	r, err := s.dao.SmsInsert(phone, token)
 	if err != nil {
 		return
 	}
