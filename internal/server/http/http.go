@@ -20,6 +20,7 @@ func Init(s *service.Service) {
 	utils.ReadConfigFromFile("configs/server.json", &conf)
 
 	engine := gin.Default()
+	engine.Use(cors())
 	outerRouter(engine)
 	server := initServer(conf.Addr, engine)
 	if err := server.ListenAndServe(); err != nil {
@@ -34,6 +35,17 @@ func outerRouter(Router *gin.Engine) {
 	initPassportRouter(base)
 	initSmsRouter(base)
 
+}
+
+func cors() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		ctx.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		if ctx.Request.Method == "OPTIONS" {
+			ctx.AbortWithStatus(http.StatusNoContent)
+		} else {
+			ctx.Next()
+		}
+	}
 }
 
 func initServer(address string, router *gin.Engine) *http.Server {
