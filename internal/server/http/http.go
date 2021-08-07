@@ -6,6 +6,7 @@ import (
 	"shippo-server/configs"
 	"shippo-server/internal/service"
 	"shippo-server/utils"
+	"shippo-server/utils/ecode"
 	"time"
 )
 
@@ -18,6 +19,8 @@ func Init(s *service.Service) {
 
 	var conf configs.Server
 	utils.ReadConfigFromFile("configs/server.json", &conf)
+
+	ecode.Register(ecode.Messages)
 
 	engine := gin.Default()
 	engine.Use(cors())
