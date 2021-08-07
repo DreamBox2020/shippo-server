@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"shippo-server/utils/ecode"
 )
 
 type response struct {
@@ -39,10 +40,11 @@ func New(ctx *gin.Context) *Context {
 }
 
 func (context *Context) JSON(data interface{}, err error) {
+	code := ecode.Cause(err)
 	res, _ := json.Marshal(data)
 	context.Ctx.JSON(http.StatusOK, &response{
-		Code:     0,
-		Message:  "OK",
+		Code:     code.Code(),
+		Message:  code.Message(),
 		Success:  err == nil,
 		Session:  context.Req.Session,
 		Resource: string(res),
