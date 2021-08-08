@@ -98,3 +98,19 @@ func CheckSmsCode(s string) (matched bool) {
 	}
 	return
 }
+
+func CheckUUID(s string) (matched bool) {
+	matched, err := regexp.MatchString("^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$", s)
+	if err != nil {
+		return false
+	}
+	return
+}
+
+func CheckPassport(s string) (matched bool) {
+	matched, err := regexp.MatchString("^[0-9a-z]{32}$", s)
+	if err != nil {
+		return false
+	}
+	return
+}

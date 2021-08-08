@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
+	"shippo-server/utils/check"
+	"shippo-server/utils/ecode"
 )
 
 func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (interface{}, error) {
@@ -44,4 +46,12 @@ func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (in
 	data["uid"] = p.UserId
 
 	return data, err
+}
+
+func (s *Service) PassportGet(c *box.Context, passport string, ip string) (p model.Passport, err error) {
+	if !check.CheckPassport(passport) {
+		err = ecode.ServerErr
+		return
+	}
+	return s.dao.PassportGet(passport)
 }

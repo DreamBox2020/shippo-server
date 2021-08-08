@@ -10,7 +10,7 @@ import (
 func initUserRouter(Router *gin.RouterGroup) {
 	r := Router.Group("user")
 	{
-		r.POST("login", box.Handler(userLogin))
+		r.POST("login", box.Handler(userLogin, box.AccessAll))
 	}
 }
 

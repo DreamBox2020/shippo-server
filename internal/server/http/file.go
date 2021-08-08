@@ -10,7 +10,7 @@ import (
 func initFileRouter(Router *gin.RouterGroup) {
 	r := Router.Group("file")
 	{
-		r.GET("d/:id", box.Handler(fileDownload))
+		r.GET("d/:id", box.Handler(fileDownload, box.AccessAll))
 	}
 }
 

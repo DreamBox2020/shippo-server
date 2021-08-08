@@ -9,7 +9,7 @@ import (
 func initSmsRouter(Router *gin.RouterGroup) {
 	r := Router.Group("sms")
 	{
-		r.POST("send", box.Handler(smsSend))
+		r.POST("send", box.Handler(smsSend, box.AccessLoginOK))
 	}
 }
 

@@ -4,7 +4,18 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"shippo-server/internal/model"
 	"shippo-server/utils/ecode"
+)
+
+const (
+	AccessAll     = 0 // 无需权限
+	AccessLoginOK = 1 // 必须已经登录
+	AccessNoLogin = 2 // 必须没有登录
+)
+
+var (
+	handlers []HandlerFunc
 )
 
 type response struct {
@@ -26,20 +37,42 @@ type request struct {
 }
 
 type Context struct {
-	Ctx *gin.Context
-	Req *request
+	index    int
+	Ctx      *gin.Context
+	Req      *request
+	Passport *model.Passport
+	Access   int
+	IsEnd    bool
 }
 
-func New(ctx *gin.Context) *Context {
+func Use(middleware ...HandlerFunc) {
+	handlers = append(handlers, middleware...)
+}
+
+func New(ctx *gin.Context, access int) (bctx *Context) {
 	var req *request
 	ctx.ShouldBindJSON(&req)
-	return &Context{
-		Ctx: ctx,
-		Req: req,
+	bctx = &Context{
+		index:  -1,
+		Ctx:    ctx,
+		Req:    req,
+		Access: access,
+		IsEnd:  false,
+	}
+	bctx.Next()
+	return
+}
+
+func (context *Context) Next() {
+	context.index++
+	for context.index < len(handlers) {
+		handlers[context.index](context)
+		context.index++
 	}
 }
 
 func (context *Context) JSON(data interface{}, err error) {
+	context.IsEnd = true
 	code := ecode.Cause(err)
 	res, _ := json.Marshal(data)
 	context.Ctx.JSON(http.StatusOK, &response{
@@ -56,14 +89,18 @@ func (context *Context) ShouldBindJSON(obj interface{}) {
 }
 
 func (context *Context) Data(contentType string, data []byte, fileName string) {
+	context.IsEnd = true
 	context.Ctx.Header("content-disposition", `attachment; filename=`+fileName)
 	context.Ctx.Data(http.StatusOK, contentType, data)
 }
 
-type HandlerFunc func(context *Context)
+type HandlerFunc func(*Context)
 
-func Handler(h HandlerFunc) gin.HandlerFunc {
+func Handler(h HandlerFunc, access int) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		h(New(ctx))
+		bctx := New(ctx, access)
+		if !bctx.IsEnd {
+			h(bctx)
+		}
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"shippo-server/configs"
 	"shippo-server/internal/service"
 	"shippo-server/utils"
+	"shippo-server/utils/box"
 	"shippo-server/utils/ecode"
 	"time"
 )
@@ -21,6 +22,8 @@ func Init(s *service.Service) {
 	utils.ReadConfigFromFile("configs/server.json", &conf)
 
 	ecode.Register(ecode.Messages)
+	// 初始化用户信息的中间件
+	box.Use(passportGet)
 
 	engine := gin.Default()
 	engine.Use(cors())
