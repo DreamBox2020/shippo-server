@@ -6,20 +6,21 @@ import (
 	"shippo-server/utils/box"
 	"shippo-server/utils/check"
 	"shippo-server/utils/ecode"
+	"time"
 )
 
-func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (interface{}, error) {
+func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (data map[string]interface{}, err error) {
 	fmt.Printf("service->PassportCreate->args->passport:%+v\n", passport)
 	fmt.Printf("service->PassportCreate->args->ip:%+v\n", ip)
 
-	p, err := s.dao.PassportGet(passport)
+	p, err := s.PassportGet(c, passport, ip)
 
 	if err != nil {
-		return nil, err
+		return
 	}
 
-	// 如果不存在，就创建一个新的通行证，否则，就续期旧的。
-	if p.Token == "" {
+	// 如果不存在或者到期(30天)，就创建一个新的通行证，否则，就续期旧的。
+	if p.Token == "" || time.Since(p.UpdatedAt) > time.Hour*24*30 {
 		p = model.Passport{
 			Token:  "",
 			UserId: 0,
@@ -30,22 +31,22 @@ func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (in
 
 		p, err = s.dao.PassportCreate(p)
 		if err != nil {
-			return nil, err
+			return
 		}
 
 	} else {
 
 		p, err = s.dao.PassportUpdate(p.Token, model.Passport{Ip: ip})
 		if err != nil {
-			return nil, err
+			return
 		}
 	}
 
-	data := make(map[string]interface{}, 2)
+	data = make(map[string]interface{}, 2)
 	data["passport"] = p.Token
 	data["uid"] = p.UserId
 
-	return data, err
+	return
 }
 
 func (s *Service) PassportGet(c *box.Context, passport string, ip string) (p model.Passport, err error) {

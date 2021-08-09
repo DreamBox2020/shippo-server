@@ -3,11 +3,28 @@ package service
 import (
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
+	"shippo-server/utils/check"
+	"shippo-server/utils/ecode"
 )
 
-func (s *Service) UserLogin(c *box.Context, param model.UserLoginParam, token string) (result interface{}, err error) {
+func (s *Service) UserLogin(c *box.Context, param model.UserLoginParam, token string) (data map[string]interface{}, err error) {
 	var user model.User
 	var p model.Passport
+
+	if !check.CheckPassport(token) {
+		err = ecode.ServerErr
+		return
+	}
+
+	if !check.CheckPhone(param.Phone) {
+		err = ecode.ServerErr
+		return
+	}
+
+	if !check.CheckSmsCode(param.Code) {
+		err = ecode.ServerErr
+		return
+	}
 
 	sms, err := s.dao.SmsByPhoneAndCode(param.Phone, param.Code, token)
 	if err != nil {
@@ -40,11 +57,11 @@ func (s *Service) UserLogin(c *box.Context, param model.UserLoginParam, token st
 			return
 		}
 
-		data := make(map[string]interface{}, 2)
+		data = make(map[string]interface{}, 2)
 		data["passport"] = p.Token
 		data["uid"] = p.UserId
 
-		return data, err
+		return
 	}
 
 	return

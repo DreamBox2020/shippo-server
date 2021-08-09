@@ -3,9 +3,16 @@ package service
 import (
 	"shippo-server/utils"
 	"shippo-server/utils/box"
+	"shippo-server/utils/check"
+	"shippo-server/utils/ecode"
 )
 
 func (s *Service) SmsSend(c *box.Context, phone string, token string) (err error) {
+
+	if !check.CheckPhone(phone) {
+		err = ecode.ServerErr
+		return
+	}
 
 	// 过期所有验证码
 	err = s.dao.SmsDel(phone)

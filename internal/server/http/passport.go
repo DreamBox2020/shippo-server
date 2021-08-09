@@ -23,8 +23,6 @@ func passportGet(c *box.Context) {
 	p, err := svc.PassportGet(c, c.Req.Passport, c.Ctx.ClientIP())
 	if err != nil {
 		fmt.Printf("http->passportGet:%+v\n", err)
-		c.JSON(nil, err)
-		return
 	}
 	fmt.Printf("http->passportGet:%+v\n", p)
 	c.Passport = &p
