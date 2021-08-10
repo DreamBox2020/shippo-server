@@ -51,7 +51,11 @@ func Use(middleware ...HandlerFunc) {
 
 func New(ctx *gin.Context, access int) (bctx *Context) {
 	var req *request
-	ctx.ShouldBindJSON(&req)
+	if ctx.GetHeader("Content-Type") == "application/json" {
+		ctx.ShouldBindJSON(&req)
+	} else {
+		req = &request{}
+	}
 	bctx = &Context{
 		index:  -1,
 		Ctx:    ctx,

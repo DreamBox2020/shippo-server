@@ -15,7 +15,7 @@ func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (da
 
 	p, err := s.PassportGet(c, passport, ip)
 
-	if err != nil {
+	if passport != "" && err != nil {
 		return
 	}
 
