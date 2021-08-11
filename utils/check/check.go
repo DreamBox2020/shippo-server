@@ -73,7 +73,7 @@ func CheckPhone(s string) (matched bool) {
 	}
 
 	// 如果是134开头，且第四位在0～8之间
-	matched, err = regexp.MatchString("^134[0-8]$", s)
+	matched, err = regexp.MatchString("^134[0-8]", s)
 	if err != nil {
 		return false
 	}
