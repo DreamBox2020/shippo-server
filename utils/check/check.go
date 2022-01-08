@@ -7,7 +7,7 @@ import (
 
 func CheckPhone(s string) (matched bool) {
 
-	list := [41]string{
+	list := [43]string{
 		// 移动
 		// ""134"", // 0～8
 		"135",
