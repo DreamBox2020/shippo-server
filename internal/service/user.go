@@ -57,7 +57,7 @@ func (s *Service) UserLogin(c *box.Context, param model.UserLoginParam, token st
 			return
 		}
 
-		data = make(map[string]interface{}, 2)
+		data = make(map[string]interface{})
 		data["passport"] = p.Token
 		data["uid"] = p.UserId
 

@@ -42,7 +42,7 @@ func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (da
 		}
 	}
 
-	data = make(map[string]interface{}, 2)
+	data = make(map[string]interface{})
 	data["passport"] = p.Token
 	data["uid"] = p.UserId
 

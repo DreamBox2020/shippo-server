@@ -2,6 +2,7 @@ package box
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"shippo-server/internal/model"
@@ -78,7 +79,11 @@ func (context *Context) Next() {
 func (context *Context) JSON(data interface{}, err error) {
 	context.IsEnd = true
 	code := ecode.Cause(err)
-	res, _ := json.Marshal(data)
+	res, err2 := json.Marshal(data)
+	if err2 != nil {
+		fmt.Printf("box->context->JSON->data:%+v\n", data)
+		fmt.Printf("box->context->JSON->err2:%+v\n", err2)
+	}
 	context.Ctx.JSON(http.StatusOK, &response{
 		Code:     code.Code(),
 		Message:  code.Message(),
