@@ -16,7 +16,17 @@ func (s *Service) UserLogin(c *box.Context, param model.UserLoginParam, token st
 		return
 	}
 
-	if !check.CheckPhone(param.Phone) {
+	if param.Phone == "" && param.Email == "" {
+		err = ecode.ServerErr
+		return
+	}
+
+	if param.Phone != "" && !check.CheckPhone(param.Phone) {
+		err = ecode.ServerErr
+		return
+	}
+
+	if param.Email != "" && !check.CheckQQEmail(param.Email) {
 		err = ecode.ServerErr
 		return
 	}
@@ -26,25 +36,50 @@ func (s *Service) UserLogin(c *box.Context, param model.UserLoginParam, token st
 		return
 	}
 
-	sms, err := s.dao.SmsByPhoneAndCode(param.Phone, param.Code, token)
+	var target string
+	if param.Phone == "" {
+		target = param.Email
+	} else {
+		target = param.Phone
+	}
+
+	captcha, err := s.dao.CaptchaByTargetAndCode(target, param.Code, token)
 	if err != nil {
 		return
 	}
 
 	// 如果短信验证成功
-	if sms.Phone != "" {
+	if captcha.Target != "" {
 		// 过期验证码
-		s.dao.SmsDel(sms.Phone)
-
-		user, err = s.dao.UserFindByPhone(sms.Phone)
+		err = s.dao.SmsDel(captcha.Target)
 		if err != nil {
 			return
 		}
 
-		// 如果没有注册
-		if user.Phone == "" {
-			user, err = s.dao.UserCreate(sms.Phone)
+		// 如果是手机号登陆
+		if param.Phone != "" {
+			user, err = s.dao.UserFindByPhone(captcha.Target)
 			if err != nil {
+				return
+			}
+
+			// 如果没有注册
+			if user.Phone == "" {
+				user, err = s.dao.UserCreate(captcha.Target)
+				if err != nil {
+					return
+				}
+			}
+		} else {
+
+			user, err = s.dao.UserFindByEmail(captcha.Target)
+			if err != nil {
+				return
+			}
+
+			// 如果邮箱登陆，没有注册，就报错
+			if user.Email == "" {
+				err = ecode.ServerErr
 				return
 			}
 		}

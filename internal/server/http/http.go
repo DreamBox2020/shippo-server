@@ -19,7 +19,9 @@ func Init(s *service.Service) {
 	svc = s
 
 	var conf configs.Server
-	utils.ReadConfigFromFile("configs/server.json", &conf)
+	if err := utils.ReadConfigFromFile("configs/server.json", &conf); err != nil {
+		panic(err)
+	}
 
 	ecode.Register(ecode.Messages)
 	// 初始化用户信息的中间件
@@ -41,6 +43,7 @@ func outerRouter(Router *gin.Engine) {
 	initPassportRouter(base)
 	initSmsRouter(base)
 	initTempRouter(base)
+	initCaptchaRouter(base)
 }
 
 func cors() gin.HandlerFunc {

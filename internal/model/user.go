@@ -15,5 +15,6 @@ type User struct {
 
 type UserLoginParam struct {
 	Phone string `json:"phone"`
+	Email string `json:"email"`
 	Code  string `json:"code"`
 }

@@ -114,3 +114,19 @@ func CheckPassport(s string) (matched bool) {
 	}
 	return
 }
+
+func CheckQQ(s string) (matched bool) {
+	matched, err := regexp.MatchString("^[1-9][0-9]{4,9}$", s)
+	if err != nil {
+		return false
+	}
+	return
+}
+
+func CheckQQEmail(s string) (matched bool) {
+	matched, err := regexp.MatchString("^[1-9][0-9]{4,9}@qq\\.com$", s)
+	if err != nil {
+		return false
+	}
+	return
+}

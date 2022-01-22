@@ -46,7 +46,7 @@ func (s *Service) Temp_trade_20220108_findByUserQQ(c *box.Context, qq string) (d
 
 	for key, value := range r {
 		data[key] = make(map[string]interface{})
-		data[key]["id"] = value.TradeId
+		//data[key]["id"] = value.TradeId
 		data[key]["type"] = value.TradeType
 		data[key]["amount"] = value.TradeAmount
 		data[key]["status"] = value.AmountStatus
@@ -61,6 +61,11 @@ func (s *Service) Temp_trade_20220108_findByUserQQ(c *box.Context, qq string) (d
 func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_20220108_TradeAddParam) (data interface{}, err error) {
 
 	// TODO 校验所有参数
+
+	if m.TradeId1 == "" {
+		err = ecode.ServerErr
+		return
+	}
 
 	// 1. 获取 定金的订单信息
 	t1, err := s.dao.Temp_trade_20220108_findByTradeId(m.TradeId1)
@@ -106,6 +111,11 @@ func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_202
 
 	// 6. 如果金额为233，则不处理第二个订单
 	if t1.TradeAmount == 233 {
+		return
+	}
+
+	if m.TradeId2 == "" {
+		err = ecode.ServerErr
 		return
 	}
 

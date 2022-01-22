@@ -17,7 +17,9 @@ type Dao struct {
 func New() (d *Dao) {
 
 	var conf configs.DB
-	utils.ReadConfigFromFile("configs/db.json", &conf)
+	if err := utils.ReadConfigFromFile("configs/db.json", &conf); err != nil {
+		panic(err)
+	}
 
 	db, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       conf.DSN, // DSN data source name
