@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -34,4 +36,9 @@ func QQMasking(s string) string {
 
 func FormatTime(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
+}
+
+func GenerateCaptcha() string {
+	rand.Seed(time.Now().UnixNano())
+	return strconv.Itoa(rand.Intn(899999) + 100000)
 }

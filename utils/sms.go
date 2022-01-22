@@ -6,19 +6,24 @@ import (
 	"shippo-server/configs"
 )
 
+var smsConf configs.Sms
+
 func SendSms(phone string, code string) {
 
-	var conf configs.Sms
-	ReadConfigFromFile("./configs/sms.json", &conf)
+	if emailConf.Address == "" {
+		if err := ReadConfigFromFile("./configs/sns.json", &smsConf); err != nil {
+			panic(err)
+		}
+	}
 
-	client, err := dysmsapi.NewClientWithAccessKey(conf.RegionId, conf.AccessKeyId, conf.AccessKeySecret)
+	client, err := dysmsapi.NewClientWithAccessKey(smsConf.RegionId, smsConf.AccessKeyId, smsConf.AccessKeySecret)
 
 	request := dysmsapi.CreateSendSmsRequest()
 	request.Scheme = "https"
 
 	request.PhoneNumbers = phone
-	request.SignName = conf.SignName
-	request.TemplateCode = conf.TemplateCode
+	request.SignName = smsConf.SignName
+	request.TemplateCode = smsConf.TemplateCode
 	request.TemplateParam = "{\"code\":\"" + code + "\"}"
 
 	response, err := client.SendSms(request)
