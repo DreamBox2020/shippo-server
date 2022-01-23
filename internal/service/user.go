@@ -51,7 +51,7 @@ func (s *Service) UserLogin(c *box.Context, param model.UserLoginParam, token st
 	// 如果短信验证成功
 	if captcha.Target != "" {
 		// 过期验证码
-		err = s.dao.SmsDel(captcha.Target)
+		err = s.dao.CaptchaDel(captcha.Target)
 		if err != nil {
 			return
 		}

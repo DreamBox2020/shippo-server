@@ -3,10 +3,12 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
+	uuid "github.com/satori/go.uuid"
 	"io/ioutil"
 	"math/rand"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -41,4 +43,8 @@ func FormatTime(t time.Time) string {
 func GenerateCaptcha() string {
 	rand.Seed(time.Now().UnixNano())
 	return strconv.Itoa(rand.Intn(899999) + 100000)
+}
+
+func GenerateToken() string {
+	return strings.Replace(uuid.NewV4().String(), "-", "", -1)
 }

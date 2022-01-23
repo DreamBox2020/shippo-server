@@ -1,9 +1,8 @@
 package dao
 
 import (
-	"github.com/satori/go.uuid"
 	"shippo-server/internal/model"
-	"strings"
+	"shippo-server/utils"
 )
 
 // 根据token获取通行证信息
@@ -15,7 +14,7 @@ func (d *Dao) PassportGet(token string) (p model.Passport, err error) {
 // 创建一个通行证
 func (d *Dao) PassportCreate(p model.Passport) (model.Passport, error) {
 	// 生成token
-	p.Token = strings.Replace(uuid.NewV4().String(), "-", "", -1)
+	p.Token = utils.GenerateToken()
 	return p, d.db.Create(&p).Error
 }
 

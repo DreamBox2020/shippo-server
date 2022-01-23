@@ -41,9 +41,10 @@ func outerRouter(Router *gin.Engine) {
 	initUserRouter(base)
 	initFileRouter(base)
 	initPassportRouter(base)
-	initSmsRouter(base)
 	initTempRouter(base)
 	initCaptchaRouter(base)
+
+	initAdminUserRouter(base)
 }
 
 func cors() gin.HandlerFunc {
