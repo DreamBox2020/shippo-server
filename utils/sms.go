@@ -11,7 +11,7 @@ var smsConf configs.Sms
 func SendSms(phone string, code string) {
 
 	if emailConf.Address == "" {
-		if err := ReadConfigFromFile("./configs/sns.json", &smsConf); err != nil {
+		if err := ReadConfigFromFile("./configs/sms.json", &smsConf); err != nil {
 			panic(err)
 		}
 	}
