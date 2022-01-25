@@ -12,6 +12,7 @@ func initTempRouter(Router *gin.RouterGroup) {
 	{
 		r.POST("temp_trade_20220108/find", box.Handler(temp_trade_20220108_find, box.AccessAll))
 		r.POST("temp_trade_20220108/add", box.Handler(temp_trade_20220108_add, box.AccessAll))
+		r.POST("temp_trade_20220108/findNoExist", box.Handler(temp_trade_20220108_findNoExist, box.AccessAll))
 	}
 }
 
@@ -40,5 +41,15 @@ func temp_trade_20220108_add(c *box.Context) {
 	fmt.Printf("temp_trade_20220108_add: %+v\n", param)
 
 	data, err := svc.Temp_trade_20220108_add(c, param)
+	c.JSON(data, err)
+}
+
+func temp_trade_20220108_findNoExist(c *box.Context) {
+	var param = new(struct {
+		Qqlist []string `json:"qqlist"`
+	})
+	c.ShouldBindJSON(&param)
+
+	data, err := svc.Temp_trade_20220108_findNoExist(c, param.Qqlist)
 	c.JSON(data, err)
 }
