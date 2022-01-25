@@ -19,3 +19,9 @@ type Temp_trade_20220108_TradeAddParam struct {
 	UserQq    string `json:"qq"`
 	UserPhone string `json:"phone"`
 }
+
+type Temp_trade_20220108_FindSuccessResult struct {
+	UserQq       string
+	TradeAmount  uint
+	AmountStatus uint
+}

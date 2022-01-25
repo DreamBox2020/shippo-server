@@ -46,10 +46,10 @@ func temp_trade_20220108_add(c *box.Context) {
 
 func temp_trade_20220108_findNoExist(c *box.Context) {
 	var param = new(struct {
-		Qqlist []string `json:"qqlist"`
+		List []string `json:"list"`
 	})
 	c.ShouldBindJSON(&param)
 
-	data, err := svc.Temp_trade_20220108_findNoExist(c, param.Qqlist)
+	data, err := svc.Temp_trade_20220108_findNoExist(c, param.List)
 	c.JSON(data, err)
 }
