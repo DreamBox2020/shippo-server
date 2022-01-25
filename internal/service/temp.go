@@ -157,3 +157,25 @@ func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_202
 
 	return
 }
+func (s *Service) Temp_trade_20220108_findNoExist(c *box.Context, qqlist []string) (data []string, err error) {
+	// 1. 查询出订单金额 >= 233；订单状态为（0正常）的订单
+	t1, err := s.dao.Temp_trade_20220108_findSuccess()
+
+	if err != nil {
+		return
+	}
+	//遍历查询两个数组,若前台数据未匹配到数据库,则新增到数组QQNoExist
+	for i := 0; i < len(qqlist); i++ {
+		flag := true
+		for _, trade := range t1 {
+			if trade.UserQq == qqlist[i] {
+				flag = false
+				break
+			}
+		}
+		if flag {
+			data = append(data, qqlist[i])
+		}
+	}
+	return
+}
