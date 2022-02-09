@@ -19,7 +19,7 @@ func (d *Dao) PassportCreate(p model.Passport) (model.Passport, error) {
 }
 
 // 根据uid删除该用户全部客户端的通行证
-func (d *Dao) PassportDelete(userId int, client int) error {
+func (d *Dao) PassportDelete(userId uint, client uint) error {
 	return d.db.Where("user_id", userId).Where("client", client).Delete(model.Passport{}).Error
 }
 
