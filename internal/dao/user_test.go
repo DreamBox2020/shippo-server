@@ -14,12 +14,12 @@ func TestDaoUserFindByPhone(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	phone := "12345" + strconv.Itoa(rand.Intn(899999)+100000)
 
-	u, err := d.UserCreate(phone)
+	u, err := d.Group.User.UserCreate(phone)
 	if err != nil {
 		panic(err)
 	}
 
-	u, err = d.UserFindByPhone(phone)
+	u, err = d.Group.User.UserFindByPhone(phone)
 	if err != nil {
 		panic(err)
 	}
@@ -34,7 +34,7 @@ func TestDaoUserCreate(t *testing.T) {
 	rand.Seed(time.Now().UnixNano())
 	phone := "12345" + strconv.Itoa(rand.Intn(899999)+100000)
 
-	u, err := d.UserCreate(phone)
+	u, err := d.Group.User.UserCreate(phone)
 	if err != nil {
 		panic(err)
 	}

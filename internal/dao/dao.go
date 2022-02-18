@@ -10,12 +10,20 @@ import (
 	"time"
 )
 
-type Dao struct {
-	db *gorm.DB
+type DaoGroup struct {
+	User     *UserDao
+	Temp     *TempDao
+	Passport *PassportDao
+	Captcha  *CaptchaDao
+	Album    *AlbumDao
 }
 
-func New() (d *Dao) {
+type Dao struct {
+	db    *gorm.DB
+	Group *DaoGroup
+}
 
+func New() *Dao {
 	var conf configs.DB
 	if err := utils.ReadConfigFromFile("configs/db.json", &conf); err != nil {
 		panic(err)
@@ -52,9 +60,21 @@ func New() (d *Dao) {
 	// SetConnMaxLifetime 设置了连接可复用的最大时间。
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	d = &Dao{
-		db: db,
+	d := &Dao{
+		db:    db,
+		Group: nil,
 	}
+	d.Group = NewGroup(d)
 
 	return d
+}
+
+func NewGroup(d *Dao) *DaoGroup {
+	return &DaoGroup{
+		User:     NewUserDao(d),
+		Temp:     NewTempDao(d),
+		Passport: NewPassportDao(d),
+		Captcha:  NewCaptchaDao(d),
+		Album:    NewAlbumDao(d),
+	}
 }

@@ -6,20 +6,30 @@ import (
 	"shippo-server/utils/box"
 )
 
-func initAdminUserRouter(Router *gin.RouterGroup) {
+type AdminUserServer struct {
+	*Server
+}
+
+func NewAdminUserServer(s *Server) *AdminUserServer {
+	return &AdminUserServer{s}
+}
+
+func (t *AdminUserServer) InitRouter(Router *gin.RouterGroup) {
+	var h = box.NewBoxHandler(&t)
+
 	r := Router.Group("admin/user")
 	{
-		r.POST("create", box.Handler(userCreateEmail, box.AccessLoginOK))
+		r.POST("create", h.H(t.UserCreateEmail, box.AccessLoginOK))
 	}
 }
 
-func userCreateEmail(c *box.Context) {
+func (t *AdminUserServer) UserCreateEmail(c *box.Context) {
 	var param = new(struct {
 		Email string `json:"email"`
 	})
 	c.ShouldBindJSON(&param)
 	fmt.Printf("userCreateEmail: %+v\n", param)
 
-	_, err := svc.AdminUserCreateEmail(c, param.Email)
+	_, err := t.service.AdminUser.AdminUserCreateEmail(c, param.Email)
 	c.JSON(nil, err)
 }

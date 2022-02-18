@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"reflect"
+	"runtime"
 	"shippo-server/internal/model"
 	"shippo-server/utils/ecode"
+	"strings"
 )
 
 const (
@@ -112,4 +115,49 @@ func Handler(h HandlerFunc, access int) gin.HandlerFunc {
 			h(bctx)
 		}
 	}
+}
+
+// 获取函数名称
+func GetFunctionName(i interface{}, seps ...rune) string {
+	fn := runtime.FuncForPC(reflect.ValueOf(i).Pointer()).Name()
+	//fmt.Println(fn)
+	fn = strings.TrimSuffix(fn, "-fm")
+
+	// 用 seps 进行分割
+	fields := strings.FieldsFunc(fn, func(sep rune) bool {
+		for _, s := range seps {
+			if sep == s {
+				return true
+			}
+		}
+		return false
+	})
+	//fmt.Println(fields)
+	if size := len(fields); size > 0 {
+		return fields[size-1]
+	}
+	return ""
+}
+
+type BoxHandler struct {
+	obj interface{}
+}
+
+func NewBoxHandler(obj interface{}) *BoxHandler {
+	return &BoxHandler{obj}
+}
+
+func (bh *BoxHandler) H(h HandlerFunc, access int) gin.HandlerFunc {
+	funName := GetFunctionName(h, '/', '.')
+	//fmt.Printf("GetFunctionName:%+v\n", funName)
+	mtV := reflect.ValueOf(bh.obj).Elem()
+	m := mtV.MethodByName(funName)
+
+	return Handler(func(bhf *Context) {
+
+		params := make([]reflect.Value, 1)
+		params[0] = reflect.ValueOf(bhf)
+		m.Call(params)
+
+	}, access)
 }

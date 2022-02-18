@@ -11,7 +11,15 @@ import (
 	"time"
 )
 
-func (s *Service) WXRefreshToken(c *box.Context) (err error) {
+type WxService struct {
+	*Service
+}
+
+func NewWxService(s *Service) *WxService {
+	return &WxService{s}
+}
+
+func (s *WxService) WXRefreshToken(c *box.Context) (err error) {
 	var conf configs.Common
 	utils.ReadConfigFromFile("configs/common.json", &conf)
 
@@ -36,7 +44,7 @@ func (s *Service) WXRefreshToken(c *box.Context) (err error) {
 	return
 }
 
-func (s *Service) WXGetToken(c *box.Context) (token string, err error) {
+func (s *WxService) WXGetToken(c *box.Context) (token string, err error) {
 	if time.Since(s.wxAccessTokenCreatedAt) > time.Hour {
 		err = s.WXRefreshToken(c)
 	}

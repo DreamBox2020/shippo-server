@@ -5,7 +5,15 @@ import (
 	"shippo-server/utils"
 )
 
-func (d *Dao) CaptchaSmsInsert(target string, token string) (s model.Captcha, err error) {
+type CaptchaDao struct {
+	*Dao
+}
+
+func NewCaptchaDao(s *Dao) *CaptchaDao {
+	return &CaptchaDao{s}
+}
+
+func (d *CaptchaDao) CaptchaSmsInsert(target string, token string) (s model.Captcha, err error) {
 	s.Target = target
 	s.Code = utils.GenerateCaptcha()
 	s.Token = token
@@ -14,7 +22,7 @@ func (d *Dao) CaptchaSmsInsert(target string, token string) (s model.Captcha, er
 	return
 }
 
-func (d *Dao) CaptchaEmailInsert(target string, token string) (s model.Captcha, err error) {
+func (d *CaptchaDao) CaptchaEmailInsert(target string, token string) (s model.Captcha, err error) {
 	s.Target = target
 	s.Code = utils.GenerateCaptcha()
 	s.Token = token
@@ -23,11 +31,11 @@ func (d *Dao) CaptchaEmailInsert(target string, token string) (s model.Captcha, 
 	return
 }
 
-func (d *Dao) CaptchaDel(target string) error {
+func (d *CaptchaDao) CaptchaDel(target string) error {
 	return d.db.Where("target = ?", target).Delete(&model.Captcha{}).Error
 }
 
-func (d *Dao) CaptchaByTargetAndCode(target string, code string, token string) (s model.Captcha, err error) {
+func (d *CaptchaDao) CaptchaByTargetAndCode(target string, code string, token string) (s model.Captcha, err error) {
 	err = d.db.Where("target", target).Where("code", code).Where("token", token).Limit(1).Find(&s).Error
 	return
 }

@@ -6,14 +6,24 @@ import (
 	"shippo-server/utils/box"
 )
 
-func initCaptchaRouter(Router *gin.RouterGroup) {
+type CaptchaServer struct {
+	*Server
+}
+
+func NewCaptchaServer(s *Server) *CaptchaServer {
+	return &CaptchaServer{s}
+}
+
+func (t *CaptchaServer) InitRouter(Router *gin.RouterGroup) {
+	var h = box.NewBoxHandler(&t)
+
 	r := Router.Group("captcha")
 	{
-		r.POST("send", box.Handler(captchaSend, box.AccessAll))
+		r.POST("send", h.H(t.CaptchaSend, box.AccessAll))
 	}
 }
 
-func captchaSend(c *box.Context) {
+func (t *CaptchaServer) CaptchaSend(c *box.Context) {
 	var param = new(struct {
 		Phone string `json:"phone"`
 		Email string `json:"email"`
@@ -22,10 +32,10 @@ func captchaSend(c *box.Context) {
 	fmt.Printf("captchaSend: %+v\n", param)
 
 	if param.Phone != "" {
-		err := svc.CaptchaSmsSend(c, param.Phone, c.Req.Passport)
+		err := t.service.Captcha.CaptchaSmsSend(c, param.Phone, c.Req.Passport)
 		c.JSON(nil, err)
 	} else {
-		err := svc.CaptchaEmailSend(c, param.Email, c.Req.Passport)
+		err := t.service.Captcha.CaptchaEmailSend(c, param.Email, c.Req.Passport)
 		c.JSON(nil, err)
 	}
 }

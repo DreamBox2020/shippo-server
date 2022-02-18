@@ -40,6 +40,10 @@ func FormatTime(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
 }
 
+func ParseTime(s string) (time.Time, error) {
+	return time.Parse(s, "2006-01-02 15:04:05")
+}
+
 func GenerateCaptcha() string {
 	rand.Seed(time.Now().UnixNano())
 	return strconv.Itoa(rand.Intn(899999) + 100000)

@@ -8,12 +8,20 @@ import (
 	"shippo-server/utils/ecode"
 )
 
-func (s *Service) Temp_trade_20220108_findByTradeId(c *box.Context, id string) (data map[string]interface{}, err error) {
+type TempService struct {
+	*Service
+}
+
+func NewTempService(s *Service) *TempService {
+	return &TempService{s}
+}
+
+func (s *TempService) Temp_trade_20220108_findByTradeId(c *box.Context, id string) (data map[string]interface{}, err error) {
 
 	// TODO 检查id是否正确
 
 	// 查询
-	r, err := s.dao.Temp_trade_20220108_findByTradeId(id)
+	r, err := s.dao.Temp.Temp_trade_20220108_findByTradeId(id)
 
 	if err != nil {
 		return
@@ -31,12 +39,12 @@ func (s *Service) Temp_trade_20220108_findByTradeId(c *box.Context, id string) (
 	return
 }
 
-func (s *Service) Temp_trade_20220108_findByUserQQ(c *box.Context, qq string) (data []map[string]interface{}, err error) {
+func (s *TempService) Temp_trade_20220108_findByUserQQ(c *box.Context, qq string) (data []map[string]interface{}, err error) {
 
 	// TODO 检查qq是否正确
 
 	// 查询
-	r, err := s.dao.Temp_trade_20220108_findByUserQQ(qq)
+	r, err := s.dao.Temp.Temp_trade_20220108_findByUserQQ(qq)
 
 	if err != nil {
 		return
@@ -58,7 +66,7 @@ func (s *Service) Temp_trade_20220108_findByUserQQ(c *box.Context, qq string) (d
 	return
 }
 
-func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_20220108_TradeAddParam) (data interface{}, err error) {
+func (s *TempService) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_20220108_TradeAddParam) (data interface{}, err error) {
 
 	// TODO 校验所有参数
 
@@ -68,7 +76,7 @@ func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_202
 	}
 
 	// 1. 获取 定金的订单信息
-	t1, err := s.dao.Temp_trade_20220108_findByTradeId(m.TradeId1)
+	t1, err := s.dao.Temp.Temp_trade_20220108_findByTradeId(m.TradeId1)
 
 	if err != nil {
 		return
@@ -103,7 +111,7 @@ func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_202
 	// 5. 绑定所有者
 	t1.UserQq = m.UserQq
 	t1.UserPhone = m.UserPhone
-	t1, err = s.dao.Temp_trade_20220108_save(t1)
+	t1, err = s.dao.Temp.Temp_trade_20220108_save(t1)
 
 	if err != nil {
 		return
@@ -119,7 +127,7 @@ func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_202
 		return
 	}
 
-	t2, err := s.dao.Temp_trade_20220108_findByTradeId(m.TradeId2)
+	t2, err := s.dao.Temp.Temp_trade_20220108_findByTradeId(m.TradeId2)
 
 	if err != nil {
 		return
@@ -149,7 +157,7 @@ func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_202
 
 	t2.UserQq = m.UserQq
 	t2.UserPhone = m.UserPhone
-	t2, err = s.dao.Temp_trade_20220108_save(t2)
+	t2, err = s.dao.Temp.Temp_trade_20220108_save(t2)
 
 	if err != nil {
 		return
@@ -158,9 +166,9 @@ func (s *Service) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_202
 	return
 }
 
-func (s *Service) Temp_trade_20220108_findNoExist(c *box.Context, list []string) (data []string, err error) {
+func (s *TempService) Temp_trade_20220108_findNoExist(c *box.Context, list []string) (data []string, err error) {
 	// 1. 查询出订单金额 >= 233；订单状态为（0正常）的订单
-	t1, err := s.dao.Temp_trade_20220108_findSuccess()
+	t1, err := s.dao.Temp.Temp_trade_20220108_findSuccess()
 
 	if err != nil {
 		return

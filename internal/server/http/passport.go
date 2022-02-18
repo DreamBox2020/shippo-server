@@ -7,20 +7,30 @@ import (
 	"shippo-server/utils/ecode"
 )
 
-func initPassportRouter(Router *gin.RouterGroup) {
+type PassportServer struct {
+	*Server
+}
+
+func NewPassportServer(s *Server) *PassportServer {
+	return &PassportServer{s}
+}
+
+func (t *PassportServer) InitRouter(Router *gin.RouterGroup) {
+	var h = box.NewBoxHandler(&t)
+
 	r := Router.Group("passport")
 	{
-		r.POST("create", box.Handler(passportCreate, box.AccessAll))
+		r.POST("create", h.H(t.PassportCreate, box.AccessAll))
 	}
 }
 
-func passportCreate(c *box.Context) {
-	data, err := svc.PassportCreate(c, c.Req.Passport, c.Ctx.ClientIP())
+func (t *PassportServer) PassportCreate(c *box.Context) {
+	data, err := t.service.Passport.PassportCreate(c, c.Req.Passport, c.Ctx.ClientIP())
 	c.JSON(data, err)
 }
 
-func passportGet(c *box.Context) {
-	p, err := svc.PassportGet(c, c.Req.Passport, c.Ctx.ClientIP())
+func (t *PassportServer) PassportGet(c *box.Context) {
+	p, err := t.service.Passport.PassportGet(c, c.Req.Passport, c.Ctx.ClientIP())
 	if err != nil {
 		fmt.Printf("http->passportGet:%+v\n", err)
 	}

@@ -9,7 +9,15 @@ import (
 	"time"
 )
 
-func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (data map[string]interface{}, err error) {
+type PassportService struct {
+	*Service
+}
+
+func NewPassportService(s *Service) *PassportService {
+	return &PassportService{s}
+}
+
+func (s *PassportService) PassportCreate(c *box.Context, passport string, ip string) (data map[string]interface{}, err error) {
 	fmt.Printf("service->PassportCreate->args->passport:%+v\n", passport)
 	fmt.Printf("service->PassportCreate->args->ip:%+v\n", ip)
 
@@ -29,14 +37,14 @@ func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (da
 			Client: 0,
 		}
 
-		p, err = s.dao.PassportCreate(p)
+		p, err = s.dao.Passport.PassportCreate(p)
 		if err != nil {
 			return
 		}
 
 	} else {
 
-		p, err = s.dao.PassportUpdate(p.Token, model.Passport{Ip: ip})
+		p, err = s.dao.Passport.PassportUpdate(p.Token, model.Passport{Ip: ip})
 		if err != nil {
 			return
 		}
@@ -49,10 +57,10 @@ func (s *Service) PassportCreate(c *box.Context, passport string, ip string) (da
 	return
 }
 
-func (s *Service) PassportGet(c *box.Context, passport string, ip string) (p model.Passport, err error) {
+func (s *PassportService) PassportGet(c *box.Context, passport string, ip string) (p model.Passport, err error) {
 	if !check.CheckPassport(passport) {
 		err = ecode.ServerErr
 		return
 	}
-	return s.dao.PassportGet(passport)
+	return s.dao.Passport.PassportGet(passport)
 }

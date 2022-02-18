@@ -10,7 +10,7 @@ func TestDaoPassportGet(t *testing.T) {
 	d := New()
 
 	// 先创建一个通行证
-	p, err := d.PassportCreate(model.Passport{
+	p, err := d.Group.Passport.PassportCreate(model.Passport{
 		UserId: 123456,
 		Ip:     "127.0.0.1",
 		Ua:     "",
@@ -21,7 +21,7 @@ func TestDaoPassportGet(t *testing.T) {
 	}
 
 	// 然后查询
-	p, err = d.PassportGet(p.Token)
+	p, err = d.Group.Passport.PassportGet(p.Token)
 	if err != nil {
 		panic(err)
 	}
@@ -32,7 +32,7 @@ func TestDaoPassportGet(t *testing.T) {
 func TestDaoPassportCreate(t *testing.T) {
 	d := New()
 
-	p, err := d.PassportCreate(model.Passport{
+	p, err := d.Group.Passport.PassportCreate(model.Passport{
 		UserId: 123456,
 		Ip:     "127.0.0.1",
 		Ua:     "",
@@ -48,7 +48,7 @@ func TestDaoPassportCreate(t *testing.T) {
 func TestDaoPassportDelete(t *testing.T) {
 	d := New()
 
-	p, err := d.PassportCreate(model.Passport{
+	p, err := d.Group.Passport.PassportCreate(model.Passport{
 		UserId: 123456,
 		Ip:     "127.0.0.1",
 		Ua:     "",
@@ -58,12 +58,12 @@ func TestDaoPassportDelete(t *testing.T) {
 		panic(err)
 	}
 
-	err = d.PassportDelete(p.UserId, p.Client)
+	err = d.Group.Passport.PassportDelete(p.UserId, p.Client)
 	if err != nil {
 		panic(err)
 	}
 
-	p, err = d.PassportGet(p.Token)
+	p, err = d.Group.Passport.PassportGet(p.Token)
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +74,7 @@ func TestDaoPassportDelete(t *testing.T) {
 func TestDaoPassportUpdate(t *testing.T) {
 	d := New()
 
-	p, err := d.PassportCreate(model.Passport{
+	p, err := d.Group.Passport.PassportCreate(model.Passport{
 		UserId: 123456,
 		Ip:     "",
 		Ua:     "",
@@ -84,7 +84,7 @@ func TestDaoPassportUpdate(t *testing.T) {
 		panic(err)
 	}
 
-	p, err = d.PassportUpdate(p.Token, model.Passport{Ip: "127.0.0.1"})
+	p, err = d.Group.Passport.PassportUpdate(p.Token, model.Passport{Ip: "127.0.0.1"})
 	if err != nil {
 		panic(err)
 	}

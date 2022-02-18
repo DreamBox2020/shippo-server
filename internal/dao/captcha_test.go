@@ -8,7 +8,7 @@ import (
 
 func TestDaoCaptchaSmsInsert(t *testing.T) {
 	d := New()
-	s, err := d.CaptchaSmsInsert("12345678900", utils.GenerateToken())
+	s, err := d.Group.Captcha.CaptchaSmsInsert("12345678900", utils.GenerateToken())
 	if err != nil {
 		panic(err)
 	}
@@ -17,7 +17,7 @@ func TestDaoCaptchaSmsInsert(t *testing.T) {
 
 func TestDaoCaptchaEmailInsert(t *testing.T) {
 	d := New()
-	s, err := d.CaptchaEmailInsert("123456@qq.com", utils.GenerateToken())
+	s, err := d.Group.Captcha.CaptchaEmailInsert("123456@qq.com", utils.GenerateToken())
 	if err != nil {
 		panic(err)
 	}
@@ -26,7 +26,7 @@ func TestDaoCaptchaEmailInsert(t *testing.T) {
 
 func TestDaoCaptchaDel(t *testing.T) {
 	d := New()
-	err := d.CaptchaDel("12345678900")
+	err := d.Group.Captcha.CaptchaDel("12345678900")
 	if err != nil {
 		panic(err)
 	}
@@ -36,10 +36,10 @@ func TestDaoCaptchaDel(t *testing.T) {
 func TestDaoCaptchaByTargetAndCode(t *testing.T) {
 	d := New()
 	token := utils.GenerateToken()
-	s, _ := d.CaptchaSmsInsert("12345678900", token)
+	s, _ := d.Group.Captcha.CaptchaSmsInsert("12345678900", token)
 	fmt.Printf("TestDaoCaptchaByTargetAndCode:%+v\n%+v\n", s.Target, s.Code)
 
-	s, err := d.CaptchaByTargetAndCode(s.Target, s.Code, token)
+	s, err := d.Group.Captcha.CaptchaByTargetAndCode(s.Target, s.Code, token)
 	if err != nil {
 		panic(err)
 	}
