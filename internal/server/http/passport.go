@@ -26,6 +26,13 @@ func (t *PassportServer) InitRouter(Router *gin.RouterGroup) {
 
 func (t *PassportServer) PassportCreate(c *box.Context) {
 	data, err := t.service.Passport.PassportCreate(c, c.Req.Passport, c.Ctx.ClientIP())
+	if err == nil {
+		var domain string
+		if c.Ctx.ClientIP() != "127.0.0.1" {
+			domain = serverConf.CookieDomain
+		}
+		c.Ctx.SetCookie("__PASSPORT", data.Passport, 60*60*24*30, "/", domain, false, true)
+	}
 	c.JSON(data, err)
 }
 

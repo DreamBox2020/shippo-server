@@ -10,3 +10,8 @@ type Passport struct {
 	Ua     string
 	Client uint
 }
+
+type PassportCreateResult struct {
+	Passport string `json:"passport"`
+	Uid      uint   `json:"uid"`
+}

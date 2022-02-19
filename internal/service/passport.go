@@ -17,7 +17,7 @@ func NewPassportService(s *Service) *PassportService {
 	return &PassportService{s}
 }
 
-func (s *PassportService) PassportCreate(c *box.Context, passport string, ip string) (data map[string]interface{}, err error) {
+func (s *PassportService) PassportCreate(c *box.Context, passport string, ip string) (data model.PassportCreateResult, err error) {
 	fmt.Printf("service->PassportCreate->args->passport:%+v\n", passport)
 	fmt.Printf("service->PassportCreate->args->ip:%+v\n", ip)
 
@@ -50,9 +50,8 @@ func (s *PassportService) PassportCreate(c *box.Context, passport string, ip str
 		}
 	}
 
-	data = make(map[string]interface{})
-	data["passport"] = p.Token
-	data["uid"] = p.UserId
+	data.Passport = p.Token
+	data.Uid = p.UserId
 
 	return
 }

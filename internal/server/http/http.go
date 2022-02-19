@@ -59,9 +59,10 @@ func (s *Server) InitRouter(engine *gin.Engine) {
 	s.Group.AdminUser.InitRouter(router)
 }
 
+var serverConf configs.Server
+
 func (s *Server) Init() {
-	var conf configs.Server
-	if err := utils.ReadConfigFromFile("configs/server.json", &conf); err != nil {
+	if err := utils.ReadConfigFromFile("configs/server.json", &serverConf); err != nil {
 		panic(err)
 	}
 
@@ -77,7 +78,7 @@ func (s *Server) Init() {
 	engine.Use(middleware.Cors())
 	s.InitRouter(engine)
 
-	server := s.InitServer(conf.Addr, engine)
+	server := s.InitServer(serverConf.Addr, engine)
 	if err := server.ListenAndServe(); err != nil {
 		panic(err)
 	}
