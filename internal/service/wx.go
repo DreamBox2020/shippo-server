@@ -19,7 +19,7 @@ func NewWxService(s *Service) *WxService {
 	return &WxService{s}
 }
 
-func (s *WxService) WXRefreshToken(c *box.Context) (err error) {
+func (s *WxService) WXRefreshToken() (err error) {
 	var conf configs.Common
 	utils.ReadConfigFromFile("configs/common.json", &conf)
 
@@ -46,7 +46,7 @@ func (s *WxService) WXRefreshToken(c *box.Context) (err error) {
 
 func (s *WxService) WXGetToken(c *box.Context) (token string, err error) {
 	if time.Since(s.wxAccessTokenCreatedAt) > time.Hour {
-		err = s.WXRefreshToken(c)
+		err = s.WXRefreshToken()
 	}
 	token = s.wxAccessToken
 	return

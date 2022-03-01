@@ -15,11 +15,9 @@ func NewCaptchaServer(s *Server) *CaptchaServer {
 }
 
 func (t *CaptchaServer) InitRouter(Router *gin.RouterGroup) {
-	var h = box.NewBoxHandler(&t)
-
 	r := Router.Group("captcha")
 	{
-		r.POST("send", h.H(t.CaptchaSend, box.AccessAll))
+		r.POST("send", box.Handler(t.CaptchaSend, box.AccessAll))
 	}
 }
 
@@ -32,10 +30,10 @@ func (t *CaptchaServer) CaptchaSend(c *box.Context) {
 	fmt.Printf("captchaSend: %+v\n", param)
 
 	if param.Phone != "" {
-		err := t.service.Captcha.CaptchaSmsSend(c, param.Phone, c.Req.Passport)
+		err := t.service.Captcha.CaptchaSmsSend(param.Phone, c.Req.Passport)
 		c.JSON(nil, err)
 	} else {
-		err := t.service.Captcha.CaptchaEmailSend(c, param.Email, c.Req.Passport)
+		err := t.service.Captcha.CaptchaEmailSend(param.Email, c.Req.Passport)
 		c.JSON(nil, err)
 	}
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"shippo-server/utils"
-	"shippo-server/utils/box"
 	"shippo-server/utils/check"
 	"shippo-server/utils/ecode"
 )
@@ -15,7 +14,7 @@ func NewCaptchaService(s *Service) *CaptchaService {
 	return &CaptchaService{s}
 }
 
-func (s *CaptchaService) CaptchaSmsSend(c *box.Context, phone string, token string) (err error) {
+func (s *CaptchaService) CaptchaSmsSend(phone string, token string) (err error) {
 
 	if !check.CheckPhone(phone) {
 		err = ecode.ServerErr
@@ -38,7 +37,7 @@ func (s *CaptchaService) CaptchaSmsSend(c *box.Context, phone string, token stri
 	return
 }
 
-func (s *CaptchaService) CaptchaEmailSend(c *box.Context, email string, token string) (err error) {
+func (s *CaptchaService) CaptchaEmailSend(email string, token string) (err error) {
 
 	if !check.CheckQQEmail(email) {
 		err = ecode.ServerErr

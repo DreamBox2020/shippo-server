@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils"
-	"shippo-server/utils/box"
 	"shippo-server/utils/ecode"
 )
 
@@ -16,7 +15,7 @@ func NewTempService(s *Service) *TempService {
 	return &TempService{s}
 }
 
-func (s *TempService) Temp_trade_20220108_findByTradeId(c *box.Context, id string) (data map[string]interface{}, err error) {
+func (s *TempService) Temp_trade_20220108_findByTradeId(id string) (data map[string]interface{}, err error) {
 
 	// TODO 检查id是否正确
 
@@ -39,7 +38,7 @@ func (s *TempService) Temp_trade_20220108_findByTradeId(c *box.Context, id strin
 	return
 }
 
-func (s *TempService) Temp_trade_20220108_findByUserQQ(c *box.Context, qq string) (data []map[string]interface{}, err error) {
+func (s *TempService) Temp_trade_20220108_findByUserQQ(qq string) (data []map[string]interface{}, err error) {
 
 	// TODO 检查qq是否正确
 
@@ -66,7 +65,7 @@ func (s *TempService) Temp_trade_20220108_findByUserQQ(c *box.Context, qq string
 	return
 }
 
-func (s *TempService) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade_20220108_TradeAddParam) (data interface{}, err error) {
+func (s *TempService) Temp_trade_20220108_add(m model.Temp_trade_20220108_TradeAddParam) (data interface{}, err error) {
 
 	// TODO 校验所有参数
 
@@ -166,7 +165,7 @@ func (s *TempService) Temp_trade_20220108_add(c *box.Context, m model.Temp_trade
 	return
 }
 
-func (s *TempService) Temp_trade_20220108_findNoExist(c *box.Context, list []string) (data []string, err error) {
+func (s *TempService) Temp_trade_20220108_findNoExist(list []string) (data []string, err error) {
 	// 1. 查询出订单金额 >= 233；订单状态为（0正常）的订单
 	t1, err := s.dao.Temp.Temp_trade_20220108_findSuccess()
 

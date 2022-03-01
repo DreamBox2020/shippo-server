@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"shippo-server/internal/model"
-	"shippo-server/utils/box"
 	"shippo-server/utils/check"
 	"shippo-server/utils/ecode"
 	"time"
@@ -17,11 +16,11 @@ func NewPassportService(s *Service) *PassportService {
 	return &PassportService{s}
 }
 
-func (s *PassportService) PassportCreate(c *box.Context, passport string, ip string) (data model.PassportCreateResult, err error) {
+func (s *PassportService) PassportCreate(passport string, ip string) (data model.PassportCreateResult, err error) {
 	fmt.Printf("service->PassportCreate->args->passport:%+v\n", passport)
 	fmt.Printf("service->PassportCreate->args->ip:%+v\n", ip)
 
-	p, err := s.PassportGet(c, passport, ip)
+	p, err := s.PassportGet(passport, ip)
 
 	if passport != "" && err != nil {
 		return
@@ -56,7 +55,7 @@ func (s *PassportService) PassportCreate(c *box.Context, passport string, ip str
 	return
 }
 
-func (s *PassportService) PassportGet(c *box.Context, passport string, ip string) (p model.Passport, err error) {
+func (s *PassportService) PassportGet(passport string, ip string) (p model.Passport, err error) {
 	if !check.CheckPassport(passport) {
 		err = ecode.ServerErr
 		return

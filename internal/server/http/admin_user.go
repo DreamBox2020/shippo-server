@@ -15,11 +15,9 @@ func NewAdminUserServer(s *Server) *AdminUserServer {
 }
 
 func (t *AdminUserServer) InitRouter(Router *gin.RouterGroup) {
-	var h = box.NewBoxHandler(&t)
-
 	r := Router.Group("admin/user")
 	{
-		r.POST("create", h.H(t.UserCreateEmail, box.AccessLoginOK))
+		r.POST("create", box.Handler(t.UserCreateEmail, box.AccessLoginOK))
 	}
 }
 
@@ -30,6 +28,6 @@ func (t *AdminUserServer) UserCreateEmail(c *box.Context) {
 	c.ShouldBindJSON(&param)
 	fmt.Printf("userCreateEmail: %+v\n", param)
 
-	_, err := t.service.AdminUser.AdminUserCreateEmail(c, param.Email)
+	_, err := t.service.AdminUser.AdminUserCreateEmail(param.Email)
 	c.JSON(nil, err)
 }

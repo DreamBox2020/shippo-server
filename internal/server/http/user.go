@@ -16,10 +16,9 @@ func NewUserServer(s *Server) *UserServer {
 }
 
 func (t *UserServer) InitRouter(Router *gin.RouterGroup) {
-	var h = box.NewBoxHandler(&t)
 	r := Router.Group("user")
 	{
-		r.POST("login", h.H(t.UserLogin, box.AccessAll))
+		r.POST("login", box.Handler(t.UserLogin, box.AccessAll))
 	}
 }
 
@@ -28,6 +27,6 @@ func (t *UserServer) UserLogin(c *box.Context) {
 	c.ShouldBindJSON(&param)
 	fmt.Printf("userLogin: %+v\n", param)
 
-	data, err := t.service.User.UserLogin(c, param, c.Req.Passport)
+	data, err := t.service.User.UserLogin(param, c.Req.Passport)
 	c.JSON(data, err)
 }

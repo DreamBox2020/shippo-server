@@ -2,7 +2,6 @@ package service
 
 import (
 	"shippo-server/internal/model"
-	"shippo-server/utils/box"
 	"shippo-server/utils/check"
 	"shippo-server/utils/ecode"
 )
@@ -15,7 +14,7 @@ func NewUserService(s *Service) *UserService {
 	return &UserService{s}
 }
 
-func (s *UserService) UserLogin(c *box.Context, param model.UserLoginParam, token string) (data map[string]interface{}, err error) {
+func (s *UserService) UserLogin(param model.UserLoginParam, token string) (data map[string]interface{}, err error) {
 	var user model.User
 	var p model.Passport
 
@@ -107,5 +106,6 @@ func (s *UserService) UserLogin(c *box.Context, param model.UserLoginParam, toke
 		return
 	}
 
+	err = ecode.ServerErr
 	return
 }
