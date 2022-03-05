@@ -1,5 +1,3 @@
-/* 请确认以下SQL符合您的变更需求，务必确认无误后再提交执行 */
-
 CREATE TABLE `shippo_role` (
 	`id` bigint NOT NULL AUTO_INCREMENT,
 	`created_at` datetime NULL,
