@@ -19,6 +19,7 @@ type ServerGroup struct {
 	File      *FileServer
 	Captcha   *CaptchaServer
 	AdminUser *AdminUserServer
+	Role      *RoleServer
 }
 
 type Server struct {
@@ -46,6 +47,7 @@ func NewGroup(d *Server) *ServerGroup {
 		File:      NewFileServer(d),
 		Captcha:   NewCaptchaServer(d),
 		AdminUser: NewAdminUserServer(d),
+		Role:      NewRoleServer(d),
 	}
 }
 
@@ -57,6 +59,7 @@ func (s *Server) InitRouter(engine *gin.Engine) {
 	s.Group.File.InitRouter(router)
 	s.Group.Captcha.InitRouter(router)
 	s.Group.AdminUser.InitRouter(router)
+	s.Group.Role.InitRouter(router)
 }
 
 var serverConf configs.Server

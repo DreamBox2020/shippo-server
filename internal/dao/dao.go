@@ -16,6 +16,7 @@ type DaoGroup struct {
 	Passport *PassportDao
 	Captcha  *CaptchaDao
 	Album    *AlbumDao
+	Role     *RoleDao
 }
 
 type Dao struct {
@@ -76,5 +77,6 @@ func NewGroup(d *Dao) *DaoGroup {
 		Passport: NewPassportDao(d),
 		Captcha:  NewCaptchaDao(d),
 		Album:    NewAlbumDao(d),
+		Role:     NewRoleDao(d),
 	}
 }

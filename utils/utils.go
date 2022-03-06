@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -66,4 +67,21 @@ func IsExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func In(val interface{}, arr interface{}) bool {
+	arrValue := reflect.ValueOf(arr)
+	switch reflect.TypeOf(arr).Kind() {
+	case reflect.Slice, reflect.Array:
+		for i := 0; i < arrValue.Len(); i++ {
+			if arrValue.Index(i).Interface() == val {
+				return true
+			}
+		}
+	case reflect.Map:
+		if arrValue.MapIndex(reflect.ValueOf(val)).IsValid() {
+			return true
+		}
+	}
+	return false
 }
