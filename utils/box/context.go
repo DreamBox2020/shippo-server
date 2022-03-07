@@ -19,7 +19,7 @@ var (
 	handlers []HandlerFunc
 )
 
-type response struct {
+type Response struct {
 	Code     int         `json:"code"`
 	Message  string      `json:"message"`
 	Success  bool        `json:"success"`
@@ -29,7 +29,7 @@ type response struct {
 	Other    interface{} `json:"other"`
 }
 
-type request struct {
+type Request struct {
 	Passport string      `json:"passport"`
 	Session  string      `json:"session"`
 	Resource string      `json:"resource"`
@@ -40,7 +40,7 @@ type request struct {
 type Context struct {
 	index    int
 	Ctx      *gin.Context
-	Req      *request
+	Req      *Request
 	Passport *model.Passport
 	Access   int
 	IsEnd    bool
@@ -51,11 +51,11 @@ func Use(middleware ...HandlerFunc) {
 }
 
 func New(ctx *gin.Context, access int) (bctx *Context) {
-	var req *request
+	var req *Request
 	if ctx.GetHeader("Content-Type") == "application/json" {
 		ctx.ShouldBindJSON(&req)
 	} else {
-		req = &request{}
+		req = &Request{}
 		if passport, err := ctx.Cookie("__PASSPORT"); err == nil {
 			req.Passport = passport
 		}
@@ -87,7 +87,7 @@ func (context *Context) JSON(data interface{}, err error) {
 		fmt.Printf("box->context->JSON->data:%+v\n", data)
 		fmt.Printf("box->context->JSON->err2:%+v\n", err2)
 	}
-	context.Ctx.JSON(http.StatusOK, &response{
+	context.Ctx.JSON(http.StatusOK, &Response{
 		Code:     code.Code(),
 		Message:  code.Message(),
 		Success:  err == nil,
