@@ -26,7 +26,8 @@ func (t *PassportServer) InitRouter(Router *gin.RouterGroup) {
 }
 
 func (t *PassportServer) PassportCreate(c *box.Context) {
-	data, err := t.service.Passport.PassportCreate(c.Req.Passport, c.Ctx.ClientIP())
+
+	data, err := t.service.Passport.PassportCreate(*c.Passport)
 	if err == nil {
 		var domain string
 		if c.Ctx.ClientIP() != "127.0.0.1" {
@@ -40,7 +41,7 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 func (t *PassportServer) PassportGet(c *box.Context) {
 
 	if c.Req.Passport != "" {
-		p, err := t.service.Passport.PassportGet(c.Req.Passport, c.Ctx.ClientIP())
+		p, err := t.service.Passport.PassportGet(c.Req.Passport)
 		if err != nil {
 			fmt.Printf("http->passportGet:%+v\n", err)
 			c.JSON(nil, ecode.ServerErr)
@@ -50,7 +51,11 @@ func (t *PassportServer) PassportGet(c *box.Context) {
 		fmt.Printf("http->passportGet:%+v\n", p)
 		c.Passport = &p
 	} else {
-		c.Passport = &model.Passport{}
+		c.Passport = &model.Passport{
+			Ip:     c.Ctx.ClientIP(),
+			Ua:     c.Ctx.GetHeader("User-Agent"),
+			Client: 0,
+		}
 	}
 
 	// 如果需要登录权限，但是并没有登录。
@@ -77,9 +82,10 @@ func (t *PassportServer) Auth(c *box.Context) {
 			return
 		}
 		c.User = &u
+		fmt.Printf("http->Auth:%+v\n", u)
 
 		// 查询用户角色所拥有的访问规则
-		r, err := t.service.Policy.FindPermissionAccessByID(u.Role)
+		r, err := t.service.Policy.FindPermissionAccessByType(u.Role, "action")
 		if err != nil {
 			c.JSON(nil, ecode.ServerErr)
 			c.Abort()
@@ -93,7 +99,7 @@ func (t *PassportServer) Auth(c *box.Context) {
 		c.User = &model.User{}
 
 		// 查询系统基本访问策略所拥有的访问规则
-		r, err := t.service.Policy.FindPermissionAccessByPolicyName("SysBase")
+		r, err := t.service.Policy.FindPermissionAccessByPolicyNameAndType("SysBase", "action")
 		if err != nil {
 			c.JSON(nil, ecode.ServerErr)
 			c.Abort()
@@ -103,9 +109,18 @@ func (t *PassportServer) Auth(c *box.Context) {
 
 	}
 
+	fmt.Printf("http->Auth->list:%+v\n", list)
+
 	var tag = false
 	for _, access := range list {
-		tag = KeyMatch2(access.AccessRule, c.Ctx.Request.Method+"."+c.Ctx.Request.URL.Path)
+		key1 := strings.ToLower(c.Ctx.Request.Method + ":" + c.Ctx.Request.URL.Path)
+		key2 := strings.ToLower(access.AccessRule)
+		fmt.Printf("http->Auth->key1:%+v\n", key1)
+		fmt.Printf("http->Auth->key2:%+v\n", key2)
+
+		tag = KeyMatch2(key1, key2)
+		fmt.Printf("http->Auth->KeyMatch2:%+v\n", tag)
+
 		if tag {
 			break
 		}
