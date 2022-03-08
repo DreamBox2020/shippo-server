@@ -84,3 +84,11 @@ func (d *RoleDao) RoleFindPermissionAccess(id uint) (p []model.PermissionAccess,
 	err = d.db.Where("id IN (?)", subQuery2).Find(&p).Error
 	return
 }
+
+// 按照类型查询某个角色所拥有的访问规则
+func (d *RoleDao) RoleFindPermissionAccessByType(id uint, accessType string) (p []model.PermissionAccess, err error) {
+	subQuery1 := d.db.Model(&model.RoleAssociation{}).Select("policy_id").Where("role_id", id)
+	subQuery2 := d.db.Model(&model.PermissionAssociation{}).Select("access_id").Where("policy_id IN (?)", subQuery1)
+	err = d.db.Where("id IN (?)", subQuery2).Where("access_type", accessType).Find(&p).Error
+	return
+}

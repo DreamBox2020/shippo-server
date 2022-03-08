@@ -10,6 +10,11 @@ func NewUserDao(s *Dao) *UserDao {
 	return &UserDao{s}
 }
 
+func (d *UserDao) UserFindByUID(uid uint) (u model.User, err error) {
+	err = d.db.Where("id", uid).Limit(1).Find(&u).Error
+	return
+}
+
 func (d *UserDao) UserFindByPhone(phone string) (u model.User, err error) {
 	err = d.db.Where("phone", phone).Limit(1).Find(&u).Error
 	return

@@ -73,6 +73,7 @@ func (s *Server) Init() {
 	ecode.Register(ecode.Messages)
 	// 初始化用户信息的中间件
 	box.Use(s.Group.Passport.PassportGet)
+	box.Use(s.Group.Passport.Auth)
 
 	engine := gin.Default()
 	//engine.MaxMultipartMemory = 8 << 20 // 8 MiB

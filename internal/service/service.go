@@ -13,6 +13,7 @@ type ServiceGroup struct {
 	Captcha   *CaptchaService
 	AdminUser *AdminUserService
 	Role      *RoleService
+	Policy    *PolicyService
 }
 
 type Service struct {
@@ -42,5 +43,6 @@ func NewGroup(d *Service) *ServiceGroup {
 		Captcha:   NewCaptchaService(d),
 		AdminUser: NewAdminUserService(d),
 		Role:      NewRoleService(d),
+		Policy:    NewPolicyService(d),
 	}
 }

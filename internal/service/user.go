@@ -109,3 +109,18 @@ func (s *UserService) UserLogin(param model.UserLoginParam, token string) (data 
 	err = ecode.ServerErr
 	return
 }
+
+func (s *UserService) UserFindByUID(uid uint) (u model.User, err error) {
+	u, err = s.dao.User.UserFindByUID(uid)
+	return
+}
+
+func (s *UserService) UserFindByPhone(phone string) (u model.User, err error) {
+	u, err = s.dao.User.UserFindByPhone(phone)
+	return
+}
+
+func (s *UserService) UserFindByEmail(email string) (u model.User, err error) {
+	u, err = s.dao.User.UserFindByEmail(email)
+	return
+}
