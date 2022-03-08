@@ -85,7 +85,7 @@ func (t *PassportServer) Auth(c *box.Context) {
 		fmt.Printf("http->Auth:%+v\n", u)
 
 		// 查询用户角色所拥有的访问规则
-		r, err := t.service.Policy.FindPermissionAccessByType(u.Role, "action")
+		r, err := t.service.Role.RoleFindPermissionAccessByType(u.Role, "action")
 		if err != nil {
 			c.JSON(nil, ecode.ServerErr)
 			c.Abort()
