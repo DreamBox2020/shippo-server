@@ -34,7 +34,7 @@ func (d *TempDao) Temp_trade_20220108_findSuccess() (p []model.Temp_trade_202201
 	err = d.db.Table("(?) as u",
 		d.db.Model(&model.Temp_trade_20220108{}).
 			Select("User_qq as UserQq ,sum(trade_amount) as tradeAmount, sum(amount_status) as amountStatus").
-			Group("user_qq").Find(&model.Temp_trade_20220108_FindSuccessResult{})).
+			Group("user_qq")).
 		Where("tradeAmount>=233 and amountStatus=0").Find(&p).Error
 	return
 }
