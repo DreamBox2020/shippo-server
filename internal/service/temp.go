@@ -116,8 +116,8 @@ func (s *TempService) Temp_trade_20220108_add(m model.Temp_trade_20220108_TradeA
 		return
 	}
 
-	// 6. 如果金额为233，则不处理第二个订单
-	if t1.TradeAmount == 233 {
+	// 6. 如果金额大于等于233，则不处理第二个订单
+	if t1.TradeAmount >= 233 {
 		return
 	}
 
