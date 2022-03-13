@@ -14,6 +14,7 @@ type PermissionAccess struct {
 }
 
 type PermissionAssociation struct {
+	Model
 	PolicyId int
 	AccessId int
 }

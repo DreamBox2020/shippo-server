@@ -56,6 +56,7 @@ func (t *FileServer) FileUpload(c *box.Context) {
 	fmt.Printf("FileUpload->Filename:%+v\n", file.Filename)
 
 	f, _ := file.Open()
+	defer f.Close()
 	buffer := make([]byte, 512)
 	_, err := f.Read(buffer)
 	if err != nil {
