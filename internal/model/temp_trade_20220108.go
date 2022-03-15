@@ -21,7 +21,5 @@ type Temp_trade_20220108_TradeAddParam struct {
 }
 
 type Temp_trade_20220108_FindSuccessResult struct {
-	UserQq       string
-	TradeAmount  uint
-	AmountStatus uint
+	UserQq string
 }
