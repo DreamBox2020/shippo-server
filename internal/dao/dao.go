@@ -11,13 +11,14 @@ import (
 )
 
 type DaoGroup struct {
-	User     *UserDao
-	Temp     *TempDao
-	Passport *PassportDao
-	Captcha  *CaptchaDao
-	Album    *AlbumDao
-	Role     *RoleDao
-	Policy   *PolicyDao
+	User             *UserDao
+	Temp             *TempDao
+	Passport         *PassportDao
+	Captcha          *CaptchaDao
+	Album            *AlbumDao
+	Role             *RoleDao
+	PermissionAccess *PermissionAccessDao
+	PermissionPolicy *PermissionPolicyDao
 }
 
 type Dao struct {
@@ -73,12 +74,13 @@ func New() *Dao {
 
 func NewGroup(d *Dao) *DaoGroup {
 	return &DaoGroup{
-		User:     NewUserDao(d),
-		Temp:     NewTempDao(d),
-		Passport: NewPassportDao(d),
-		Captcha:  NewCaptchaDao(d),
-		Album:    NewAlbumDao(d),
-		Role:     NewRoleDao(d),
-		Policy:   NewPolicyDao(d),
+		User:             NewUserDao(d),
+		Temp:             NewTempDao(d),
+		Passport:         NewPassportDao(d),
+		Captcha:          NewCaptchaDao(d),
+		Album:            NewAlbumDao(d),
+		Role:             NewRoleDao(d),
+		PermissionAccess: NewPermissionAccessDao(d),
+		PermissionPolicy: NewPermissionPolicyDao(d),
 	}
 }
