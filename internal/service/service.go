@@ -6,14 +6,15 @@ import (
 )
 
 type ServiceGroup struct {
-	User      *UserService
-	Wx        *WxService
-	Temp      *TempService
-	Passport  *PassportService
-	Captcha   *CaptchaService
-	AdminUser *AdminUserService
-	Role      *RoleService
-	Policy    *PolicyService
+	User             *UserService
+	Wx               *WxService
+	Temp             *TempService
+	Passport         *PassportService
+	Captcha          *CaptchaService
+	AdminUser        *AdminUserService
+	Role             *RoleService
+	PermissionAccess *PermissionAccessService
+	PermissionPolicy *PermissionPolicyService
 }
 
 type Service struct {
@@ -36,13 +37,14 @@ func New() *Service {
 
 func NewGroup(d *Service) *ServiceGroup {
 	return &ServiceGroup{
-		User:      NewUserService(d),
-		Wx:        NewWxService(d),
-		Temp:      NewTempService(d),
-		Passport:  NewPassportService(d),
-		Captcha:   NewCaptchaService(d),
-		AdminUser: NewAdminUserService(d),
-		Role:      NewRoleService(d),
-		Policy:    NewPolicyService(d),
+		User:             NewUserService(d),
+		Wx:               NewWxService(d),
+		Temp:             NewTempService(d),
+		Passport:         NewPassportService(d),
+		Captcha:          NewCaptchaService(d),
+		AdminUser:        NewAdminUserService(d),
+		Role:             NewRoleService(d),
+		PermissionAccess: NewPermissionAccessService(d),
+		PermissionPolicy: NewPermissionPolicyService(d),
 	}
 }
