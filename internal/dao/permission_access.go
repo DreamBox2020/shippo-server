@@ -27,7 +27,7 @@ func (t *PermissionAccessDao) PermissionAccessUpdate(m model.PermissionAccess) (
 }
 
 func (t *PermissionAccessDao) PermissionAccessFindAll() (list []*model.PermissionAccessCount, err error) {
-	subQuery := t.db.Model(&model.PermissionAssociation{}).Select("access_id", "COUNT(*) AS PermissionAssociationCount").Group("access_id")
+	subQuery := t.db.Model(&model.PermissionAssociation{}).Select("access_id", "COUNT(*) AS permissionAssociationCount").Group("access_id")
 	t.db.Model(&model.PermissionAccess{}).Select("*").Joins("Left JOIN (?) temp ON temp.access_id = id", subQuery).Find(&list)
 	return
 }

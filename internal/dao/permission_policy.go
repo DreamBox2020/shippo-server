@@ -85,7 +85,7 @@ func (t *PermissionPolicyDao) PermissionPolicyUpdate(m model.PermissionPolicy) (
 
 // 查询全部策略
 func (t *PermissionPolicyDao) PermissionPolicyFindAll() (list []model.PermissionPolicyCount, err error) {
-	subQuery := t.db.Model(&model.RoleAssociation{}).Select("policy_id", "COUNT(*) AS RoleAssociationCount").Group("policy_id")
+	subQuery := t.db.Model(&model.RoleAssociation{}).Select("policy_id", "COUNT(*) AS roleAssociationCount").Group("policy_id")
 	err = t.db.Model(&model.PermissionPolicy{}).Select("*").Joins("Left JOIN (?) temp ON temp.policy_id = id", subQuery).Find(&list).Error
 	return
 }

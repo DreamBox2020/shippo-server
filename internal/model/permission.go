@@ -21,10 +21,10 @@ type PermissionAssociation struct {
 
 type PermissionPolicyCount struct {
 	PermissionPolicy
-	RoleAssociationCount int64 `json:"roleAssociationCount"`
+	RoleAssociationCount int64 `json:"roleAssociationCount" gorm:"column:roleAssociationCount"`
 }
 
 type PermissionAccessCount struct {
 	PermissionAccess
-	PermissionAssociationCount int64 `json:"permissionAssociationCount"`
+	PermissionAssociationCount int64 `json:"permissionAssociationCount" gorm:"column:permissionAssociationCount"`
 }
