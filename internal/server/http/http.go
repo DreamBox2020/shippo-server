@@ -13,13 +13,15 @@ import (
 )
 
 type ServerGroup struct {
-	User      *UserServer
-	Temp      *TempServer
-	Passport  *PassportServer
-	File      *FileServer
-	Captcha   *CaptchaServer
-	AdminUser *AdminUserServer
-	Role      *RoleServer
+	User             *UserServer
+	Temp             *TempServer
+	Passport         *PassportServer
+	File             *FileServer
+	Captcha          *CaptchaServer
+	AdminUser        *AdminUserServer
+	Role             *RoleServer
+	PermissionAccess *PermissionAccessServer
+	PermissionPolicy *PermissionPolicyServer
 }
 
 type Server struct {
@@ -41,13 +43,15 @@ func New() *Server {
 
 func NewGroup(d *Server) *ServerGroup {
 	return &ServerGroup{
-		User:      NewUserServer(d),
-		Temp:      NewTempServer(d),
-		Passport:  NewPassportServer(d),
-		File:      NewFileServer(d),
-		Captcha:   NewCaptchaServer(d),
-		AdminUser: NewAdminUserServer(d),
-		Role:      NewRoleServer(d),
+		User:             NewUserServer(d),
+		Temp:             NewTempServer(d),
+		Passport:         NewPassportServer(d),
+		File:             NewFileServer(d),
+		Captcha:          NewCaptchaServer(d),
+		AdminUser:        NewAdminUserServer(d),
+		Role:             NewRoleServer(d),
+		PermissionAccess: NewPermissionAccessServer(d),
+		PermissionPolicy: NewPermissionPolicyServer(d),
 	}
 }
 
@@ -60,6 +64,8 @@ func (s *Server) InitRouter(engine *gin.Engine) {
 	s.Group.Captcha.InitRouter(router)
 	s.Group.AdminUser.InitRouter(router)
 	s.Group.Role.InitRouter(router)
+	s.Group.PermissionAccess.InitRouter(router)
+	s.Group.PermissionPolicy.InitRouter(router)
 }
 
 var serverConf configs.Server

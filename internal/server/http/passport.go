@@ -99,7 +99,7 @@ func (t *PassportServer) Auth(c *box.Context) {
 		c.User = &model.User{}
 
 		// 查询系统基本访问策略所拥有的访问规则
-		r, err := t.service.Policy.FindPermissionAccessByPolicyNameAndType("SysBase", "action")
+		r, err := t.service.PermissionPolicy.FindPermissionAccessByPolicyNameAndType("SysBase", "action")
 		if err != nil {
 			c.JSON(nil, ecode.ServerErr)
 			c.Abort()
