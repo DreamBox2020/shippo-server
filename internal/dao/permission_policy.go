@@ -92,7 +92,7 @@ func (t *PermissionPolicyDao) PermissionPolicyFindAll() (list []model.Permission
 
 // 根据id查询某个策略
 func (t *PermissionPolicyDao) PermissionPolicyFind(id uint) (p model.PermissionPolicyCount, err error) {
-	err = t.db.Model(&model.PermissionPolicy{}).First(&p, id).Error
+	err = t.db.Model(&model.PermissionPolicy{}).Where("id", id).Limit(1).Scan(&p).Error
 	if err != nil {
 		return
 	}

@@ -12,3 +12,9 @@ func TestPermissionPolicyDao_PermissionPolicyFindAll(t *testing.T) {
 		fmt.Printf("PermissionPolicyFindAll:%+v\n", v)
 	}
 }
+
+func TestPermissionPolicyDao_PermissionPolicyFind(t *testing.T) {
+	d := New()
+	res, _ := d.Group.PermissionPolicy.PermissionPolicyFind(1)
+	fmt.Printf("PermissionPolicyFind:%+v\n", res)
+}

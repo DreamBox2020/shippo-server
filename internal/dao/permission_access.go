@@ -33,7 +33,7 @@ func (t *PermissionAccessDao) PermissionAccessFindAll() (list []*model.Permissio
 }
 
 func (t *PermissionAccessDao) PermissionAccessFind(id uint) (p model.PermissionAccessCount, err error) {
-	err = t.db.Model(&model.PermissionAccess{}).First(&p, id).Error
+	err = t.db.Model(&model.PermissionAccess{}).Where("id", id).Limit(1).Scan(&p).Error
 	if err != nil {
 		return
 	}
