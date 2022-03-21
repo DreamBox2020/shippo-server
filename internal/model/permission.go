@@ -21,10 +21,10 @@ type PermissionAssociation struct {
 
 type PermissionPolicyCount struct {
 	PermissionPolicy
-	PermissionPolicyCount int64 `json:"permissionAccessCount"`
+	RoleAssociationCount int64 `json:"roleAssociationCount"`
 }
 
 type PermissionAccessCount struct {
 	PermissionAccess
-	PermissionAccessCount int64 `json:"permissionAccessCount"`
+	PermissionAssociationCount int64 `json:"permissionAssociationCount"`
 }
