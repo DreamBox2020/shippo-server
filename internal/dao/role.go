@@ -22,7 +22,7 @@ func (d *RoleDao) RoleCreate(name string, Remark string) (r model.Role, err erro
 
 // 删除角色
 func (d *RoleDao) RoleDelete(id uint) (err error) {
-	err = d.db.Where("id", id).Delete(model.Role{}).Error
+	err = d.db.Where("id", id).Delete(&model.Role{}).Error
 	return
 }
 
