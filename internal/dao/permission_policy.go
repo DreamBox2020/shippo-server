@@ -83,6 +83,13 @@ func (t *PermissionPolicyDao) PermissionPolicyUpdate(m model.PermissionPolicy) (
 	return
 }
 
+func (t *PermissionPolicyDao) PermissionPolicyFindAllExtStatus(id uint) (list []model.PermissionPolicyStatus, err error) {
+	subQuery := t.db.Model(&model.RoleAssociation{}).Where("role_id", id)
+	err = t.db.Model(&model.PermissionPolicy{}).Select("shippo_permission_policy.*", "IF (temp.role_id IS NOT NULL, 1, 0) AS status").
+		Joins("Left JOIN (?) temp ON temp.policy_id = shippo_permission_policy.id", subQuery).Find(&list).Error
+	return
+}
+
 // 查询全部策略
 func (t *PermissionPolicyDao) PermissionPolicyFindAll() (list []model.PermissionPolicyCount, err error) {
 	subQuery := t.db.Model(&model.RoleAssociation{}).Select("policy_id", "COUNT(*) AS roleAssociationCount").Group("policy_id")
