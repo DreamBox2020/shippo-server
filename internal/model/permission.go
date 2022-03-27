@@ -19,6 +19,11 @@ type PermissionAssociation struct {
 	AccessId int
 }
 
+type PermissionPolicyStatus struct {
+	PermissionPolicy
+	Status bool `json:"status" gorm:"column:status"`
+}
+
 type PermissionPolicyCount struct {
 	PermissionPolicy
 	RoleAssociationCount int64 `json:"roleAssociationCount" gorm:"column:roleAssociationCount"`
