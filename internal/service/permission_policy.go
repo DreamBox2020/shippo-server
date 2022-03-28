@@ -65,6 +65,11 @@ func (t *PermissionPolicyService) PermissionPolicyUpdate(p model.PermissionPolic
 	return
 }
 
+func (t *PermissionPolicyService) PermissionPolicyFindAllExtStatus(id uint) (p []model.PermissionPolicyStatus, err error) {
+	p, err = t.dao.PermissionPolicy.PermissionPolicyFindAllExtStatus(id)
+	return
+}
+
 func (t *PermissionPolicyService) PermissionPolicyFindAll() (p []model.PermissionPolicyCount, err error) {
 	p, err = t.dao.PermissionPolicy.PermissionPolicyFindAll()
 	return
