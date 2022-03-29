@@ -20,6 +20,7 @@ func (t *PermissionPolicyServer) InitRouter(Router *gin.RouterGroup) {
 		r.POST("create", box.Handler(t.PermissionPolicyCreate, box.AccessAll))
 		r.POST("del", box.Handler(t.PermissionPolicyDel, box.AccessAll))
 		r.POST("update", box.Handler(t.PermissionPolicyUpdate, box.AccessAll))
+		r.POST("findAllExtStatus", box.Handler(t.PermissionPolicyFindAllExtStatus, box.AccessAll))
 		r.POST("findAll", box.Handler(t.PermissionPolicyFindAll, box.AccessAll))
 		r.POST("find", box.Handler(t.PermissionPolicyFind, box.AccessAll))
 	}
@@ -44,6 +45,13 @@ func (t *PermissionPolicyServer) PermissionPolicyUpdate(c *box.Context) {
 	c.ShouldBindJSON(&p)
 	err := t.service.PermissionPolicy.PermissionPolicyUpdate(p)
 	c.JSON(nil, err)
+}
+
+func (t *PermissionPolicyServer) PermissionPolicyFindAllExtStatus(c *box.Context) {
+	var p model.PermissionPolicy
+	c.ShouldBindJSON(&p)
+	data, err := t.service.PermissionPolicy.PermissionPolicyFindAllExtStatus(p.ID)
+	c.JSON(data, err)
 }
 
 func (t *PermissionPolicyServer) PermissionPolicyFindAll(c *box.Context) {
