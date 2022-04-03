@@ -28,7 +28,7 @@ func (d *PassportDao) PassportCreate(p model.Passport) (model.Passport, error) {
 
 // 根据uid删除该用户全部客户端的通行证
 func (d *PassportDao) PassportDelete(userId uint, client uint) error {
-	return d.db.Where("user_id", userId).Where("client", client).Delete(model.Passport{}).Error
+	return d.db.Where("user_id", userId).Where("client", client).Delete(&model.Passport{}).Error
 }
 
 // 根据token更新通行证信息

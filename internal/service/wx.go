@@ -23,7 +23,8 @@ func (s *WxService) WXRefreshToken() (err error) {
 	var conf configs.Common
 	utils.ReadConfigFromFile("configs/common.json", &conf)
 
-	resp, _ := http.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + conf.AppID + "&secret=" + conf.AppSecret)
+	resp, _ := http.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" +
+		conf.AppID + "&secret=" + conf.AppSecret)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 

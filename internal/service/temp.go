@@ -65,7 +65,8 @@ func (s *TempService) Temp_trade_20220108_findByUserQQ(qq string) (data []map[st
 	return
 }
 
-func (s *TempService) Temp_trade_20220108_add(m model.Temp_trade_20220108_TradeAddParam) (data interface{}, err error) {
+func (s *TempService) Temp_trade_20220108_add(m model.Temp_trade_20220108_TradeAddParam) (
+	data interface{}, err error) {
 
 	// TODO 校验所有参数
 

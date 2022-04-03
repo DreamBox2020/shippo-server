@@ -14,7 +14,8 @@ func NewUserService(s *Service) *UserService {
 	return &UserService{s}
 }
 
-func (s *UserService) UserLogin(param model.UserLoginParam, token string) (data map[string]interface{}, err error) {
+func (s *UserService) UserLogin(param model.UserLoginParam, token string) (
+	data map[string]interface{}, err error) {
 	var user model.User
 	var p model.Passport
 

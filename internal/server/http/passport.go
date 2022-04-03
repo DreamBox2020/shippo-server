@@ -33,7 +33,8 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 		if c.Ctx.ClientIP() != "127.0.0.1" {
 			domain = serverConf.CookieDomain
 		}
-		c.Ctx.SetCookie("__PASSPORT", data.Passport, 60*60*24*30, "/", domain, false, true)
+		c.Ctx.SetCookie("__PASSPORT", data.Passport, 60*60*24*30,
+			"/", domain, false, true)
 	}
 	c.JSON(data, err)
 }
@@ -99,7 +100,8 @@ func (t *PassportServer) Auth(c *box.Context) {
 		c.User = &model.User{}
 
 		// 查询系统基本访问策略所拥有的访问规则
-		r, err := t.service.PermissionPolicy.FindPermissionAccessByPolicyNameAndType("SysBase", "action")
+		r, err := t.service.PermissionPolicy.FindPermissionAccessByPolicyNameAndType(
+			"SysBase", "action")
 		if err != nil {
 			c.JSON(nil, ecode.ServerErr)
 			c.Abort()

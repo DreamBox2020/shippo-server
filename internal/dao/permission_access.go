@@ -22,13 +22,25 @@ func (t *PermissionAccessDao) PermissionAccessDel(id uint) (err error) {
 }
 
 func (t *PermissionAccessDao) PermissionAccessUpdate(m model.PermissionAccess) (err error) {
-	err = t.db.Model(&model.PermissionAccess{}).Where("id", m.ID).Select("access_rule", "remark", "access_type", "updated_at").Updates(&m).Error
+	err = t.db.Model(&model.PermissionAccess{}).Where("id", m.ID).
+		Select("access_rule", "remark", "access_type", "updated_at").Updates(&m).Error
 	return
 }
 
-func (t *PermissionAccessDao) PermissionAccessFindAll() (list []*model.PermissionAccessCount, err error) {
-	subQuery := t.db.Model(&model.PermissionAssociation{}).Select("access_id", "COUNT(*) AS permissionAssociationCount").Group("access_id")
-	t.db.Model(&model.PermissionAccess{}).Select("*").Joins("Left JOIN (?) temp ON temp.access_id = id", subQuery).Find(&list)
+func (t *PermissionAccessDao) PermissionAccessFindAllExtStatus(id uint) (
+	list []model.PermissionAccessStatus, err error) {
+	subQuery := t.db.Model(&model.PermissionAssociation{}).Where("policy_id", id)
+	err = t.db.Model(&model.PermissionAccess{}).Select("shippo_permission_access.*",
+		"IF (temp.policy_id IS NOT NULL, 1, 0) AS status").
+		Joins("Left JOIN (?) temp ON temp.access_id = shippo_permission_access.id", subQuery).Find(&list).Error
+	return
+}
+
+func (t *PermissionAccessDao) PermissionAccessFindAll() (list []model.PermissionAccessCount, err error) {
+	subQuery := t.db.Model(&model.PermissionAssociation{}).Select("access_id",
+		"COUNT(*) AS permissionAssociationCount").Group("access_id")
+	t.db.Model(&model.PermissionAccess{}).Select("*").
+		Joins("Left JOIN (?) temp ON temp.access_id = id", subQuery).Find(&list)
 	return
 }
 
@@ -37,6 +49,7 @@ func (t *PermissionAccessDao) PermissionAccessFind(id uint) (p model.PermissionA
 	if err != nil {
 		return
 	}
-	err = t.db.Model(&model.PermissionAssociation{}).Where("access_id", id).Count(&p.PermissionAssociationCount).Error
+	err = t.db.Model(&model.PermissionAssociation{}).Where("access_id", id).
+		Count(&p.PermissionAssociationCount).Error
 	return
 }

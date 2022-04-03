@@ -81,7 +81,8 @@ func (t *RoleService) RoleFindPermissionAccess(id uint) (p []model.PermissionAcc
 }
 
 // 按照类型查询某个角色所拥有的访问规则
-func (t *RoleService) RoleFindPermissionAccessByType(id uint, accessType string) (p []model.PermissionAccess, err error) {
+func (t *RoleService) RoleFindPermissionAccessByType(id uint, accessType string) (
+	p []model.PermissionAccess, err error) {
 	p, err = t.dao.Role.RoleFindPermissionAccessByType(id, accessType)
 	return
 }

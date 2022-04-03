@@ -25,12 +25,19 @@ func (t *PermissionAccessService) PermissionAccessUpdate(p model.PermissionAcces
 	return
 }
 
-func (t *PermissionAccessService) PermissionAccessFindAll() (p []*model.PermissionAccessCount, err error) {
+func (t *PermissionAccessService) PermissionAccessFindAllExtStatus(id uint) (
+	p []model.PermissionAccessStatus, err error) {
+	p, err = t.dao.PermissionAccess.PermissionAccessFindAllExtStatus(id)
+	return
+}
+
+func (t *PermissionAccessService) PermissionAccessFindAll() (p []model.PermissionAccessCount, err error) {
 	p, err = t.dao.PermissionAccess.PermissionAccessFindAll()
 	return
 }
 
-func (t *PermissionAccessService) PermissionAccessFind(p model.PermissionAccess) (list model.PermissionAccessCount, err error) {
+func (t *PermissionAccessService) PermissionAccessFind(p model.PermissionAccess) (
+	list model.PermissionAccessCount, err error) {
 	list, err = t.dao.PermissionAccess.PermissionAccessFind(p.ID)
 	return
 }

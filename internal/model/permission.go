@@ -15,12 +15,17 @@ type PermissionAccess struct {
 
 type PermissionAssociation struct {
 	Model
-	PolicyId int
-	AccessId int
+	PolicyId uint
+	AccessId uint
 }
 
 type PermissionPolicyStatus struct {
 	PermissionPolicy
+	Status bool `json:"status" gorm:"column:status"`
+}
+
+type PermissionAccessStatus struct {
+	PermissionAccess
 	Status bool `json:"status" gorm:"column:status"`
 }
 

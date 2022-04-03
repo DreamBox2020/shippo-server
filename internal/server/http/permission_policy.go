@@ -20,6 +20,7 @@ func (t *PermissionPolicyServer) InitRouter(Router *gin.RouterGroup) {
 		r.POST("create", box.Handler(t.PermissionPolicyCreate, box.AccessAll))
 		r.POST("del", box.Handler(t.PermissionPolicyDel, box.AccessAll))
 		r.POST("update", box.Handler(t.PermissionPolicyUpdate, box.AccessAll))
+		r.POST("updateAccess", box.Handler(t.PermissionAssociationUpdate, box.AccessAll))
 		r.POST("findAllExtStatus", box.Handler(t.PermissionPolicyFindAllExtStatus, box.AccessAll))
 		r.POST("findAll", box.Handler(t.PermissionPolicyFindAll, box.AccessAll))
 		r.POST("find", box.Handler(t.PermissionPolicyFind, box.AccessAll))
@@ -64,4 +65,15 @@ func (t *PermissionPolicyServer) PermissionPolicyFind(c *box.Context) {
 	c.ShouldBindJSON(&p)
 	data, err := t.service.PermissionPolicy.PermissionPolicyFind(p)
 	c.JSON(data, err)
+}
+
+// 更新权限策略所拥有的访问规则
+func (t *PermissionPolicyServer) PermissionAssociationUpdate(c *box.Context) {
+	var param = new(struct {
+		Id     uint   `json:"id"`
+		Access []uint `json:"access"`
+	})
+	c.ShouldBindJSON(&param)
+	err := t.service.PermissionPolicy.PermissionAssociationUpdate(param.Id, param.Access)
+	c.JSON(nil, err)
 }

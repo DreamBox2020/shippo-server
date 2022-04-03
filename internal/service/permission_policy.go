@@ -1,6 +1,9 @@
 package service
 
-import "shippo-server/internal/model"
+import (
+	"shippo-server/internal/model"
+	"shippo-server/utils"
+)
 
 type PermissionPolicyService struct {
 	*Service
@@ -65,7 +68,8 @@ func (t *PermissionPolicyService) PermissionPolicyUpdate(p model.PermissionPolic
 	return
 }
 
-func (t *PermissionPolicyService) PermissionPolicyFindAllExtStatus(id uint) (p []model.PermissionPolicyStatus, err error) {
+func (t *PermissionPolicyService) PermissionPolicyFindAllExtStatus(id uint) (
+	p []model.PermissionPolicyStatus, err error) {
 	p, err = t.dao.PermissionPolicy.PermissionPolicyFindAllExtStatus(id)
 	return
 }
@@ -75,7 +79,39 @@ func (t *PermissionPolicyService) PermissionPolicyFindAll() (p []model.Permissio
 	return
 }
 
-func (t *PermissionPolicyService) PermissionPolicyFind(p model.PermissionPolicy) (list model.PermissionPolicyCount, err error) {
+func (t *PermissionPolicyService) PermissionPolicyFind(p model.PermissionPolicy) (
+	list model.PermissionPolicyCount, err error) {
 	list, err = t.dao.PermissionPolicy.PermissionPolicyFind(p.ID)
+	return
+}
+
+// 更新权限关联关系
+func (t *PermissionPolicyService) PermissionAssociationUpdate(policyId uint, access []uint) (err error) {
+
+	list, err := t.dao.PermissionPolicy.PermissionAssociationFindPolicyIdList(policyId)
+	if err != nil {
+		return
+	}
+
+	// 如果 旧的列表不包含新的id，就创建
+	for _, newAccessId := range access {
+		if !utils.In(newAccessId, list) {
+			_, err = t.dao.PermissionPolicy.PermissionAssociationCreate(policyId, newAccessId)
+			if err != nil {
+				return
+			}
+		}
+	}
+
+	// 如果 新的列表不包含旧的id，就删除
+	for _, oldAccessId := range list {
+		if !utils.In(oldAccessId, access) {
+			err = t.dao.PermissionPolicy.PermissionAssociationDel(policyId, oldAccessId)
+			if err != nil {
+				return
+			}
+		}
+	}
+
 	return
 }
