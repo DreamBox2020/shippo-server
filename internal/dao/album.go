@@ -54,6 +54,6 @@ func (d *AlbumDao) AlbumDelete(id uint) (err error) {
 
 // 更新一个相簿的数据
 func (d *AlbumDao) AlbumUpdate(p model.Album) (err error) {
-	err = d.db.Model(&model.Album{}).Select("name", "intro").Updates(&p).Error
+	err = d.db.Model(&model.Album{}).Where("id", p.ID).Select("name", "intro").Updates(&p).Error
 	return
 }
