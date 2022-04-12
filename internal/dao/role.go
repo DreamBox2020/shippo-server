@@ -28,7 +28,8 @@ func (t *RoleDao) RoleDelete(id uint) (err error) {
 
 // 修改角色名和备注
 func (t *RoleDao) RoleUpdate(param model.Role) (err error) {
-	err = t.db.Model(&model.Role{}).Select("role_name", "remark", "updated_at").Updates(&param).Error
+	err = t.db.Model(&model.Role{}).Where("id", param.ID).
+		Select("role_name", "remark", "updated_at").Updates(&param).Error
 	return
 }
 
