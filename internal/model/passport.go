@@ -1,9 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type Passport struct {
-	gorm.Model
+	Model
 	Token  string
 	UserId uint
 	Ip     string
@@ -16,6 +14,7 @@ func (t *Passport) IsLogin() bool {
 }
 
 type PassportCreateResult struct {
-	Passport string `json:"passport"`
-	Uid      uint   `json:"uid"`
+	Passport string             `json:"passport"`
+	Uid      uint               `json:"uid"`
+	Access   []PermissionAccess `json:"access"`
 }

@@ -1,9 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type Temp_trade_20220108 struct {
-	gorm.Model
+	Model
 	TradeId      string
 	TradeType    uint
 	TradeAmount  uint

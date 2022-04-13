@@ -1,9 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type Picture struct {
-	gorm.Model
+	Model
 	Path string
 	Uri  string
 	Name string

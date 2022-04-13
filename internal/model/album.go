@@ -1,9 +1,7 @@
 package model
 
-import "gorm.io/gorm"
-
 type Album struct {
-	gorm.Model
+	Model
 	Name   string
 	Intro  string
 	UserId uint
