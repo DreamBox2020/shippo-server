@@ -37,6 +37,14 @@ func QQMasking(s string) string {
 	return s[:1] + "******" + s[len(s)-2:]
 }
 
+func QQEmailMasking(s string) string {
+	// xxxxx@qq.com
+	if len(s) < 12 {
+		return s
+	}
+	return s[:1] + "******" + s[len(s)-9:]
+}
+
 func FormatTime(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
 }
