@@ -3,12 +3,13 @@ package dao
 import (
 	"fmt"
 	"math/rand"
+	"shippo-server/internal/model"
 	"strconv"
 	"testing"
 	"time"
 )
 
-func TestDaoUserFindByPhone(t *testing.T) {
+func TestUserDao_UserFindByPhone(t *testing.T) {
 	d := New()
 
 	rand.Seed(time.Now().UnixNano())
@@ -28,7 +29,7 @@ func TestDaoUserFindByPhone(t *testing.T) {
 
 }
 
-func TestDaoUserCreate(t *testing.T) {
+func TestUserDao_UserCreate(t *testing.T) {
 	d := New()
 
 	rand.Seed(time.Now().UnixNano())
@@ -40,4 +41,22 @@ func TestDaoUserCreate(t *testing.T) {
 	}
 
 	fmt.Printf("TestDaoUserCreate:%+v\n", u)
+}
+
+func TestUserDao_FindAll(t *testing.T) {
+	d := New()
+	res, err := d.Group.User.FindAll(model.UserFindAllReq{
+		Pagination: model.Pagination{
+			Current:  2,
+			PageSize: 100,
+		},
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("TestUserDao_FindAll:%+v\n", res.Total)
+	for _, v := range res.Items {
+		fmt.Printf("%+v\n", v)
+	}
 }
