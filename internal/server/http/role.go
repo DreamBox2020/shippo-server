@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
@@ -47,6 +48,8 @@ func (t *RoleServer) RoleDel(c *box.Context) {
 func (t *RoleServer) RoleUpdate(c *box.Context) {
 	var param model.Role
 	c.ShouldBindJSON(&param)
+	fmt.Printf("RoleUpdate: %+v\n", param)
+
 	err := t.service.Role.RoleUpdate(param)
 	c.JSON(nil, err)
 }

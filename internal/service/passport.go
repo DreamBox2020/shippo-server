@@ -43,6 +43,31 @@ func (s *PassportService) PassportCreate(p model.Passport) (data model.PassportC
 	data.Passport = p.Token
 	data.Uid = p.UserId
 
+	var access []model.PermissionAccess
+	var user model.User
+
+	if p.UserId == 0 {
+		// 如果当前没有登录，查询基础权限信息
+		access, err = s.Group.PermissionPolicy.FindPermissionAccessByPolicyName("SysBase")
+		if err != nil {
+			return
+		}
+	} else {
+		// 如果当前登录，就获取用户信息
+		user, err = s.Group.User.UserFindByUID(p.UserId)
+		if err != nil {
+			return
+		}
+
+		// 根据用户角色查询对应权限信息
+		access, err = s.Group.Role.RoleFindPermissionAccess(user.Role)
+		if err != nil {
+			return
+		}
+	}
+
+	data.Access = access
+
 	return
 }
 

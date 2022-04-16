@@ -2,6 +2,7 @@ package service
 
 import (
 	"shippo-server/internal/model"
+	"shippo-server/utils"
 	"shippo-server/utils/check"
 	"shippo-server/utils/ecode"
 )
@@ -56,59 +57,66 @@ func (s *UserService) UserLogin(param model.UserLoginParam, token string) (
 		return
 	}
 
-	// 如果短信验证成功
-	if captcha.Target != "" {
-		// 过期验证码
-		err = s.dao.Captcha.CaptchaDel(captcha.Target)
-		if err != nil {
-			return
-		}
-
-		// 如果是手机号登陆
-		if param.Phone != "" {
-			user, err = s.dao.User.UserFindByPhone(captcha.Target)
-			if err != nil {
-				return
-			}
-
-			// 如果没有注册
-			if user.Phone == "" {
-				user, err = s.dao.User.UserCreate(captcha.Target)
-				if err != nil {
-					return
-				}
-			}
-		} else {
-
-			user, err = s.dao.User.UserFindByEmail(captcha.Target)
-			if err != nil {
-				return
-			}
-
-			// 如果邮箱登陆，没有注册，就报错
-			if user.Email == "" {
-				err = ecode.ServerErr
-				return
-			}
-		}
-
-		// 更新用户信息
-		p, err = s.dao.Passport.PassportUpdate(token, model.Passport{
-			UserId: user.ID,
-		})
-		if err != nil {
-			return
-		}
-
-		data = make(map[string]interface{})
-		data["passport"] = p.Token
-		data["uid"] = p.UserId
-
+	// 如果短信验证失败
+	if captcha.Target == "" {
+		err = ecode.ServerErr
 		return
 	}
 
-	err = ecode.ServerErr
+	// 过期验证码
+	err = s.dao.Captcha.CaptchaDel(captcha.Target)
+	if err != nil {
+		return
+	}
+
+	// 如果是手机号登陆
+	if param.Phone != "" {
+		user, err = s.dao.User.UserFindByPhone(captcha.Target)
+		if err != nil {
+			return
+		}
+
+		// 如果没有注册，便自动注册
+		if user.Phone == "" {
+			user, err = s.dao.User.UserCreate(captcha.Target)
+			if err != nil {
+				return
+			}
+		}
+	} else {
+
+		user, err = s.dao.User.UserFindByEmail(captcha.Target)
+		if err != nil {
+			return
+		}
+
+		// 如果邮箱登陆，没有注册，就报错
+		if user.Email == "" {
+			err = ecode.ServerErr
+			return
+		}
+	}
+
+	// 更新用户信息
+	p, err = s.dao.Passport.PassportUpdate(token, model.Passport{
+		UserId: user.ID,
+	})
+	if err != nil {
+		return
+	}
+
+	access, err := s.Group.Role.RoleFindPermissionAccess(user.Role)
+	if err != nil {
+		return
+	}
+
+	data = make(map[string]interface{})
+	data["access"] = access
+	data["passport"] = p.Token
+	data["uid"] = p.UserId
+
 	return
+
 }
 
 func (s *UserService) UserFindByUID(uid uint) (u model.User, err error) {
@@ -124,4 +132,20 @@ func (s *UserService) UserFindByPhone(phone string) (u model.User, err error) {
 func (s *UserService) UserFindByEmail(email string) (u model.User, err error) {
 	u, err = s.dao.User.UserFindByEmail(email)
 	return
+}
+
+func (s *UserService) FindAll(u model.UserFindAllReq) (m model.UserFindAllResp, err error) {
+	m, err = s.dao.User.FindAll(u)
+	if err != nil {
+		return
+	}
+	for i, v := range m.Items {
+		m.Items[i].Phone = utils.PhoneMasking(v.Phone)
+		m.Items[i].Email = utils.QQEmailMasking(v.Email)
+	}
+	return
+}
+
+func (s *UserService) UpdateUserRole(u model.User) error {
+	return s.dao.User.UpdateUserRole(u)
 }
