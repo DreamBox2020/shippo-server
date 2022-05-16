@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	uuid "github.com/satori/go.uuid"
@@ -92,4 +94,10 @@ func In(val interface{}, arr interface{}) bool {
 		}
 	}
 	return false
+}
+
+func SHA1(s string) string {
+	o := sha1.New()
+	o.Write([]byte(s))
+	return hex.EncodeToString(o.Sum(nil))
 }

@@ -22,6 +22,7 @@ type ServerGroup struct {
 	Role             *RoleServer
 	PermissionAccess *PermissionAccessServer
 	PermissionPolicy *PermissionPolicyServer
+	Wx               *WxServer
 }
 
 type Server struct {
@@ -52,6 +53,7 @@ func NewGroup(d *Server) *ServerGroup {
 		Role:             NewRoleServer(d),
 		PermissionAccess: NewPermissionAccessServer(d),
 		PermissionPolicy: NewPermissionPolicyServer(d),
+		Wx:               NewWxServer(d),
 	}
 }
 
@@ -66,6 +68,7 @@ func (s *Server) InitRouter(engine *gin.Engine) {
 	s.Group.Role.InitRouter(router)
 	s.Group.PermissionAccess.InitRouter(router)
 	s.Group.PermissionPolicy.InitRouter(router)
+	s.Group.Wx.InitRouter(router)
 }
 
 var serverConf configs.Server
