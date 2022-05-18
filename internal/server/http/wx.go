@@ -1,6 +1,7 @@
 package http
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -16,25 +17,78 @@ import (
 
 type WxServer struct {
 	*Server
+	wxConf configs.Common
 }
 
 func NewWxServer(s *Server) *WxServer {
-	return &WxServer{s}
+	var conf configs.Common
+
+	if err := utils.ReadConfigFromFile("configs/common.json", &conf); err != nil {
+		panic(err)
+	}
+
+	return &WxServer{s, conf}
 }
 
 func (t *WxServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("wx")
 	{
+		r.GET("authorize", t.Authorize)
 		r.GET("msg", t.Msg)
 		r.POST("msg", t.MsgPost)
 	}
 }
 
+func (t *WxServer) Authorize(c *gin.Context) {
+
+	code := c.Query("code")
+
+	if code != "" {
+
+		resp, _ := http.Get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + t.wxConf.AppID +
+			"&secret=" + t.wxConf.AppSecret + "&code=" + code + "&grant_type=authorization_code")
+		defer resp.Body.Close()
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		var res = new(struct {
+			AccessToken  string `json:"access_token"`
+			ExpiresIn    int    `json:"expires_in"`
+			RefreshToken string `json:"refresh_token"`
+			Openid       string `json:"openid"`
+			Scope        string `json:"scope"`
+			Errcode      int    `json:"errcode"`
+			Errmsg       string `json:"errmsg"`
+		})
+
+		json.Unmarshal(body, res)
+
+		fmt.Printf("Authorize->res: %+v\n", res)
+
+		if res.Errmsg != "" {
+			c.String(200, "Code:"+code+"\nErrmsg:"+res.Errmsg)
+		} else {
+			c.String(200, "Code:"+code+"\nOpenid:"+res.Openid)
+		}
+
+	} else {
+		location := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + t.wxConf.AppID +
+			"&redirect_uri=" + "http://" + c.Request.Host + c.Request.URL.Path + "&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"
+
+		fmt.Printf("Authorize->location: %+v\n", location)
+
+		c.Redirect(http.StatusMovedPermanently, location)
+	}
+
+}
+
 func (t *WxServer) Msg(c *gin.Context) {
+	timestamp := c.Query("timestamp")
+	nonce := c.Query("nonce")
+	signature := c.Query("signature")
 	echostr := c.Query("echostr")
 
-	if !makeSignature(c) {
-		fmt.Printf("makeSignature error")
+	if !makeSignature(t.wxConf.WxToken, timestamp, nonce, signature) {
+		fmt.Printf("makeSignature error\n")
 		c.String(200, "")
 	} else {
 		c.String(200, echostr)
@@ -42,9 +96,12 @@ func (t *WxServer) Msg(c *gin.Context) {
 }
 
 func (t *WxServer) MsgPost(c *gin.Context) {
+	timestamp := c.Query("timestamp")
+	nonce := c.Query("nonce")
+	signature := c.Query("signature")
 
-	if !makeSignature(c) {
-		fmt.Printf("makeSignature error")
+	if !makeSignature(t.wxConf.WxToken, timestamp, nonce, signature) {
+		fmt.Printf("makeSignature error\n")
 		c.String(200, "")
 	}
 
@@ -68,21 +125,9 @@ func (t *WxServer) MsgPost(c *gin.Context) {
 
 }
 
-var conf configs.Common
+func makeSignature(token, timestamp, nonce, signature string) bool {
 
-func makeSignature(c *gin.Context) bool {
-
-	if conf.AppSecret == "" {
-		if err := utils.ReadConfigFromFile("configs/common.json", &conf); err != nil {
-			panic(err)
-		}
-	}
-
-	timestamp := c.Query("timestamp")
-	nonce := c.Query("nonce")
-	signature := c.Query("signature")
-
-	list := []string{conf.WxToken, timestamp, nonce}
+	list := []string{token, timestamp, nonce}
 	sort.Strings(list)
 
 	fmt.Printf("makeSignature->sort: %+v\n", list)
