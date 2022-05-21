@@ -18,9 +18,9 @@ func NewUserServer(s *Server) *UserServer {
 func (t *UserServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("user")
 	{
-		r.POST("login", box.Handler(t.UserLogin, box.AccessAll))
-		r.POST("findAll", box.Handler(t.FindAll, box.AccessAll))
-		r.POST("updateUserRole", box.Handler(t.UpdateUserRole, box.AccessAll))
+		r.POST("login", box.Handler(t.UserLogin))
+		r.POST("findAll", box.Handler(t.FindAll))
+		r.POST("updateUserRole", box.Handler(t.UpdateUserRole))
 	}
 }
 

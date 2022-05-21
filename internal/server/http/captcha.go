@@ -17,7 +17,7 @@ func NewCaptchaServer(s *Server) *CaptchaServer {
 func (t *CaptchaServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("captcha")
 	{
-		r.POST("send", box.Handler(t.CaptchaSend, box.AccessAll))
+		r.POST("send", box.Handler(t.CaptchaSend))
 	}
 }
 

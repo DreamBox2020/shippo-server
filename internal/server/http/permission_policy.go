@@ -17,13 +17,13 @@ func NewPermissionPolicyServer(s *Server) *PermissionPolicyServer {
 func (t *PermissionPolicyServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("permissionPolicy")
 	{
-		r.POST("create", box.Handler(t.PermissionPolicyCreate, box.AccessAll))
-		r.POST("del", box.Handler(t.PermissionPolicyDel, box.AccessAll))
-		r.POST("update", box.Handler(t.PermissionPolicyUpdate, box.AccessAll))
-		r.POST("updateAccess", box.Handler(t.PermissionAssociationUpdate, box.AccessAll))
-		r.POST("findAllExtStatus", box.Handler(t.PermissionPolicyFindAllExtStatus, box.AccessAll))
-		r.POST("findAll", box.Handler(t.PermissionPolicyFindAll, box.AccessAll))
-		r.POST("find", box.Handler(t.PermissionPolicyFind, box.AccessAll))
+		r.POST("create", box.Handler(t.PermissionPolicyCreate))
+		r.POST("del", box.Handler(t.PermissionPolicyDel))
+		r.POST("update", box.Handler(t.PermissionPolicyUpdate))
+		r.POST("updateAccess", box.Handler(t.PermissionAssociationUpdate))
+		r.POST("findAllExtStatus", box.Handler(t.PermissionPolicyFindAllExtStatus))
+		r.POST("findAll", box.Handler(t.PermissionPolicyFindAll))
+		r.POST("find", box.Handler(t.PermissionPolicyFind))
 	}
 }
 

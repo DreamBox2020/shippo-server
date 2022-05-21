@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
-	"net/http"
 	"os"
+	"shippo-server/internal/model"
 	"shippo-server/utils"
 	"shippo-server/utils/box"
 	"shippo-server/utils/ecode"
@@ -23,47 +23,40 @@ func NewFileServer(s *Server) *FileServer {
 func (t *FileServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("file")
 	{
-		r.GET("pic/*filePath", box.Handler(t.FileDownload, box.AccessAll))
-		r.POST("upload", box.Handler(t.FileUpload, box.AccessLoginOK))
+		r.GET("pic/*filePath", box.Handler(t.FileDownload))
+		r.POST("upload", box.Handler(t.FileUpload))
 	}
 }
 
 func (t *FileServer) FileDownload(c *box.Context) {
-	filePath := c.Ctx.Param("filePath")
-	fmt.Printf("FileDownload->filePath:%+v\n", filePath)
-	if filePath != "" {
-		fmt.Printf("FileDownload->filePath:%+v\n", serverConf.UploadDir+"/pic"+filePath)
-
-		if s, err := os.Stat(serverConf.UploadDir + "/pic" + filePath); err == nil {
-			fmt.Printf("FileDownload->fileName:%+v\n", s.Name())
-			if !s.IsDir() {
-				file, _ := os.Open(serverConf.UploadDir + "/pic" + filePath)
-				defer file.Close()
-				bytes, _ := ioutil.ReadAll(file)
-				if len(bytes) > 0 {
-					c.Data(http.DetectContentType(bytes), bytes, s.Name())
-					return
-				}
+	param := c.Ctx.Param("filePath")
+	fmt.Printf("FileDownload->filePath:%+v\n", param)
+	if param != "" {
+		r, err := t.service.Picture.FindByUri("/pic" + param)
+		if err == nil && r.ID != 0 {
+			fmt.Printf("FileDownload->filePath:%+v\n", serverConf.UploadDir+r.Path)
+			file, _ := os.Open(serverConf.UploadDir + r.Path)
+			defer file.Close()
+			bytes, _ := ioutil.ReadAll(file)
+			if len(bytes) > 0 {
+				c.Data(r.Mime, bytes)
+				return
 			}
 		}
 	}
-	c.Ctx.Data(http.StatusNotFound, "image/png", make([]byte, 0))
+	c.NotFound()
 
 }
 
 func (t *FileServer) FileUpload(c *box.Context) {
-	file, _ := c.Ctx.FormFile("file")
-	fmt.Printf("FileUpload->Filename:%+v\n", file.Filename)
-
-	f, _ := file.Open()
-	defer f.Close()
-	buffer := make([]byte, 512)
-	_, err := f.Read(buffer)
-	if err != nil {
+	header, _ := c.Ctx.FormFile("file")
+	channel, ok := c.Ctx.GetPostForm("channel")
+	if !ok {
 		c.JSON(nil, ecode.ServerErr)
 		return
 	}
-	mime := http.DetectContentType(buffer)
+
+	mime := utils.DetectContentType(header)
 	fmt.Printf("fileUpload->mime:%+v\n", mime)
 
 	var fileType string
@@ -85,25 +78,37 @@ func (t *FileServer) FileUpload(c *box.Context) {
 	date := time.Now().Format("2006/01/02")
 	fmt.Printf("fileUpload->date:%+v\n", date)
 
-	dir := "pic/temp/" + date + "/"
+	dir := "/pic/" + channel + "/" + date + "/"
 
-	uri := dir + fileUuid + "." + fileType
-	fmt.Printf("fileUpload->date:%+v\n", uri)
+	fileName := fileUuid + "." + fileType
+	fmt.Printf("FileUpload->fileName:%+v\n", header.Filename)
 
-	dst := serverConf.UploadDir + "/" + uri
+	uri := dir + fileName
+	fmt.Printf("fileUpload->uri:%+v\n", uri)
+
+	dst := serverConf.UploadDir + uri
 	fmt.Printf("fileUpload->dst:%+v\n", dst)
 
-	if utils.IsExist(serverConf.UploadDir + "/" + dir) {
-		err := os.MkdirAll(serverConf.UploadDir+"/"+dir, os.ModePerm)
-		if err != nil {
-			fmt.Println(err)
-			c.JSON(nil, ecode.ServerErr)
-			return
-		}
+	if err := os.MkdirAll(serverConf.UploadDir+dir, os.ModePerm); err != nil {
+		fmt.Println(err)
+		c.JSON(nil, ecode.ServerErr)
+		return
 	}
 
 	// 上传文件至指定目录
-	c.Ctx.SaveUploadedFile(file, dst)
+	if err := c.Ctx.SaveUploadedFile(header, dst); err != nil {
+		fmt.Println(err)
+		c.JSON(nil, ecode.ServerErr)
+		return
+	}
 
-	c.JSON(nil, nil)
+	data, err := t.service.Picture.Create(model.Picture{
+		Path:    uri,
+		Uri:     uri,
+		Name:    fileName,
+		Mime:    mime,
+		Channel: channel,
+	})
+
+	c.JSON(data, err)
 }

@@ -11,12 +11,6 @@ import (
 	"shippo-server/utils/ecode"
 )
 
-const (
-	AccessAll     = 0 // 无需权限
-	AccessLoginOK = 1 // 必须已经登录
-	AccessNoLogin = 2 // 必须没有登录
-)
-
 const abortIndex int8 = math.MaxInt8 / 2
 
 type Response struct {
@@ -43,7 +37,6 @@ type Context struct {
 	Req      *Request
 	Passport *model.Passport
 	User     *model.User
-	Access   int
 }
 
 type HandlerFunc func(*Context)
@@ -96,17 +89,24 @@ func (c *Context) ShouldBindJSON(obj interface{}) error {
 	return json.Unmarshal([]byte(c.Req.Resource), obj)
 }
 
-func (c *Context) Data(contentType string, data []byte, fileName string) {
+func (c *Context) Data(contentType string, data []byte) {
+	c.Ctx.Data(http.StatusOK, contentType, data)
+}
+
+func (c *Context) DataDownload(contentType string, data []byte, fileName string) {
 	c.Ctx.Header("content-disposition", `attachment; filename=`+fileName)
 	c.Ctx.Data(http.StatusOK, contentType, data)
 }
 
-func New(ctx *gin.Context, access int) (bctx *Context) {
+func (c *Context) NotFound() {
+	c.Ctx.String(http.StatusNotFound, "404 page not found")
+}
+
+func New(ctx *gin.Context) (bctx *Context) {
 	bctx = &Context{
-		index:  -1,
-		Ctx:    ctx,
-		Req:    nil,
-		Access: access,
+		index: -1,
+		Ctx:   ctx,
+		Req:   nil,
 	}
 	if ctx.GetHeader("Content-Type") == "application/json" {
 		if err := ctx.ShouldBindJSON(&bctx.Req); err != nil {
@@ -124,9 +124,9 @@ func New(ctx *gin.Context, access int) (bctx *Context) {
 	return
 }
 
-func Handler(h HandlerFunc, access int) gin.HandlerFunc {
+func Handler(h HandlerFunc) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		bctx := New(ctx, access)
+		bctx := New(ctx)
 		if !bctx.IsAborted() {
 			h(bctx)
 		}

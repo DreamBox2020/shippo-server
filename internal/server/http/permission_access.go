@@ -17,12 +17,12 @@ func NewPermissionAccessServer(s *Server) *PermissionAccessServer {
 func (t *PermissionAccessServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("permissionAccess")
 	{
-		r.POST("create", box.Handler(t.PermissionAccessCreate, box.AccessAll))
-		r.POST("del", box.Handler(t.PermissionAccessDel, box.AccessAll))
-		r.POST("update", box.Handler(t.PermissionAccessUpdate, box.AccessAll))
-		r.POST("findAllExtStatus", box.Handler(t.PermissionAccessFindAllExtStatus, box.AccessAll))
-		r.POST("findAll", box.Handler(t.PermissionAccessFindAll, box.AccessAll))
-		r.POST("find", box.Handler(t.PermissionAccessFind, box.AccessAll))
+		r.POST("create", box.Handler(t.PermissionAccessCreate))
+		r.POST("del", box.Handler(t.PermissionAccessDel))
+		r.POST("update", box.Handler(t.PermissionAccessUpdate))
+		r.POST("findAllExtStatus", box.Handler(t.PermissionAccessFindAllExtStatus))
+		r.POST("findAll", box.Handler(t.PermissionAccessFindAll))
+		r.POST("find", box.Handler(t.PermissionAccessFind))
 	}
 }
 

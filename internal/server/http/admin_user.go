@@ -17,7 +17,7 @@ func NewAdminUserServer(s *Server) *AdminUserServer {
 func (t *AdminUserServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("admin/user")
 	{
-		r.POST("create", box.Handler(t.UserCreateEmail, box.AccessLoginOK))
+		r.POST("create", box.Handler(t.UserCreateEmail))
 	}
 }
 

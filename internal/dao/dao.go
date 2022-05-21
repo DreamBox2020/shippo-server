@@ -19,6 +19,7 @@ type DaoGroup struct {
 	Role             *RoleDao
 	PermissionAccess *PermissionAccessDao
 	PermissionPolicy *PermissionPolicyDao
+	Picture          *PictureDao
 }
 
 type Dao struct {
@@ -82,5 +83,6 @@ func NewGroup(d *Dao) *DaoGroup {
 		Role:             NewRoleDao(d),
 		PermissionAccess: NewPermissionAccessDao(d),
 		PermissionPolicy: NewPermissionPolicyDao(d),
+		Picture:          NewPictureDao(d),
 	}
 }

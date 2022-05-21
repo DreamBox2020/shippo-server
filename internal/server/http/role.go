@@ -18,13 +18,13 @@ func NewRoleServer(s *Server) *RoleServer {
 func (t *RoleServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("role")
 	{
-		r.POST("create", box.Handler(t.RoleCreate, box.AccessAll))
-		r.POST("del", box.Handler(t.RoleDel, box.AccessAll))
-		r.POST("update", box.Handler(t.RoleUpdate, box.AccessAll))
-		r.POST("updatePolicies", box.Handler(t.RoleAssociationUpdate, box.AccessAll))
-		r.POST("findAll", box.Handler(t.RoleFindAll, box.AccessAll))
-		r.POST("findPolicies", box.Handler(t.FindPolicies, box.AccessAll))
-		r.POST("find", box.Handler(t.RoleFind, box.AccessAll))
+		r.POST("create", box.Handler(t.RoleCreate))
+		r.POST("del", box.Handler(t.RoleDel))
+		r.POST("update", box.Handler(t.RoleUpdate))
+		r.POST("updatePolicies", box.Handler(t.RoleAssociationUpdate))
+		r.POST("findAll", box.Handler(t.RoleFindAll))
+		r.POST("findPolicies", box.Handler(t.FindPolicies))
+		r.POST("find", box.Handler(t.RoleFind))
 	}
 }
 

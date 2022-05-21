@@ -2,9 +2,9 @@ package model
 
 type Picture struct {
 	Model
-	Path string
-	Uri  string
-	Name string
-	Mime string
-	Type string
+	Path    string `json:"path"`
+	Uri     string `json:"url"`
+	Name    string `json:"name"`
+	Mime    string `json:"mime"`
+	Channel string `json:"channel"`
 }

@@ -15,6 +15,7 @@ type ServiceGroup struct {
 	Role             *RoleService
 	PermissionAccess *PermissionAccessService
 	PermissionPolicy *PermissionPolicyService
+	Picture          *PictureService
 }
 
 type Service struct {
@@ -46,5 +47,6 @@ func NewGroup(d *Service) *ServiceGroup {
 		Role:             NewRoleService(d),
 		PermissionAccess: NewPermissionAccessService(d),
 		PermissionPolicy: NewPermissionPolicyService(d),
+		Picture:          NewPictureService(d),
 	}
 }

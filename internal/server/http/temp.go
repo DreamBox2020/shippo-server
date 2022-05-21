@@ -18,9 +18,9 @@ func NewTempServer(s *Server) *TempServer {
 func (t *TempServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("temp")
 	{
-		r.POST("temp_trade_20220108/find", box.Handler(t.Temp_trade_20220108_find, box.AccessAll))
-		r.POST("temp_trade_20220108/add", box.Handler(t.Temp_trade_20220108_add, box.AccessAll))
-		r.POST("temp_trade_20220108/findNoExist", box.Handler(t.Temp_trade_20220108_findNoExist, box.AccessAll))
+		r.POST("temp_trade_20220108/find", box.Handler(t.Temp_trade_20220108_find))
+		r.POST("temp_trade_20220108/add", box.Handler(t.Temp_trade_20220108_add))
+		r.POST("temp_trade_20220108/findNoExist", box.Handler(t.Temp_trade_20220108_findNoExist))
 	}
 }
 

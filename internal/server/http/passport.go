@@ -21,7 +21,7 @@ func NewPassportServer(s *Server) *PassportServer {
 func (t *PassportServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("passport")
 	{
-		r.POST("create", box.Handler(t.PassportCreate, box.AccessAll))
+		r.POST("create", box.Handler(t.PassportCreate))
 	}
 }
 
@@ -56,15 +56,6 @@ func (t *PassportServer) PassportGet(c *box.Context) {
 			Ip:     c.Ctx.ClientIP(),
 			Ua:     c.Ctx.GetHeader("User-Agent"),
 			Client: 0,
-		}
-	}
-
-	// 如果需要登录权限，但是并没有登录。
-	if c.Access == box.AccessLoginOK {
-		if !c.Passport.IsLogin() {
-			c.JSON(nil, ecode.NoLogin)
-			c.Abort()
-			return
 		}
 	}
 
@@ -131,7 +122,11 @@ func (t *PassportServer) Auth(c *box.Context) {
 	if tag {
 		c.Next()
 	} else {
-		c.JSON(nil, ecode.AccessDenied)
+		if c.Passport.IsLogin() {
+			c.JSON(nil, ecode.AccessDenied)
+		} else {
+			c.JSON(nil, ecode.NoLogin)
+		}
 		c.Abort()
 		return
 	}

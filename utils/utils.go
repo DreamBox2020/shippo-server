@@ -8,6 +8,8 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"io/ioutil"
 	"math/rand"
+	"mime/multipart"
+	"net/http"
 	"os"
 	"reflect"
 	"strconv"
@@ -96,8 +98,20 @@ func In(val interface{}, arr interface{}) bool {
 	return false
 }
 
+// sha1
 func SHA1(s string) string {
 	o := sha1.New()
 	o.Write([]byte(s))
 	return hex.EncodeToString(o.Sum(nil))
+}
+
+func DetectContentType(header *multipart.FileHeader) string {
+	file, _ := header.Open()
+	defer file.Close()
+	buffer := make([]byte, 512)
+	if _, err := file.Read(buffer); err != nil {
+		return "application/octet-stream"
+
+	}
+	return http.DetectContentType(buffer)
 }
