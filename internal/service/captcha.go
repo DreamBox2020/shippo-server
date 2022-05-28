@@ -1,9 +1,10 @@
 package service
 
 import (
-	"shippo-server/utils"
 	"shippo-server/utils/check"
 	"shippo-server/utils/ecode"
+	email2 "shippo-server/utils/email"
+	"shippo-server/utils/sms"
 )
 
 type CaptchaService struct {
@@ -33,7 +34,7 @@ func (s *CaptchaService) CaptchaSmsSend(phone string, token string) (err error) 
 	}
 
 	// 发送验证码
-	utils.SendSms(r.Target, r.Code)
+	sms.SendSms(r.Target, r.Code)
 	return
 }
 
@@ -56,6 +57,6 @@ func (s *CaptchaService) CaptchaEmailSend(email string, token string) (err error
 	}
 
 	// 发送验证码
-	utils.SendEmail(r.Target, r.Code)
+	email2.SendEmail(r.Target, r.Code)
 	return
 }

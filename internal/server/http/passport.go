@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
+	"shippo-server/utils/config"
 	"shippo-server/utils/ecode"
 	"strings"
 )
@@ -31,7 +32,7 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 	if err == nil {
 		var domain string
 		if c.Ctx.ClientIP() != "127.0.0.1" {
-			domain = serverConf.CookieDomain
+			domain = config.Server.CookieDomain
 		}
 		c.Ctx.SetCookie("__PASSPORT", data.Passport, 60*60*24*30,
 			"/", domain, false, true)

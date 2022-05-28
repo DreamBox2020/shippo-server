@@ -2,13 +2,14 @@ package model
 
 type User struct {
 	Model
-	Phone    string `json:"phone"`
-	Email    string `json:"email"`
-	Nickname string `json:"nickname"`
-	Avatar   string `json:"avatar"`
-	Exp      uint   `json:"exp"`
-	Coin     uint   `json:"coin"`
-	Role     uint   `json:"role"`
+	Phone        string `json:"phone"`
+	Email        string `json:"email"`
+	Nickname     string `json:"nickname"`
+	Avatar       string `json:"avatar"`
+	Exp          uint   `json:"exp"`
+	Coin         uint   `json:"coin"`
+	Role         uint   `json:"role"`
+	WxPassportId uint   `json:"wx_passport_id"`
 }
 
 type UserLoginParam struct {

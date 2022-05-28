@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"shippo-server/configs"
-	"shippo-server/utils"
 	"shippo-server/utils/box"
+	"shippo-server/utils/config"
 	"time"
 )
 
@@ -20,11 +19,9 @@ func NewWxService(s *Service) *WxService {
 }
 
 func (s *WxService) WXRefreshToken() (err error) {
-	var conf configs.Common
-	utils.ReadConfigFromFile("configs/common.json", &conf)
 
 	resp, _ := http.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" +
-		conf.AppID + "&secret=" + conf.AppSecret)
+		config.Common.AppID + "&secret=" + config.Common.AppSecret)
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 

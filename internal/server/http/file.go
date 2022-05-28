@@ -8,6 +8,7 @@ import (
 	"shippo-server/internal/model"
 	"shippo-server/utils"
 	"shippo-server/utils/box"
+	"shippo-server/utils/config"
 	"shippo-server/utils/ecode"
 	"time"
 )
@@ -34,8 +35,8 @@ func (t *FileServer) FileDownload(c *box.Context) {
 	if param != "" {
 		r, err := t.service.Picture.FindByUri("/pic" + param)
 		if err == nil && r.ID != 0 {
-			fmt.Printf("FileDownload->filePath:%+v\n", serverConf.UploadDir+r.Path)
-			file, _ := os.Open(serverConf.UploadDir + r.Path)
+			fmt.Printf("FileDownload->filePath:%+v\n", config.Server.UploadDir+r.Path)
+			file, _ := os.Open(config.Server.UploadDir + r.Path)
 			defer file.Close()
 			bytes, _ := ioutil.ReadAll(file)
 			if len(bytes) > 0 {
@@ -86,10 +87,10 @@ func (t *FileServer) FileUpload(c *box.Context) {
 	uri := dir + fileName
 	fmt.Printf("fileUpload->uri:%+v\n", uri)
 
-	dst := serverConf.UploadDir + uri
+	dst := config.Server.UploadDir + uri
 	fmt.Printf("fileUpload->dst:%+v\n", dst)
 
-	if err := os.MkdirAll(serverConf.UploadDir+dir, os.ModePerm); err != nil {
+	if err := os.MkdirAll(config.Server.UploadDir+dir, os.ModePerm); err != nil {
 		fmt.Println(err)
 		c.JSON(nil, ecode.ServerErr)
 		return

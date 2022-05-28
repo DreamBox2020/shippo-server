@@ -1,29 +1,21 @@
-package utils
+package sms
 
 import (
 	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
-	"shippo-server/configs"
+	"shippo-server/utils/config"
 )
-
-var smsConf configs.Sms
 
 func SendSms(phone string, code string) {
 
-	if emailConf.Address == "" {
-		if err := ReadConfigFromFile("./configs/sms.json", &smsConf); err != nil {
-			panic(err)
-		}
-	}
-
-	client, err := dysmsapi.NewClientWithAccessKey(smsConf.RegionId, smsConf.AccessKeyId, smsConf.AccessKeySecret)
+	client, err := dysmsapi.NewClientWithAccessKey(config.Sms.RegionId, config.Sms.AccessKeyId, config.Sms.AccessKeySecret)
 
 	request := dysmsapi.CreateSendSmsRequest()
 	request.Scheme = "https"
 
 	request.PhoneNumbers = phone
-	request.SignName = smsConf.SignName
-	request.TemplateCode = smsConf.TemplateCode
+	request.SignName = config.Sms.SignName
+	request.TemplateCode = config.Sms.TemplateCode
 	request.TemplateParam = "{\"code\":\"" + code + "\"}"
 
 	response, err := client.SendSms(request)

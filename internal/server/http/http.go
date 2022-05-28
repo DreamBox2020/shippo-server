@@ -3,11 +3,10 @@ package http
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"shippo-server/configs"
 	"shippo-server/internal/service"
 	"shippo-server/middleware"
-	"shippo-server/utils"
 	"shippo-server/utils/box"
+	"shippo-server/utils/config"
 	"shippo-server/utils/ecode"
 	"time"
 )
@@ -31,6 +30,7 @@ type Server struct {
 }
 
 func New() *Server {
+
 	var svc = service.New()
 	s := &Server{
 		service: svc.Group,
@@ -71,12 +71,7 @@ func (s *Server) InitRouter(engine *gin.Engine) {
 	s.Group.Wx.InitRouter(router)
 }
 
-var serverConf configs.Server
-
 func (s *Server) Init() {
-	if err := utils.ReadConfigFromFile("configs/server.json", &serverConf); err != nil {
-		panic(err)
-	}
 
 	// 初始化错误码
 	ecode.Register(ecode.Messages)
@@ -89,7 +84,7 @@ func (s *Server) Init() {
 	engine.Use(middleware.Cors())
 	s.InitRouter(engine)
 
-	server := s.InitServer(serverConf.Addr, engine)
+	server := s.InitServer(config.Server.Addr, engine)
 	if err := server.ListenAndServe(); err != nil {
 		panic(err)
 	}

@@ -6,18 +6,16 @@ import (
 	"io/ioutil"
 	"net/http"
 	"shippo-server/internal/model"
-	"shippo-server/utils"
 	"shippo-server/utils/box"
+	"shippo-server/utils/config"
 	"strings"
 	"testing"
 )
 
 func TestRoleServer_RoleFind(t *testing.T) {
-	if err := utils.ReadConfigFromFile("configs/server.json", &serverConf); err != nil {
-		panic(err)
-	}
+	config.New()
 
-	url := "http://127.0.0.1" + serverConf.Addr + "/role/find"
+	url := "http://127.0.0.1" + config.Server.Addr + "/role/find"
 
 	data := new(struct {
 		Id uint `json:"id"`

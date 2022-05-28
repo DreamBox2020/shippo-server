@@ -3,8 +3,6 @@ package utils
 import (
 	"crypto/sha1"
 	"encoding/hex"
-	"encoding/json"
-	"fmt"
 	uuid "github.com/satori/go.uuid"
 	"io/ioutil"
 	"math/rand"
@@ -17,14 +15,13 @@ import (
 	"time"
 )
 
-func ReadConfigFromFile(path string, config interface{}) error {
-	dir, _ := os.Getwd()
-	fmt.Printf("ReadConfigFromFile:%v\n", dir)
-
-	file, _ := os.Open(path)
+func ReadFile(path string) ([]byte, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
 	defer file.Close()
-	bytes, _ := ioutil.ReadAll(file)
-	return json.Unmarshal(bytes, &config)
+	return ioutil.ReadAll(file)
 }
 
 func PhoneMasking(s string) string {

@@ -7,9 +7,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"
-	"shippo-server/configs"
 	"shippo-server/utils"
 	"shippo-server/utils/box"
+	"shippo-server/utils/config"
 	"sort"
 	"strings"
 	"time"
@@ -17,17 +17,10 @@ import (
 
 type WxServer struct {
 	*Server
-	wxConf configs.Common
 }
 
 func NewWxServer(s *Server) *WxServer {
-	var conf configs.Common
-
-	if err := utils.ReadConfigFromFile("configs/common.json", &conf); err != nil {
-		panic(err)
-	}
-
-	return &WxServer{s, conf}
+	return &WxServer{s}
 }
 
 func (t *WxServer) InitRouter(Router *gin.RouterGroup) {
@@ -45,8 +38,8 @@ func (t *WxServer) Authorize(c *gin.Context) {
 
 	if code != "" {
 
-		resp, _ := http.Get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + t.wxConf.AppID +
-			"&secret=" + t.wxConf.AppSecret + "&code=" + code + "&grant_type=authorization_code")
+		resp, _ := http.Get("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + config.Common.AppID +
+			"&secret=" + config.Common.AppSecret + "&code=" + code + "&grant_type=authorization_code")
 		defer resp.Body.Close()
 		body, _ := ioutil.ReadAll(resp.Body)
 
@@ -71,8 +64,8 @@ func (t *WxServer) Authorize(c *gin.Context) {
 		}
 
 	} else {
-		location := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + t.wxConf.AppID +
-			"&redirect_uri=" + "http://" + c.Request.Host + c.Request.URL.Path + "&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect"
+		location := "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + config.Common.AppID +
+			"&redirect_uri=" + "http://" + c.Request.Host + c.Request.URL.Path + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect"
 
 		fmt.Printf("Authorize->location: %+v\n", location)
 
@@ -87,7 +80,7 @@ func (t *WxServer) Msg(c *gin.Context) {
 	signature := c.Query("signature")
 	echostr := c.Query("echostr")
 
-	if !makeSignature(t.wxConf.WxToken, timestamp, nonce, signature) {
+	if !makeSignature(config.Common.WxToken, timestamp, nonce, signature) {
 		fmt.Printf("makeSignature error\n")
 		c.String(200, "")
 	} else {
@@ -100,7 +93,7 @@ func (t *WxServer) MsgPost(c *gin.Context) {
 	nonce := c.Query("nonce")
 	signature := c.Query("signature")
 
-	if !makeSignature(t.wxConf.WxToken, timestamp, nonce, signature) {
+	if !makeSignature(config.Common.WxToken, timestamp, nonce, signature) {
 		fmt.Printf("makeSignature error\n")
 		c.String(200, "")
 	}
