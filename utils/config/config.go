@@ -10,7 +10,14 @@ import (
 	"strings"
 )
 
+const (
+	ENV_LOCAL = "local"
+	ENV_DEV   = "development"
+	ENV_PROD  = "production"
+)
+
 var (
+	Env    string
 	Common configs.Common
 	DB     configs.DB
 	Email  configs.Email
@@ -18,31 +25,23 @@ var (
 	Sms    configs.Sms
 )
 
-type Config struct {
-	Env string
-}
-
-func New() *Config {
+func Init() {
 	file, _ := os.Open(".env")
 	defer file.Close()
 	bytes, _ := ioutil.ReadAll(file)
-	env := strings.TrimSpace(string(bytes))
-	fmt.Printf("Config->New-<env:%v\n", env)
+	Env = strings.TrimSpace(string(bytes))
+	fmt.Printf("config->Init->env:%v\n", Env)
 
-	c := &Config{Env: env}
-
-	c.Load("common", &Common)
-	c.Load("db", &DB)
-	c.Load("email", &Email)
-	c.Load("server", &Server)
-	c.Load("sms", &Sms)
-
-	return c
+	Load("common", &Common)
+	Load("db", &DB)
+	Load("email", &Email)
+	Load("server", &Server)
+	Load("sms", &Sms)
 }
 
-func (t *Config) Load(name string, obj interface{}) {
+func Load(name string, obj interface{}) {
 
-	path := "./configs/" + name + "." + t.Env + ".json"
+	path := "./configs/" + name + "." + Env + ".json"
 	if !utils.IsExist(path) {
 		path = "./configs/" + name + ".json"
 	}
@@ -54,4 +53,16 @@ func (t *Config) Load(name string, obj interface{}) {
 
 	fmt.Printf("Config->Load->%v:%+v\n", name, obj)
 
+}
+
+func IsLocal() bool {
+	return Env == ENV_LOCAL
+}
+
+func IsDev() bool {
+	return Env == ENV_DEV
+}
+
+func IsProd() bool {
+	return Env == ENV_PROD
 }

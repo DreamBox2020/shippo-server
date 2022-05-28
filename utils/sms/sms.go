@@ -7,6 +7,9 @@ import (
 )
 
 func SendSms(phone string, code string) {
+	if config.IsLocal() {
+		return
+	}
 
 	client, err := dysmsapi.NewClientWithAccessKey(config.Sms.RegionId, config.Sms.AccessKeyId, config.Sms.AccessKeySecret)
 

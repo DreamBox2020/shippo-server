@@ -10,6 +10,6 @@ import (
 func main() {
 	dir, _ := os.Getwd()
 	fmt.Printf("main:%v\n", dir)
-	config.New()
+	config.Init()
 	http.New()
 }

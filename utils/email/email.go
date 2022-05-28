@@ -8,6 +8,9 @@ import (
 )
 
 func SendEmail(to string, code string) {
+	if config.IsLocal() {
+		return
+	}
 
 	d := gomail.NewDialer(config.Email.Host, config.Email.Port, config.Email.Username, config.Email.Password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
