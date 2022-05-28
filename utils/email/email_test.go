@@ -2,9 +2,11 @@ package email
 
 import (
 	"shippo-server/utils"
+	"shippo-server/utils/config"
 	"testing"
 )
 
 func TestSendEmail(t *testing.T) {
-	SendEmail(emailConf.TestEmail, utils.GenerateCaptcha())
+	config.Init()
+	SendEmail(config.Email.TestEmail, utils.GenerateCaptcha())
 }

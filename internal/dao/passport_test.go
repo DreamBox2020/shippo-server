@@ -7,7 +7,7 @@ import (
 )
 
 func TestDaoPassportGet(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	// 先创建一个通行证
 	p, err := d.Group.Passport.PassportCreate(model.Passport{
@@ -30,7 +30,7 @@ func TestDaoPassportGet(t *testing.T) {
 }
 
 func TestDaoPassportCreate(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	p, err := d.Group.Passport.PassportCreate(model.Passport{
 		UserId: 123456,
@@ -46,7 +46,7 @@ func TestDaoPassportCreate(t *testing.T) {
 }
 
 func TestDaoPassportDelete(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	p, err := d.Group.Passport.PassportCreate(model.Passport{
 		UserId: 123456,
@@ -72,7 +72,7 @@ func TestDaoPassportDelete(t *testing.T) {
 }
 
 func TestDaoPassportUpdate(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	p, err := d.Group.Passport.PassportCreate(model.Passport{
 		UserId: 123456,

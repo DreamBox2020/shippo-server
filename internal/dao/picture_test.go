@@ -6,7 +6,7 @@ import (
 )
 
 func TestPictureDao_FindByUri(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	r, err := d.Group.Picture.FindByUri("/pic/")
 	if err != nil {

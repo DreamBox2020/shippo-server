@@ -13,7 +13,7 @@ import (
 )
 
 func TestRoleServer_RoleFind(t *testing.T) {
-	config.New()
+	config.Init()
 
 	url := "http://127.0.0.1" + config.Server.Addr + "/role/find"
 

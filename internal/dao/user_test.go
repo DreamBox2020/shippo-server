@@ -10,7 +10,7 @@ import (
 )
 
 func TestUserDao_UserFindByPhone(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	rand.Seed(time.Now().UnixNano())
 	phone := "12345" + strconv.Itoa(rand.Intn(899999)+100000)
@@ -30,7 +30,7 @@ func TestUserDao_UserFindByPhone(t *testing.T) {
 }
 
 func TestUserDao_UserCreate(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	rand.Seed(time.Now().UnixNano())
 	phone := "12345" + strconv.Itoa(rand.Intn(899999)+100000)
@@ -44,7 +44,7 @@ func TestUserDao_UserCreate(t *testing.T) {
 }
 
 func TestUserDao_FindAll(t *testing.T) {
-	d := New()
+	d := newTest()
 	res, err := d.Group.User.FindAll(model.UserFindAllReq{
 		Pagination: model.Pagination{
 			Current:  2,

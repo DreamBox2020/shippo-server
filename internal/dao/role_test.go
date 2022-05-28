@@ -6,7 +6,7 @@ import (
 )
 
 func TestDaoRoleFindPermissionPolicy(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	p, err := d.Group.Role.RoleFindPermissionPolicy(1)
 	if err != nil {
@@ -17,7 +17,7 @@ func TestDaoRoleFindPermissionPolicy(t *testing.T) {
 }
 
 func TestDaoRoleFindPermissionAccess(t *testing.T) {
-	d := New()
+	d := newTest()
 
 	p, err := d.Group.Role.RoleFindPermissionAccess(1)
 	if err != nil {

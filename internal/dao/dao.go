@@ -81,3 +81,8 @@ func NewGroup(d *Dao) *DaoGroup {
 		Picture:          NewPictureDao(d),
 	}
 }
+
+func newTest() *Dao {
+	config.Init()
+	return New()
+}

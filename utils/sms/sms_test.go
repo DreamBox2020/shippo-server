@@ -2,9 +2,11 @@ package sms
 
 import (
 	"shippo-server/utils"
+	"shippo-server/utils/config"
 	"testing"
 )
 
 func TestSendSms(t *testing.T) {
-	SendSms(smsConf.TestPhoneNumber, utils.GenerateCaptcha())
+	config.Init()
+	SendSms(config.Sms.TestPhoneNumber, utils.GenerateCaptcha())
 }
