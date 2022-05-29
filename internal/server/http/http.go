@@ -58,7 +58,7 @@ func NewGroup(d *Server) *ServerGroup {
 }
 
 func (s *Server) InitRouter(engine *gin.Engine) {
-	router := engine.Group("")
+	router := engine.Group("v1")
 	s.Group.User.InitRouter(router)
 	s.Group.Temp.InitRouter(router)
 	s.Group.Passport.InitRouter(router)

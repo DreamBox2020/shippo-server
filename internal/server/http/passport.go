@@ -106,8 +106,10 @@ func (t *PassportServer) Auth(c *box.Context) {
 	fmt.Printf("http->Auth->list:%+v\n", list)
 
 	var tag = false
+	reg, _ := regexp.Compile("^/v1")
+	path := reg.ReplaceAllString(c.Ctx.Request.URL.Path, "")
+	var key1 = strings.ToLower(c.Ctx.Request.Method + ":" + path)
 	for _, access := range list {
-		key1 := strings.ToLower(c.Ctx.Request.Method + ":" + c.Ctx.Request.URL.Path)
 		key2 := strings.ToLower(access.AccessRule)
 		fmt.Printf("http->Auth->key1:%+v\n", key1)
 		fmt.Printf("http->Auth->key2:%+v\n", key2)
