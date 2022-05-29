@@ -67,6 +67,7 @@ func (c *Context) Abort() {
 	c.index = abortIndex
 }
 
+// 响应json格式的数据
 func (c *Context) JSON(data interface{}, err error) {
 	code := ecode.Cause(err)
 	res, err2 := json.Marshal(data)
@@ -85,19 +86,23 @@ func (c *Context) JSON(data interface{}, err error) {
 	})
 }
 
+// 解析json格式的数据
 func (c *Context) ShouldBindJSON(obj interface{}) error {
 	return json.Unmarshal([]byte(c.Req.Resource), obj)
 }
 
+// 响应文件格式的数据
 func (c *Context) Data(contentType string, data []byte) {
 	c.Ctx.Data(http.StatusOK, contentType, data)
 }
 
+// 响应文件格式的数据，浏览器会直接下载
 func (c *Context) DataDownload(contentType string, data []byte, fileName string) {
 	c.Ctx.Header("content-disposition", `attachment; filename=`+fileName)
 	c.Ctx.Data(http.StatusOK, contentType, data)
 }
 
+// 响应404
 func (c *Context) NotFound() {
 	c.Ctx.String(http.StatusNotFound, "404 page not found")
 }
