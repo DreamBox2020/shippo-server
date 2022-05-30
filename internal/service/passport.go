@@ -15,6 +15,16 @@ func NewPassportService(s *Service) *PassportService {
 	return &PassportService{s}
 }
 
+func (s *PassportService) Create(m model.Passport) (data model.Passport, err error) {
+	return s.dao.Passport.PassportCreate(model.Passport{
+		Token:  "",
+		UserId: m.UserId,
+		Ip:     m.Ip,
+		Ua:     m.Ua,
+		Client: m.Client,
+	})
+}
+
 func (s *PassportService) PassportCreate(p model.Passport) (data model.PassportCreateResult, err error) {
 
 	// 如果不存在或者到期(30天)，就创建一个新的通行证，否则，就续期旧的。

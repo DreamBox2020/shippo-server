@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"regexp"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
@@ -23,6 +24,7 @@ func (t *PassportServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("passport")
 	{
 		r.POST("create", box.Handler(t.PassportCreate))
+		r.POST("createDev", t.CreateDev)
 	}
 }
 
@@ -38,6 +40,31 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 			"/", domain, false, true)
 	}
 	c.JSON(data, err)
+}
+
+func (t *PassportServer) CreateDev(c *gin.Context) {
+
+	if !config.IsLocal() {
+		c.String(http.StatusNotFound, "404 page not found")
+		return
+	}
+
+	var param = new(struct {
+		Uid uint `json:"uid"`
+	})
+
+	c.ShouldBindJSON(&param)
+
+	data, _ := t.service.Passport.Create(model.Passport{
+		Token:  "",
+		UserId: param.Uid,
+		Ip:     c.ClientIP(),
+		Ua:     c.GetHeader("User-Agent"),
+		Client: 0,
+	})
+
+	c.String(http.StatusOK, data.Token)
+
 }
 
 func (t *PassportServer) PassportGet(c *box.Context) {
