@@ -16,4 +16,7 @@ var Messages = map[int]string{
 
 	// wx
 	502001: "微信通行证不存在",
+
+	// main
+	503001: "验证码错误",
 }

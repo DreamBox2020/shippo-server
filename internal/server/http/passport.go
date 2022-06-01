@@ -80,6 +80,9 @@ func (t *PassportServer) PassportGet(c *box.Context) {
 		fmt.Printf("http->passportGet:%+v\n", p)
 		c.Passport = &p
 	} else {
+		fmt.Printf("http->passportGet->ip:%+v\n", c.Ctx.ClientIP())
+		fmt.Printf("http->passportGet->ua:%+v\n", c.Ctx.GetHeader("User-Agent"))
+
 		c.Passport = &model.Passport{
 			Ip:     c.Ctx.ClientIP(),
 			Ua:     c.Ctx.GetHeader("User-Agent"),

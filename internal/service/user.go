@@ -59,7 +59,7 @@ func (s *UserService) UserLogin(param model.UserLoginParam, token string) (
 
 	// 如果短信验证失败
 	if captcha.Target == "" {
-		err = ecode.ServerErr
+		err = ecode.CaptchaError
 		return
 	}
 

@@ -28,14 +28,14 @@ func (t *UserDao) UserFindByEmail(email string) (u model.User, err error) {
 func (t *UserDao) UserCreate(phone string) (u model.User, err error) {
 	u.Phone = phone
 	u.Role = 2
-	err = t.db.Create(&u).Error
+	err = t.db.Omit("email", "nickname", "avatar", "wx_passport_id").Create(&u).Error
 	return
 }
 
 func (t *UserDao) UserCreateEmail(email string) (u model.User, err error) {
 	u.Email = email
 	u.Role = 2
-	err = t.db.Create(&u).Error
+	err = t.db.Omit("phone", "nickname", "avatar", "wx_passport_id").Create(&u).Error
 	return
 }
 
