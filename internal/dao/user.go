@@ -1,6 +1,8 @@
 package dao
 
-import "shippo-server/internal/model"
+import (
+	"shippo-server/internal/model"
+)
 
 type UserDao struct {
 	*Dao

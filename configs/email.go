@@ -8,4 +8,5 @@ type Email struct {
 	Address     string `json:"address"`
 	AddressName string `json:"addressName"`
 	TestEmail   string `json:"testEmail"`
+	AdminEmail  string `json:"adminEmail"`
 }

@@ -72,7 +72,7 @@ func (t *PassportServer) PassportGet(c *box.Context) {
 	if c.Req.Passport != "" {
 		p, err := t.service.Passport.PassportGet(c.Req.Passport)
 		if err != nil {
-			fmt.Printf("http->passportGet:%+v\n", err)
+			fmt.Printf("http->passportGet->err:%+v\n", err)
 			c.JSON(nil, ecode.ServerErr)
 			c.Abort()
 			return
