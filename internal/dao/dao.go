@@ -5,6 +5,8 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	"log"
+	"os"
 	"shippo-server/utils/config"
 	"time"
 )
@@ -40,7 +42,15 @@ func New() *Dao {
 			TablePrefix:   "shippo_",
 			SingularTable: true, // 使用单数表名
 		},
-		Logger: logger.Default.LogMode(logger.Info),
+		Logger: logger.New(
+			log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
+			logger.Config{
+				SlowThreshold:             200 * time.Millisecond, // 慢 SQL 阈值
+				LogLevel:                  logger.Info,            // Log level
+				IgnoreRecordNotFoundError: false,
+				Colorful:                  config.IsLocal(), // 非ide环境禁用彩色打印
+			},
+		),
 	})
 
 	if err != nil {
