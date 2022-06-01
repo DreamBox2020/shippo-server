@@ -6,9 +6,9 @@ import (
 	"shippo-server/utils/config"
 )
 
-func SendSms(phone string, code string) {
+func SendSms(phone string, code string) bool {
 	if config.IsLocal() {
-		return
+		return true
 	}
 
 	client, err := dysmsapi.NewClientWithAccessKey(config.Sms.RegionId, config.Sms.AccessKeyId, config.Sms.AccessKeySecret)
@@ -23,7 +23,8 @@ func SendSms(phone string, code string) {
 
 	response, err := client.SendSms(request)
 	if err != nil {
-		fmt.Print(err.Error())
+		fmt.Printf("SendSms->err: %v\n", err)
 	}
 	fmt.Printf("SendSms: %v\n", response)
+	return response.Code == "OK"
 }

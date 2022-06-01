@@ -34,8 +34,11 @@ func (s *CaptchaService) CaptchaSmsSend(phone string, token string) (err error) 
 	}
 
 	// 发送验证码
-	sms.SendSms(r.Target, r.Code)
-	return
+	if sms.SendSms(r.Target, r.Code) {
+		return
+	} else {
+		return ecode.CaptchaSendError
+	}
 }
 
 func (s *CaptchaService) CaptchaEmailSend(email string, token string) (err error) {

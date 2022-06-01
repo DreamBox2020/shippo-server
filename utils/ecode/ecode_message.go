@@ -19,4 +19,5 @@ var Messages = map[int]string{
 
 	// main
 	503001: "验证码错误",
+	503002: "验证码发送失败",
 }
