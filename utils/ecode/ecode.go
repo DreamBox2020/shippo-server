@@ -2,72 +2,47 @@ package ecode
 
 import (
 	"github.com/pkg/errors"
+	"shippo-server/utils/email"
 	"strconv"
 )
 
 var (
-	_messages = map[int]string{}
-	_codes    = map[int]struct{}{}
+	_codes = map[int]struct{}{}
 )
 
-func Register(cm map[int]string) {
-	_messages = cm
-}
-
-func New(e int) Code {
-	if e <= 0 {
-		panic("ecode 必须是大于0的数字")
+func New(code int, message string) Code {
+	if _, ok := _codes[code]; ok {
+		panic("code已经存在")
 	}
-	return add(e)
-}
-
-func add(e int) Code {
-	if _, ok := _codes[e]; ok {
-		panic("ecode已经存在")
-	}
-	_codes[e] = struct{}{}
-	return Int(e)
+	_codes[code] = struct{}{}
+	return Code{code, message}
 }
 
 type Codes interface {
 	Error() string
 	Code() int
 	Message() string
-	Details() []interface{}
 	Equal(error) bool
 }
 
-type Code int
+type Code struct {
+	code    int
+	message string
+}
 
 func (e Code) Error() string {
-	return strconv.FormatInt(int64(e), 10)
+	return "Error " + strconv.FormatInt(int64(e.code), 10) + ": " + e.message
 }
 
-func (e Code) Code() int { return int(e) }
+func (e Code) Code() int {
+	return e.code
+}
 
 func (e Code) Message() string {
-	if msg, ok := _messages[e.Code()]; ok {
-		return msg
-	}
-	return e.Error()
+	return e.message
 }
-
-func (e Code) Details() []interface{} { return nil }
 
 func (e Code) Equal(err error) bool { return EqualError(e, err) }
-
-func Int(i int) Code { return Code(i) }
-
-func String(e string) Code {
-	if e == "" {
-		return OK
-	}
-	i, err := strconv.Atoi(e)
-	if err != nil {
-		return ServerErr
-	}
-	return Code(i)
-}
 
 func Cause(e error) Codes {
 	if e == nil {
@@ -77,7 +52,9 @@ func Cause(e error) Codes {
 	if ok {
 		return ec
 	}
-	return String(e.Error())
+	// 未知的错误，发送邮件给管理员。
+	email.SendWarningEmail(e.Error())
+	return ServerErr
 }
 
 func Equal(a, b Codes) bool {

@@ -7,7 +7,6 @@ import (
 	"shippo-server/middleware"
 	"shippo-server/utils/box"
 	"shippo-server/utils/config"
-	"shippo-server/utils/ecode"
 	"time"
 )
 
@@ -73,8 +72,6 @@ func (s *Server) InitRouter(engine *gin.Engine) {
 
 func (s *Server) Init() {
 
-	// 初始化错误码
-	ecode.Register(ecode.Messages)
 	// 初始化用户信息的中间件
 	box.Use(s.Group.Passport.PassportGet)
 	box.Use(s.Group.Passport.Auth)
