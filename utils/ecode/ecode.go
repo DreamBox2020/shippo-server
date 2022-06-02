@@ -1,7 +1,6 @@
 package ecode
 
 import (
-	"github.com/pkg/errors"
 	"shippo-server/utils/email"
 	"strconv"
 )
@@ -48,7 +47,7 @@ func Cause(e error) Codes {
 	if e == nil {
 		return OK
 	}
-	ec, ok := errors.Cause(e).(Codes)
+	ec, ok := e.(Codes)
 	if ok {
 		return ec
 	}

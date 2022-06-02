@@ -7,6 +7,10 @@ import (
 
 func TestIn(t *testing.T) {
 	var arr = []int{2, 4, 6, 8}
-	fmt.Printf("TestIn%+v\n", In(4, arr))
-	fmt.Printf("TestIn%+v\n", In(5, arr))
+	fmt.Printf("TestIn:%+v\n", In(4, arr))
+	fmt.Printf("TestIn:%+v\n", In(5, arr))
+}
+
+func TestGenerateToken(t *testing.T) {
+	fmt.Printf("TestGenerateToken:%+v\n", GenerateToken())
 }

@@ -3,7 +3,7 @@ package utils
 import (
 	"crypto/sha1"
 	"encoding/hex"
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 	"io/ioutil"
 	"math/rand"
 	"mime/multipart"
@@ -60,7 +60,7 @@ func GenerateCaptcha() string {
 }
 
 func GenerateToken() string {
-	return strings.Replace(uuid.NewV4().String(), "-", "", -1)
+	return strings.Replace(uuid.New().String(), "-", "", -1)
 }
 
 //判断文件或文件夹是否存在
