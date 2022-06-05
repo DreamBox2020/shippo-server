@@ -63,7 +63,7 @@ func GenerateToken() string {
 	return strings.Replace(uuid.New().String(), "-", "", -1)
 }
 
-//判断文件或文件夹是否存在
+// IsExist 判断文件或文件夹是否存在
 func IsExist(path string) bool {
 	_, err := os.Stat(path)
 	if err != nil {
@@ -95,7 +95,7 @@ func In(val interface{}, arr interface{}) bool {
 	return false
 }
 
-// sha1
+// SHA1 sha1
 func SHA1(s string) string {
 	o := sha1.New()
 	o.Write([]byte(s))
@@ -111,4 +111,13 @@ func DetectContentType(header *multipart.FileHeader) string {
 
 	}
 	return http.DetectContentType(buffer)
+}
+
+func HttpGet(url string) (bytes []byte, err error) {
+	resp, err := http.Get(url)
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+	return ioutil.ReadAll(resp.Body)
 }
