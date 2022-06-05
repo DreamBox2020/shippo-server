@@ -8,6 +8,7 @@ import (
 type ServiceGroup struct {
 	User             *UserService
 	Wx               *WxService
+	WxArticle        *WxArticle
 	Temp             *TempService
 	Passport         *PassportService
 	Captcha          *CaptchaService
@@ -40,6 +41,7 @@ func NewGroup(d *Service) *ServiceGroup {
 	return &ServiceGroup{
 		User:             NewUserService(d),
 		Wx:               NewWxService(d),
+		WxArticle:        NewWxArticle(d),
 		Temp:             NewTempService(d),
 		Passport:         NewPassportService(d),
 		Captcha:          NewCaptchaService(d),
