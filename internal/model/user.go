@@ -9,7 +9,7 @@ type User struct {
 	Exp          uint   `json:"exp"`
 	Coin         uint   `json:"coin"`
 	Role         uint   `json:"role"`
-	WxPassportId uint   `json:"wx_passport_id"`
+	WxPassportId uint   `json:"wxPassportId"`
 }
 
 type UserLoginParam struct {

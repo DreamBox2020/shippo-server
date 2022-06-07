@@ -8,14 +8,14 @@ import (
 	"shippo-server/utils/ecode"
 )
 
-type WxArticle struct {
+type WxArticleServer struct {
 	*Server
 }
 
-func NewWxArticle(s *Server) *WxArticle {
-	return &WxArticle{s}
+func NewWxArticleServer(s *Server) *WxArticleServer {
+	return &WxArticleServer{s}
 }
-func (t *WxArticle) InitRouter(Router *gin.RouterGroup) {
+func (t *WxArticleServer) InitRouter(Router *gin.RouterGroup) {
 	r := Router.Group("wxArticle")
 	{
 		r.POST("create", box.Handler(t.Create))
@@ -28,7 +28,7 @@ func (t *WxArticle) InitRouter(Router *gin.RouterGroup) {
 }
 
 // Create 新增文章
-func (t *WxArticle) Create(c *box.Context) {
+func (t *WxArticleServer) Create(c *box.Context) {
 	if c.User.WxPassportId == 0 {
 		c.JSON(nil, ecode.WxPassportIsNull)
 		return
@@ -46,7 +46,7 @@ func (t *WxArticle) Create(c *box.Context) {
 }
 
 // Update 修改文章
-func (t *WxArticle) Update(c *box.Context) {
+func (t *WxArticleServer) Update(c *box.Context) {
 	var m model.WxArticle
 	c.ShouldBindJSON(&m)
 
@@ -59,7 +59,7 @@ func (t *WxArticle) Update(c *box.Context) {
 }
 
 // UpdateCommentSwitch 修改文章评论开关
-func (t *WxArticle) UpdateCommentSwitch(c *box.Context) {
+func (t *WxArticleServer) UpdateCommentSwitch(c *box.Context) {
 	var m model.WxArticle
 	c.ShouldBindJSON(&m)
 
@@ -71,7 +71,7 @@ func (t *WxArticle) UpdateCommentSwitch(c *box.Context) {
 }
 
 // FindByOffiaccount 查询某公众号文章
-func (t *WxArticle) FindByOffiaccount(c *box.Context) {
+func (t *WxArticleServer) FindByOffiaccount(c *box.Context) {
 	var m model.WxArticle
 	c.ShouldBindJSON(&m)
 
@@ -82,7 +82,7 @@ func (t *WxArticle) FindByOffiaccount(c *box.Context) {
 }
 
 // Find 查询文章根据id
-func (t *WxArticle) Find(c *box.Context) {
+func (t *WxArticleServer) Find(c *box.Context) {
 	var m model.WxArticle
 	c.ShouldBindJSON(&m)
 
@@ -93,7 +93,7 @@ func (t *WxArticle) Find(c *box.Context) {
 }
 
 // FindAllByWxPassport 查询某人的全部文章
-func (t *WxArticle) FindAllByWxPassport(c *box.Context) {
+func (t *WxArticleServer) FindAllByWxPassport(c *box.Context) {
 	var m model.WxArticle
 	c.ShouldBindJSON(&m)
 

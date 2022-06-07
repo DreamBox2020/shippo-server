@@ -21,7 +21,8 @@ type ServerGroup struct {
 	PermissionAccess *PermissionAccessServer
 	PermissionPolicy *PermissionPolicyServer
 	Wx               *WxServer
-	WxArticle        *WxArticle
+	WxArticle        *WxArticleServer
+	WxCommentLike    *WxCommentLikeServer
 }
 
 type Server struct {
@@ -54,7 +55,8 @@ func NewGroup(d *Server) *ServerGroup {
 		PermissionAccess: NewPermissionAccessServer(d),
 		PermissionPolicy: NewPermissionPolicyServer(d),
 		Wx:               NewWxServer(d),
-		WxArticle:        NewWxArticle(d),
+		WxArticle:        NewWxArticleServer(d),
+		WxCommentLike:    NewWxCommentLikeServer(d),
 	}
 }
 
@@ -71,6 +73,7 @@ func (s *Server) InitRouter(engine *gin.Engine) {
 	s.Group.PermissionPolicy.InitRouter(router)
 	s.Group.Wx.InitRouter(router)
 	s.Group.WxArticle.InitRouter(router)
+	s.Group.WxCommentLike.InitRouter(router)
 }
 
 func (s *Server) Init() {

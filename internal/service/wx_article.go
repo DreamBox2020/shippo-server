@@ -7,22 +7,22 @@ import (
 	"shippo-server/utils/ecode"
 )
 
-type WxArticle struct {
+type WxArticleService struct {
 	*Service
 }
 
-func NewWxArticle(s *Service) *WxArticle {
-	return &WxArticle{s}
+func NewWxArticleService(s *Service) *WxArticleService {
+	return &WxArticleService{s}
 }
 
 // Create 新增文章
-func (t *WxArticle) Create(m *model.WxArticle) (r *model.WxArticle, err error) {
+func (t *WxArticleService) Create(m *model.WxArticle) (r *model.WxArticle, err error) {
 	r, err = t.dao.WxArticle.Create(m)
 	return
 }
 
 // Update 修改文章
-func (t *WxArticle) Update(m *model.WxArticle) (err error) {
+func (t *WxArticleService) Update(m *model.WxArticle) (err error) {
 	old, err := t.dao.WxArticle.Find(m.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -44,7 +44,7 @@ func (t *WxArticle) Update(m *model.WxArticle) (err error) {
 }
 
 // UpdateCommentSwitch 修改文章评论开关
-func (t *WxArticle) UpdateCommentSwitch(m *model.WxArticle) (err error) {
+func (t *WxArticleService) UpdateCommentSwitch(m *model.WxArticle) (err error) {
 	old, err := t.dao.WxArticle.Find(m.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -62,13 +62,13 @@ func (t *WxArticle) UpdateCommentSwitch(m *model.WxArticle) (err error) {
 }
 
 // FindByOffiaccount 查询某公众号文章
-func (t *WxArticle) FindByOffiaccount(m *model.WxArticle) (r *[]model.WxArticle, err error) {
+func (t *WxArticleService) FindByOffiaccount(m *model.WxArticle) (r *[]model.WxArticle, err error) {
 	r, err = t.dao.WxArticle.FindByOffiaccount(m)
 	return
 }
 
 // Find 查询文章根据id
-func (t *WxArticle) Find(id uint) (r *model.WxArticle, err error) {
+func (t *WxArticleService) Find(id uint) (r *model.WxArticle, err error) {
 	r, err = t.dao.WxArticle.Find(id)
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		err = ecode.ErrRecordNotFound
@@ -77,7 +77,7 @@ func (t *WxArticle) Find(id uint) (r *model.WxArticle, err error) {
 }
 
 // FindAllByWxPassport 查询某人的全部文章
-func (t *WxArticle) FindAllByWxPassport(m *model.WxArticle) (r *[]model.WxArticle, err error) {
+func (t *WxArticleService) FindAllByWxPassport(m *model.WxArticle) (r *[]model.WxArticle, err error) {
 	r, err = t.dao.WxArticle.FindAllByWxPassport(m)
 	return
 }

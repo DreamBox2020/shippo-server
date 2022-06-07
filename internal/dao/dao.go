@@ -21,7 +21,8 @@ type DaoGroup struct {
 	PermissionAccess *PermissionAccessDao
 	PermissionPolicy *PermissionPolicyDao
 	Picture          *PictureDao
-	WxArticle        *WxArticle
+	WxArticle        *WxArticleDao
+	WxCommentLike    *WxCommentLikeDao
 }
 
 type Dao struct {
@@ -90,7 +91,8 @@ func NewGroup(d *Dao) *DaoGroup {
 		PermissionAccess: NewPermissionAccessDao(d),
 		PermissionPolicy: NewPermissionPolicyDao(d),
 		Picture:          NewPictureDao(d),
-		WxArticle:        NewWxArticle(d),
+		WxArticle:        NewWxArticleDao(d),
+		WxCommentLike:    NewWxCommentLikeDao(d),
 	}
 }
 
