@@ -26,22 +26,26 @@ func (t *WxCommentLikeServer) initRouter() {
 
 // Create 新增点赞
 func (t *WxCommentLikeServer) Create(c *box.Context) {
-	var m model.WxCommentLike
-	c.ShouldBindJSON(&m)
+	var param model.WxCommentLike
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	m.WxPassportId = c.User.WxPassportId
-	_, err := t.service.WxCommentLike.Create(&m)
+	param.WxPassportId = c.User.WxPassportId
+	_, err := t.service.WxCommentLike.Create(&param)
 
 	c.JSON(nil, err)
 }
 
 // Delete 取消点赞
 func (t *WxCommentLikeServer) Delete(c *box.Context) {
-	var m model.WxCommentLike
-	c.ShouldBindJSON(&m)
+	var param model.WxCommentLike
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	m.WxPassportId = c.User.WxPassportId
-	err := t.service.WxCommentLike.Delete(&m)
+	param.WxPassportId = c.User.WxPassportId
+	err := t.service.WxCommentLike.Delete(&param)
 
 	c.JSON(nil, err)
 

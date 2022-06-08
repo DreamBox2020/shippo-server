@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 	"shippo-server/utils/ecode"
@@ -36,71 +35,72 @@ func (t *WxArticleServer) Create(c *box.Context) {
 		return
 	}
 
-	var m model.WxArticle
-	c.ShouldBindJSON(&m)
+	var param model.WxArticle
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	m.WxPassportId = c.User.WxPassportId
+	param.WxPassportId = c.User.WxPassportId
 
-	fmt.Printf("WxArticle->Create:%+v", m)
-
-	_, err := t.service.WxArticle.Create(&m)
+	_, err := t.service.WxArticle.Create(&param)
 	c.JSON(nil, err)
 }
 
 // Update 修改文章
 func (t *WxArticleServer) Update(c *box.Context) {
-	var m model.WxArticle
-	c.ShouldBindJSON(&m)
+	var param model.WxArticle
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	m.WxPassportId = c.User.WxPassportId
+	param.WxPassportId = c.User.WxPassportId
 
-	fmt.Printf("WxArticle->Update:%+v", m)
-
-	err := t.service.WxArticle.Update(&m)
+	err := t.service.WxArticle.Update(&param)
 	c.JSON(nil, err)
 }
 
 // UpdateCommentSwitch 修改文章评论开关
 func (t *WxArticleServer) UpdateCommentSwitch(c *box.Context) {
-	var m model.WxArticle
-	c.ShouldBindJSON(&m)
+	var param model.WxArticle
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	m.WxPassportId = c.User.WxPassportId
-	fmt.Printf("WxArticle->UpdateCommentSwitch:%+v", m)
+	param.WxPassportId = c.User.WxPassportId
 
-	err := t.service.WxArticle.UpdateCommentSwitch(&m)
+	err := t.service.WxArticle.UpdateCommentSwitch(&param)
 	c.JSON(nil, err)
 }
 
 // FindByOffiaccount 查询某公众号文章
 func (t *WxArticleServer) FindByOffiaccount(c *box.Context) {
-	var m model.WxArticle
-	c.ShouldBindJSON(&m)
+	var param model.WxArticle
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	fmt.Printf("WxArticle->FindByOffiaccount:%+v\n", m)
-
-	r, err := t.service.WxArticle.FindByOffiaccount(&m)
+	r, err := t.service.WxArticle.FindByOffiaccount(&param)
 	c.JSON(r, err)
 }
 
 // Find 查询文章根据id
 func (t *WxArticleServer) Find(c *box.Context) {
-	var m model.WxArticle
-	c.ShouldBindJSON(&m)
+	var param model.WxArticle
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	fmt.Printf("WxArticle->Find:%+v\n", m)
-
-	r, err := t.service.WxArticle.Find(m.ID)
+	r, err := t.service.WxArticle.Find(param.ID)
 	c.JSON(r, err)
 }
 
 // FindAllByWxPassport 查询某人的全部文章
 func (t *WxArticleServer) FindAllByWxPassport(c *box.Context) {
-	var m model.WxArticle
-	c.ShouldBindJSON(&m)
+	var param model.WxArticle
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
-	fmt.Printf("WxArticle->FindAllByWxPassport:%+v\n", m)
-
-	r, err := t.service.WxArticle.FindAllByWxPassport(&m)
+	r, err := t.service.WxArticle.FindAllByWxPassport(&param)
 	c.JSON(r, err)
 }

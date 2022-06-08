@@ -61,14 +61,13 @@ func (c *Context) Abort() {
 
 // JSON 响应json格式的数据
 func (c *Context) JSON(data interface{}, err error) {
-	code := ecode.Cause(err)
-	res, err2 := json.Marshal(data)
-	if err2 != nil {
+	res, err := json.Marshal(data)
+	if err != nil {
 		fmt.Printf("box->context->JSON->data:%+v\n", data)
-		fmt.Printf("box->context->JSON->err2:%+v\n", err2)
-		c.JSON(nil, ecode.ServerErr)
-		return
+		fmt.Printf("box->context->JSON->err:%+v\n", err)
 	}
+
+	code := ecode.Cause(err)
 	c.Ctx.JSON(http.StatusOK, &Response{
 		Code:     code.Code(),
 		Message:  code.Message(),
@@ -80,7 +79,14 @@ func (c *Context) JSON(data interface{}, err error) {
 
 // ShouldBindJSON 解析json格式的数据
 func (c *Context) ShouldBindJSON(obj interface{}) error {
-	return json.Unmarshal([]byte(c.Req.Resource), obj)
+	err := json.Unmarshal([]byte(c.Req.Resource), obj)
+	if err != nil {
+		fmt.Printf("ShouldBindJSON->err:%+v\n", err)
+		c.JSON(nil, ecode.ServerErr)
+	} else {
+		fmt.Printf("ShouldBindJSON->obj:%+v\n", obj)
+	}
+	return err
 }
 
 // Data 响应文件格式的数据
@@ -116,7 +122,7 @@ func (c *Context) Header(key, value string) {
 }
 
 func (c *Context) GetHeader(key string) string {
-	return c.GetHeader(key)
+	return c.Ctx.GetHeader(key)
 }
 
 func (c *Context) SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool) {
@@ -132,7 +138,7 @@ func (c *Context) Param(key string) string {
 }
 
 func (c *Context) Query(key string) (value string) {
-	return c.Query(key)
+	return c.Ctx.Query(key)
 }
 
 func (c *Context) GetQuery(key string) (string, bool) {
@@ -140,8 +146,7 @@ func (c *Context) GetQuery(key string) (string, bool) {
 }
 
 func (c *Context) PostForm(key string) (value string) {
-	value, _ = c.GetPostForm(key)
-	return
+	return c.Ctx.PostForm(key)
 }
 
 func (c *Context) GetPostForm(key string) (string, bool) {
@@ -153,7 +158,7 @@ func (c *Context) FormFile(name string) (*multipart.FileHeader, error) {
 }
 
 func (c *Context) MultipartForm() (*multipart.Form, error) {
-	return c.MultipartForm()
+	return c.Ctx.MultipartForm()
 }
 
 func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string) error {

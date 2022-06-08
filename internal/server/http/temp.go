@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -32,8 +31,9 @@ func (t *TempServer) Temp_trade_20220108_find(c *box.Context) {
 		Qq string `json:"qq"`
 		Id string `json:"id"`
 	})
-	c.ShouldBindJSON(&param)
-	fmt.Printf("temp_trade_20220108_find: %+v\n", param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	// 如果参数中含有QQ，那么就按照QQ查找，否则按照订单号。
 	if param.Qq != "" {
@@ -47,8 +47,9 @@ func (t *TempServer) Temp_trade_20220108_find(c *box.Context) {
 
 func (t *TempServer) Temp_trade_20220108_add(c *box.Context) {
 	var param model.Temp_trade_20220108_TradeAddParam
-	c.ShouldBindJSON(&param)
-	fmt.Printf("temp_trade_20220108_add: %+v\n", param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	data, err := t.service.Temp.Temp_trade_20220108_add(param)
 	c.JSON(data, err)
@@ -58,7 +59,9 @@ func (t *TempServer) Temp_trade_20220108_findNoExist(c *box.Context) {
 	var param = new(struct {
 		List []string `json:"list"`
 	})
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	data, err := t.service.Temp.Temp_trade_20220108_findNoExist(param.List)
 	c.JSON(data, err)

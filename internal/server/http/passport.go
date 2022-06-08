@@ -56,7 +56,9 @@ func (t *PassportServer) CreateDev(c *gin.Context) {
 		Uid uint `json:"uid"`
 	})
 
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	data, _ := t.service.Passport.Create(model.Passport{
 		Token:  "",

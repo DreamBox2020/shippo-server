@@ -32,16 +32,20 @@ func (t *RoleServer) initRouter() {
 
 // 增加⻆⾊
 func (t *RoleServer) RoleCreate(c *box.Context) {
-	var r model.Role
-	c.ShouldBindJSON(&r)
-	err := t.service.Role.RoleCreate(r)
+	var param model.Role
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	err := t.service.Role.RoleCreate(param)
 	c.JSON(nil, err)
 }
 
 // 删除⻆⾊
 func (t *RoleServer) RoleDel(c *box.Context) {
 	var param model.Role
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 	err := t.service.Role.RoleDel(param)
 	c.JSON(nil, err)
 }
@@ -49,7 +53,9 @@ func (t *RoleServer) RoleDel(c *box.Context) {
 // 更新⻆⾊名称和备注
 func (t *RoleServer) RoleUpdate(c *box.Context) {
 	var param model.Role
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 	fmt.Printf("RoleUpdate: %+v\n", param)
 
 	err := t.service.Role.RoleUpdate(param)
@@ -62,7 +68,9 @@ func (t *RoleServer) RoleAssociationUpdate(c *box.Context) {
 		Id       uint   `json:"id"`
 		Policies []uint `json:"policies"`
 	})
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 	err := t.service.Role.RoleAssociationUpdate(param.Id, param.Policies)
 	c.JSON(nil, err)
 }
@@ -76,7 +84,9 @@ func (t *RoleServer) RoleFindAll(c *box.Context) {
 // 查询某个⻆⾊所拥有的权限策略
 func (t *RoleServer) FindPolicies(c *box.Context) {
 	var param model.Role
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 	data, err := t.service.Role.RoleFindPermissionPolicy(param.ID)
 	c.JSON(data, err)
 }
@@ -84,7 +94,9 @@ func (t *RoleServer) FindPolicies(c *box.Context) {
 // 查询某个⻆⾊所拥有的访问规则
 func (t *RoleServer) RoleFind(c *box.Context) {
 	var param model.Role
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 	data, err := t.service.Role.RoleFindPermissionAccess(param.ID)
 	c.JSON(data, err)
 }

@@ -30,30 +30,38 @@ func (t *PermissionPolicyServer) initRouter() {
 }
 
 func (t *PermissionPolicyServer) PermissionPolicyCreate(c *box.Context) {
-	var p model.PermissionPolicy
-	c.ShouldBindJSON(&p)
-	err := t.service.PermissionPolicy.PermissionPolicyCreate(p)
+	var param model.PermissionPolicy
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	err := t.service.PermissionPolicy.PermissionPolicyCreate(param)
 	c.JSON(nil, err)
 }
 
 func (t *PermissionPolicyServer) PermissionPolicyDel(c *box.Context) {
-	var p model.PermissionPolicy
-	c.ShouldBindJSON(&p)
-	err := t.service.PermissionPolicy.PermissionPolicyDel(p)
+	var param model.PermissionPolicy
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	err := t.service.PermissionPolicy.PermissionPolicyDel(param)
 	c.JSON(nil, err)
 }
 
 func (t *PermissionPolicyServer) PermissionPolicyUpdate(c *box.Context) {
-	var p model.PermissionPolicy
-	c.ShouldBindJSON(&p)
-	err := t.service.PermissionPolicy.PermissionPolicyUpdate(p)
+	var param model.PermissionPolicy
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	err := t.service.PermissionPolicy.PermissionPolicyUpdate(param)
 	c.JSON(nil, err)
 }
 
 func (t *PermissionPolicyServer) PermissionPolicyFindAllExtStatus(c *box.Context) {
-	var p model.PermissionPolicy
-	c.ShouldBindJSON(&p)
-	data, err := t.service.PermissionPolicy.PermissionPolicyFindAllExtStatus(p.ID)
+	var param model.PermissionPolicy
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	data, err := t.service.PermissionPolicy.PermissionPolicyFindAllExtStatus(param.ID)
 	c.JSON(data, err)
 }
 
@@ -63,9 +71,11 @@ func (t *PermissionPolicyServer) PermissionPolicyFindAll(c *box.Context) {
 }
 
 func (t *PermissionPolicyServer) PermissionPolicyFind(c *box.Context) {
-	var p model.PermissionPolicy
-	c.ShouldBindJSON(&p)
-	data, err := t.service.PermissionPolicy.PermissionPolicyFind(p)
+	var param model.PermissionPolicy
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	data, err := t.service.PermissionPolicy.PermissionPolicyFind(param)
 	c.JSON(data, err)
 }
 
@@ -75,7 +85,9 @@ func (t *PermissionPolicyServer) PermissionAssociationUpdate(c *box.Context) {
 		Id     uint   `json:"id"`
 		Access []uint `json:"access"`
 	})
-	c.ShouldBindJSON(&param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 	err := t.service.PermissionPolicy.PermissionAssociationUpdate(param.Id, param.Access)
 	c.JSON(nil, err)
 }

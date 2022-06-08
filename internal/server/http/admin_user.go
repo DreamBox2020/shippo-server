@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"shippo-server/utils/box"
 )
 
@@ -27,8 +26,9 @@ func (t *AdminUserServer) UserCreateEmail(c *box.Context) {
 	var param = new(struct {
 		Email string `json:"email"`
 	})
-	c.ShouldBindJSON(&param)
-	fmt.Printf("userCreateEmail: %+v\n", param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	_, err := t.service.AdminUser.AdminUserCreateEmail(param.Email)
 	c.JSON(nil, err)

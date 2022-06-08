@@ -29,30 +29,38 @@ func (t *PermissionAccessServer) initRouter() {
 }
 
 func (t *PermissionAccessServer) PermissionAccessCreate(c *box.Context) {
-	var p model.PermissionAccess
-	c.ShouldBindJSON(&p)
-	err := t.service.PermissionAccess.PermissionAccessCreate(p)
+	var param model.PermissionAccess
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	err := t.service.PermissionAccess.PermissionAccessCreate(param)
 	c.JSON(nil, err)
 }
 
 func (t *PermissionAccessServer) PermissionAccessDel(c *box.Context) {
-	var p model.PermissionAccess
-	c.ShouldBindJSON(&p)
-	err := t.service.PermissionAccess.PermissionAccessDel(p)
-	c.JSON(p, err)
+	var param model.PermissionAccess
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	err := t.service.PermissionAccess.PermissionAccessDel(param)
+	c.JSON(nil, err)
 }
 
 func (t *PermissionAccessServer) PermissionAccessUpdate(c *box.Context) {
-	var p model.PermissionAccess
-	c.ShouldBindJSON(&p)
-	err := t.service.PermissionAccess.PermissionAccessUpdate(p)
+	var param model.PermissionAccess
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	err := t.service.PermissionAccess.PermissionAccessUpdate(param)
 	c.JSON(nil, err)
 }
 
 func (t *PermissionAccessServer) PermissionAccessFindAllExtStatus(c *box.Context) {
-	var p model.PermissionAccess
-	c.ShouldBindJSON(&p)
-	data, err := t.service.PermissionAccess.PermissionAccessFindAllExtStatus(p.ID)
+	var param model.PermissionAccess
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	data, err := t.service.PermissionAccess.PermissionAccessFindAllExtStatus(param.ID)
 	c.JSON(data, err)
 }
 
@@ -62,8 +70,10 @@ func (t *PermissionAccessServer) PermissionAccessFindAll(c *box.Context) {
 }
 
 func (t *PermissionAccessServer) PermissionAccessFind(c *box.Context) {
-	var p model.PermissionAccess
-	c.ShouldBindJSON(&p)
-	data, err := t.service.PermissionAccess.PermissionAccessFind(p)
+	var param model.PermissionAccess
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	data, err := t.service.PermissionAccess.PermissionAccessFind(param)
 	c.JSON(data, err)
 }

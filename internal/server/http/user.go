@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -28,8 +27,9 @@ func (t *UserServer) initRouter() {
 
 func (t *UserServer) UserLogin(c *box.Context) {
 	var param model.UserLoginParam
-	c.ShouldBindJSON(&param)
-	fmt.Printf("userLogin: %+v\n", param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	data, err := t.service.User.UserLogin(param, c.Req.Passport)
 	c.JSON(data, err)
@@ -37,8 +37,9 @@ func (t *UserServer) UserLogin(c *box.Context) {
 
 func (t *UserServer) FindAll(c *box.Context) {
 	var param model.UserFindAllReq
-	c.ShouldBindJSON(&param)
-	fmt.Printf("FindAll: %+v\n", param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	data, err := t.service.User.FindAll(param)
 	c.JSON(data, err)
@@ -46,8 +47,9 @@ func (t *UserServer) FindAll(c *box.Context) {
 
 func (t *UserServer) UpdateUserRole(c *box.Context) {
 	var param model.User
-	c.ShouldBindJSON(&param)
-	fmt.Printf("UpdateUserRole: %+v\n", param)
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
 
 	err := t.service.User.UpdateUserRole(param)
 	c.JSON(nil, err)
