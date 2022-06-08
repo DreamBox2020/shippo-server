@@ -2,14 +2,13 @@ package http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
 
 type TempServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewTempServer(server *Server) *TempServer {
@@ -22,9 +21,9 @@ func NewTempServer(server *Server) *TempServer {
 }
 
 func (t *TempServer) initRouter() {
-	t.router.POST("temp_trade_20220108/find", box.Handler(t.Temp_trade_20220108_find))
-	t.router.POST("temp_trade_20220108/add", box.Handler(t.Temp_trade_20220108_add))
-	t.router.POST("temp_trade_20220108/findNoExist", box.Handler(t.Temp_trade_20220108_findNoExist))
+	t.router.POST("temp_trade_20220108/find", t.Temp_trade_20220108_find)
+	t.router.POST("temp_trade_20220108/add", t.Temp_trade_20220108_add)
+	t.router.POST("temp_trade_20220108/findNoExist", t.Temp_trade_20220108_findNoExist)
 }
 
 func (t *TempServer) Temp_trade_20220108_find(c *box.Context) {

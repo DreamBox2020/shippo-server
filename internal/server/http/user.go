@@ -2,14 +2,13 @@ package http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
 
 type UserServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewUserServer(server *Server) *UserServer {
@@ -22,9 +21,9 @@ func NewUserServer(server *Server) *UserServer {
 }
 
 func (t *UserServer) initRouter() {
-	t.router.POST("login", box.Handler(t.UserLogin))
-	t.router.POST("findAll", box.Handler(t.FindAll))
-	t.router.POST("updateUserRole", box.Handler(t.UpdateUserRole))
+	t.router.POST("login", t.UserLogin)
+	t.router.POST("findAll", t.FindAll)
+	t.router.POST("updateUserRole", t.UpdateUserRole)
 }
 
 func (t *UserServer) UserLogin(c *box.Context) {

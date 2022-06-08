@@ -2,13 +2,12 @@ package http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"shippo-server/utils/box"
 )
 
 type AdminUserServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewAdminUserServer(server *Server) *AdminUserServer {
@@ -21,7 +20,7 @@ func NewAdminUserServer(server *Server) *AdminUserServer {
 }
 
 func (t *AdminUserServer) initRouter() {
-	t.router.POST("create", box.Handler(t.UserCreateEmail))
+	t.router.POST("create", t.UserCreateEmail)
 }
 
 func (t *AdminUserServer) UserCreateEmail(c *box.Context) {

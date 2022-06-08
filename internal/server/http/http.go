@@ -1,7 +1,6 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"shippo-server/internal/service"
 	"shippo-server/middleware"
@@ -26,14 +25,14 @@ type ServerGroup struct {
 }
 
 type Server struct {
-	engine  *gin.Engine
-	router  *gin.RouterGroup
+	engine  *box.Engine
+	router  *box.RouterGroup
 	service *service.ServiceGroup
 	Group   *ServerGroup
 }
 
 func New() *Server {
-	var engine = gin.Default()
+	var engine = box.New()
 	var svc = service.New()
 	s := &Server{
 		engine:  engine,
@@ -67,11 +66,11 @@ func (t *Server) initGroup() {
 func (t *Server) init() {
 
 	// 初始化用户信息的中间件
-	box.Use(t.Group.Passport.PassportGet)
-	box.Use(t.Group.Passport.Auth)
+	t.engine.Use(t.Group.Passport.PassportGet)
+	t.engine.Use(t.Group.Passport.Auth)
 
-	//s.engine.MaxMultipartMemory = 8 << 20 // 8 MiB
-	t.engine.Use(middleware.Cors())
+	t.engine.GinEngine.Use(middleware.Cors())
+	//t.engine.MaxMultipartMemory = 8 << 20 // 8 MiB
 
 	server := t.initServer(config.Server.Addr, t.engine)
 	if err := server.ListenAndServe(); err != nil {
@@ -79,7 +78,7 @@ func (t *Server) init() {
 	}
 }
 
-func (t *Server) initServer(address string, router *gin.Engine) *http.Server {
+func (t *Server) initServer(address string, router *box.Engine) *http.Server {
 	return &http.Server{
 		Addr:           address,
 		Handler:        router,

@@ -14,7 +14,7 @@ import (
 
 type PassportServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewPassportServer(server *Server) *PassportServer {
@@ -27,8 +27,8 @@ func NewPassportServer(server *Server) *PassportServer {
 }
 
 func (t *PassportServer) initRouter() {
-	t.router.POST("create", box.Handler(t.PassportCreate))
-	t.router.POST("createDev", t.CreateDev)
+	t.router.POST("create", t.PassportCreate)
+	t.router.GinGroup.POST("createDev", t.CreateDev)
 }
 
 func (t *PassportServer) PassportCreate(c *box.Context) {

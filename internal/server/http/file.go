@@ -2,7 +2,6 @@ package http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"os"
 	"shippo-server/internal/model"
@@ -15,7 +14,7 @@ import (
 
 type FileServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewFileServer(server *Server) *FileServer {
@@ -28,8 +27,8 @@ func NewFileServer(server *Server) *FileServer {
 }
 
 func (t *FileServer) initRouter() {
-	t.router.GET("pic/*filePath", box.Handler(t.FileDownload))
-	t.router.POST("upload", box.Handler(t.FileUpload))
+	t.router.GET("pic/*filePath", t.FileDownload)
+	t.router.POST("upload", t.FileUpload)
 }
 
 func (t *FileServer) FileDownload(c *box.Context) {

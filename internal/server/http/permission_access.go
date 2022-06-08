@@ -1,14 +1,13 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
 
 type PermissionAccessServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewPermissionAccessServer(server *Server) *PermissionAccessServer {
@@ -21,12 +20,12 @@ func NewPermissionAccessServer(server *Server) *PermissionAccessServer {
 }
 
 func (t *PermissionAccessServer) initRouter() {
-	t.router.POST("create", box.Handler(t.PermissionAccessCreate))
-	t.router.POST("del", box.Handler(t.PermissionAccessDel))
-	t.router.POST("update", box.Handler(t.PermissionAccessUpdate))
-	t.router.POST("findAllExtStatus", box.Handler(t.PermissionAccessFindAllExtStatus))
-	t.router.POST("findAll", box.Handler(t.PermissionAccessFindAll))
-	t.router.POST("find", box.Handler(t.PermissionAccessFind))
+	t.router.POST("create", t.PermissionAccessCreate)
+	t.router.POST("del", t.PermissionAccessDel)
+	t.router.POST("update", t.PermissionAccessUpdate)
+	t.router.POST("findAllExtStatus", t.PermissionAccessFindAllExtStatus)
+	t.router.POST("findAll", t.PermissionAccessFindAll)
+	t.router.POST("find", t.PermissionAccessFind)
 }
 
 func (t *PermissionAccessServer) PermissionAccessCreate(c *box.Context) {

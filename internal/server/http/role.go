@@ -2,14 +2,13 @@ package http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
 
 type RoleServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewRoleServer(server *Server) *RoleServer {
@@ -22,13 +21,13 @@ func NewRoleServer(server *Server) *RoleServer {
 }
 
 func (t *RoleServer) initRouter() {
-	t.router.POST("create", box.Handler(t.RoleCreate))
-	t.router.POST("del", box.Handler(t.RoleDel))
-	t.router.POST("update", box.Handler(t.RoleUpdate))
-	t.router.POST("updatePolicies", box.Handler(t.RoleAssociationUpdate))
-	t.router.POST("findAll", box.Handler(t.RoleFindAll))
-	t.router.POST("findPolicies", box.Handler(t.FindPolicies))
-	t.router.POST("find", box.Handler(t.RoleFind))
+	t.router.POST("create", t.RoleCreate)
+	t.router.POST("del", t.RoleDel)
+	t.router.POST("update", t.RoleUpdate)
+	t.router.POST("updatePolicies", t.RoleAssociationUpdate)
+	t.router.POST("findAll", t.RoleFindAll)
+	t.router.POST("findPolicies", t.FindPolicies)
+	t.router.POST("find", t.RoleFind)
 }
 
 // 增加⻆⾊

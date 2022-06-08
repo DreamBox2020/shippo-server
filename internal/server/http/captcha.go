@@ -10,7 +10,7 @@ import (
 
 type CaptchaServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewCaptchaServer(server *Server) *CaptchaServer {
@@ -23,8 +23,8 @@ func NewCaptchaServer(server *Server) *CaptchaServer {
 }
 
 func (t *CaptchaServer) initRouter() {
-	t.router.POST("send", box.Handler(t.CaptchaSend))
-	t.router.Any("serverInfo", t.ServerInfo)
+	t.router.POST("send", t.CaptchaSend)
+	t.router.GinGroup.Any("serverInfo", t.ServerInfo)
 }
 
 func (t *CaptchaServer) CaptchaSend(c *box.Context) {

@@ -1,14 +1,13 @@
 package http
 
 import (
-	"github.com/gin-gonic/gin"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
 
 type WxCommentLikeServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewWxCommentLikeServer(server *Server) *WxCommentLikeServer {
@@ -21,8 +20,8 @@ func NewWxCommentLikeServer(server *Server) *WxCommentLikeServer {
 }
 
 func (t *WxCommentLikeServer) initRouter() {
-	t.router.POST("create", box.Handler(t.Create))
-	t.router.POST("delete", box.Handler(t.Delete))
+	t.router.POST("create", t.Create)
+	t.router.POST("delete", t.Delete)
 }
 
 // Create 新增点赞

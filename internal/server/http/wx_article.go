@@ -2,7 +2,6 @@ package http
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 	"shippo-server/utils/ecode"
@@ -10,7 +9,7 @@ import (
 
 type WxArticleServer struct {
 	*Server
-	router *gin.RouterGroup
+	router *box.RouterGroup
 }
 
 func NewWxArticleServer(server *Server) *WxArticleServer {
@@ -22,12 +21,12 @@ func NewWxArticleServer(server *Server) *WxArticleServer {
 	return s
 }
 func (t *WxArticleServer) initRouter() {
-	t.router.POST("create", box.Handler(t.Create))
-	t.router.POST("update", box.Handler(t.Update))
-	t.router.POST("updateCommentSwitch", box.Handler(t.UpdateCommentSwitch))
-	t.router.POST("findByOffiaccount", box.Handler(t.FindByOffiaccount))
-	t.router.POST("find", box.Handler(t.Find))
-	t.router.POST("findAllByWxPassport", box.Handler(t.FindAllByWxPassport))
+	t.router.POST("create", t.Create)
+	t.router.POST("update", t.Update)
+	t.router.POST("updateCommentSwitch", t.UpdateCommentSwitch)
+	t.router.POST("findByOffiaccount", t.FindByOffiaccount)
+	t.router.POST("find", t.Find)
+	t.router.POST("findAllByWxPassport", t.FindAllByWxPassport)
 }
 
 // Create 新增文章
