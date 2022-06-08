@@ -9,23 +9,26 @@ import (
 
 type RoleServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewRoleServer(s *Server) *RoleServer {
-	return &RoleServer{s}
-}
-
-func (t *RoleServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("role")
-	{
-		r.POST("create", box.Handler(t.RoleCreate))
-		r.POST("del", box.Handler(t.RoleDel))
-		r.POST("update", box.Handler(t.RoleUpdate))
-		r.POST("updatePolicies", box.Handler(t.RoleAssociationUpdate))
-		r.POST("findAll", box.Handler(t.RoleFindAll))
-		r.POST("findPolicies", box.Handler(t.FindPolicies))
-		r.POST("find", box.Handler(t.RoleFind))
+func NewRoleServer(server *Server) *RoleServer {
+	var s = &RoleServer{
+		Server: server,
+		router: server.router.Group("role"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *RoleServer) initRouter() {
+	t.router.POST("create", box.Handler(t.RoleCreate))
+	t.router.POST("del", box.Handler(t.RoleDel))
+	t.router.POST("update", box.Handler(t.RoleUpdate))
+	t.router.POST("updatePolicies", box.Handler(t.RoleAssociationUpdate))
+	t.router.POST("findAll", box.Handler(t.RoleFindAll))
+	t.router.POST("findPolicies", box.Handler(t.FindPolicies))
+	t.router.POST("find", box.Handler(t.RoleFind))
 }
 
 // 增加⻆⾊

@@ -75,24 +75,24 @@ func New() *Dao {
 		db:    db,
 		Group: nil,
 	}
-	d.Group = NewGroup(d)
+	d.initGroup()
 
 	return d
 }
 
-func NewGroup(d *Dao) *DaoGroup {
-	return &DaoGroup{
-		User:             NewUserDao(d),
-		Temp:             NewTempDao(d),
-		Passport:         NewPassportDao(d),
-		Captcha:          NewCaptchaDao(d),
-		Album:            NewAlbumDao(d),
-		Role:             NewRoleDao(d),
-		PermissionAccess: NewPermissionAccessDao(d),
-		PermissionPolicy: NewPermissionPolicyDao(d),
-		Picture:          NewPictureDao(d),
-		WxArticle:        NewWxArticleDao(d),
-		WxCommentLike:    NewWxCommentLikeDao(d),
+func (t *Dao) initGroup() {
+	t.Group = &DaoGroup{
+		User:             NewUserDao(t),
+		Temp:             NewTempDao(t),
+		Passport:         NewPassportDao(t),
+		Captcha:          NewCaptchaDao(t),
+		Album:            NewAlbumDao(t),
+		Role:             NewRoleDao(t),
+		PermissionAccess: NewPermissionAccessDao(t),
+		PermissionPolicy: NewPermissionPolicyDao(t),
+		Picture:          NewPictureDao(t),
+		WxArticle:        NewWxArticleDao(t),
+		WxCommentLike:    NewWxCommentLikeDao(t),
 	}
 }
 

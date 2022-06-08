@@ -17,19 +17,22 @@ import (
 
 type WxServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewWxServer(s *Server) *WxServer {
-	return &WxServer{s}
-}
-
-func (t *WxServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("wx")
-	{
-		r.GET("authorize", t.Authorize)
-		r.GET("msg", t.Msg)
-		r.POST("msg", t.MsgPost)
+func NewWxServer(server *Server) *WxServer {
+	var s = &WxServer{
+		Server: server,
+		router: server.router.Group("wx"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *WxServer) initRouter() {
+	t.router.GET("authorize", t.Authorize)
+	t.router.GET("msg", t.Msg)
+	t.router.POST("msg", t.MsgPost)
 }
 
 func (t *WxServer) Authorize(c *gin.Context) {

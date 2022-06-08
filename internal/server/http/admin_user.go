@@ -8,17 +8,20 @@ import (
 
 type AdminUserServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewAdminUserServer(s *Server) *AdminUserServer {
-	return &AdminUserServer{s}
-}
-
-func (t *AdminUserServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("admin/user")
-	{
-		r.POST("create", box.Handler(t.UserCreateEmail))
+func NewAdminUserServer(server *Server) *AdminUserServer {
+	var s = &AdminUserServer{
+		Server: server,
+		router: server.router.Group("admin/user"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *AdminUserServer) initRouter() {
+	t.router.POST("create", box.Handler(t.UserCreateEmail))
 }
 
 func (t *AdminUserServer) UserCreateEmail(c *box.Context) {

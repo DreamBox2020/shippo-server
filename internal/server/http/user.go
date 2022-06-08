@@ -9,19 +9,22 @@ import (
 
 type UserServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewUserServer(s *Server) *UserServer {
-	return &UserServer{s}
-}
-
-func (t *UserServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("user")
-	{
-		r.POST("login", box.Handler(t.UserLogin))
-		r.POST("findAll", box.Handler(t.FindAll))
-		r.POST("updateUserRole", box.Handler(t.UpdateUserRole))
+func NewUserServer(server *Server) *UserServer {
+	var s = &UserServer{
+		Server: server,
+		router: server.router.Group("user"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *UserServer) initRouter() {
+	t.router.POST("login", box.Handler(t.UserLogin))
+	t.router.POST("findAll", box.Handler(t.FindAll))
+	t.router.POST("updateUserRole", box.Handler(t.UpdateUserRole))
 }
 
 func (t *UserServer) UserLogin(c *box.Context) {

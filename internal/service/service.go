@@ -33,24 +33,24 @@ func New() *Service {
 		dao:   d.Group,
 		Group: nil,
 	}
-	s.Group = NewGroup(s)
+	s.initGroup()
 
 	return s
 }
 
-func NewGroup(d *Service) *ServiceGroup {
-	return &ServiceGroup{
-		User:             NewUserService(d),
-		Wx:               NewWxService(d),
-		WxArticle:        NewWxArticleService(d),
-		Temp:             NewTempService(d),
-		Passport:         NewPassportService(d),
-		Captcha:          NewCaptchaService(d),
-		AdminUser:        NewAdminUserService(d),
-		Role:             NewRoleService(d),
-		PermissionAccess: NewPermissionAccessService(d),
-		PermissionPolicy: NewPermissionPolicyService(d),
-		Picture:          NewPictureService(d),
-		WxCommentLike:    NewWxCommentLikeService(d),
+func (t *Service) initGroup() {
+	t.Group = &ServiceGroup{
+		User:             NewUserService(t),
+		Wx:               NewWxService(t),
+		WxArticle:        NewWxArticleService(t),
+		Temp:             NewTempService(t),
+		Passport:         NewPassportService(t),
+		Captcha:          NewCaptchaService(t),
+		AdminUser:        NewAdminUserService(t),
+		Role:             NewRoleService(t),
+		PermissionAccess: NewPermissionAccessService(t),
+		PermissionPolicy: NewPermissionPolicyService(t),
+		Picture:          NewPictureService(t),
+		WxCommentLike:    NewWxCommentLikeService(t),
 	}
 }

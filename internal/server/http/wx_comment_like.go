@@ -8,18 +8,21 @@ import (
 
 type WxCommentLikeServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewWxCommentLikeServer(s *Server) *WxCommentLikeServer {
-	return &WxCommentLikeServer{s}
-}
-
-func (t *WxCommentLikeServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("wxCommentLike")
-	{
-		r.POST("create", box.Handler(t.Create))
-		r.POST("delete", box.Handler(t.Delete))
+func NewWxCommentLikeServer(server *Server) *WxCommentLikeServer {
+	var s = &WxCommentLikeServer{
+		Server: server,
+		router: server.router.Group("wxCommentLike"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *WxCommentLikeServer) initRouter() {
+	t.router.POST("create", box.Handler(t.Create))
+	t.router.POST("delete", box.Handler(t.Delete))
 }
 
 // Create 新增点赞

@@ -10,21 +10,24 @@ import (
 
 type WxArticleServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewWxArticleServer(s *Server) *WxArticleServer {
-	return &WxArticleServer{s}
-}
-func (t *WxArticleServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("wxArticle")
-	{
-		r.POST("create", box.Handler(t.Create))
-		r.POST("update", box.Handler(t.Update))
-		r.POST("updateCommentSwitch", box.Handler(t.UpdateCommentSwitch))
-		r.POST("findByOffiaccount", box.Handler(t.FindByOffiaccount))
-		r.POST("find", box.Handler(t.Find))
-		r.POST("findAllByWxPassport", box.Handler(t.FindAllByWxPassport))
+func NewWxArticleServer(server *Server) *WxArticleServer {
+	var s = &WxArticleServer{
+		Server: server,
+		router: server.router.Group("wxArticle"),
 	}
+	s.initRouter()
+	return s
+}
+func (t *WxArticleServer) initRouter() {
+	t.router.POST("create", box.Handler(t.Create))
+	t.router.POST("update", box.Handler(t.Update))
+	t.router.POST("updateCommentSwitch", box.Handler(t.UpdateCommentSwitch))
+	t.router.POST("findByOffiaccount", box.Handler(t.FindByOffiaccount))
+	t.router.POST("find", box.Handler(t.Find))
+	t.router.POST("findAllByWxPassport", box.Handler(t.FindAllByWxPassport))
 }
 
 // Create 新增文章

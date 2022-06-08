@@ -8,22 +8,25 @@ import (
 
 type PermissionAccessServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewPermissionAccessServer(s *Server) *PermissionAccessServer {
-	return &PermissionAccessServer{s}
-}
-
-func (t *PermissionAccessServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("permissionAccess")
-	{
-		r.POST("create", box.Handler(t.PermissionAccessCreate))
-		r.POST("del", box.Handler(t.PermissionAccessDel))
-		r.POST("update", box.Handler(t.PermissionAccessUpdate))
-		r.POST("findAllExtStatus", box.Handler(t.PermissionAccessFindAllExtStatus))
-		r.POST("findAll", box.Handler(t.PermissionAccessFindAll))
-		r.POST("find", box.Handler(t.PermissionAccessFind))
+func NewPermissionAccessServer(server *Server) *PermissionAccessServer {
+	var s = &PermissionAccessServer{
+		Server: server,
+		router: server.router.Group("permissionAccess"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *PermissionAccessServer) initRouter() {
+	t.router.POST("create", box.Handler(t.PermissionAccessCreate))
+	t.router.POST("del", box.Handler(t.PermissionAccessDel))
+	t.router.POST("update", box.Handler(t.PermissionAccessUpdate))
+	t.router.POST("findAllExtStatus", box.Handler(t.PermissionAccessFindAllExtStatus))
+	t.router.POST("findAll", box.Handler(t.PermissionAccessFindAll))
+	t.router.POST("find", box.Handler(t.PermissionAccessFind))
 }
 
 func (t *PermissionAccessServer) PermissionAccessCreate(c *box.Context) {

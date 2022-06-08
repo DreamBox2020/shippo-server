@@ -15,18 +15,21 @@ import (
 
 type FileServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewFileServer(s *Server) *FileServer {
-	return &FileServer{s}
-}
-
-func (t *FileServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("file")
-	{
-		r.GET("pic/*filePath", box.Handler(t.FileDownload))
-		r.POST("upload", box.Handler(t.FileUpload))
+func NewFileServer(server *Server) *FileServer {
+	var s = &FileServer{
+		Server: server,
+		router: server.router.Group("file"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *FileServer) initRouter() {
+	t.router.GET("pic/*filePath", box.Handler(t.FileDownload))
+	t.router.POST("upload", box.Handler(t.FileUpload))
 }
 
 func (t *FileServer) FileDownload(c *box.Context) {

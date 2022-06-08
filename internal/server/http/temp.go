@@ -9,19 +9,22 @@ import (
 
 type TempServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewTempServer(s *Server) *TempServer {
-	return &TempServer{s}
-}
-
-func (t *TempServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("temp")
-	{
-		r.POST("temp_trade_20220108/find", box.Handler(t.Temp_trade_20220108_find))
-		r.POST("temp_trade_20220108/add", box.Handler(t.Temp_trade_20220108_add))
-		r.POST("temp_trade_20220108/findNoExist", box.Handler(t.Temp_trade_20220108_findNoExist))
+func NewTempServer(server *Server) *TempServer {
+	var s = &TempServer{
+		Server: server,
+		router: server.router.Group("temp"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *TempServer) initRouter() {
+	t.router.POST("temp_trade_20220108/find", box.Handler(t.Temp_trade_20220108_find))
+	t.router.POST("temp_trade_20220108/add", box.Handler(t.Temp_trade_20220108_add))
+	t.router.POST("temp_trade_20220108/findNoExist", box.Handler(t.Temp_trade_20220108_findNoExist))
 }
 
 func (t *TempServer) Temp_trade_20220108_find(c *box.Context) {

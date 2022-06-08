@@ -26,74 +26,60 @@ type ServerGroup struct {
 }
 
 type Server struct {
+	engine  *gin.Engine
+	router  *gin.RouterGroup
 	service *service.ServiceGroup
 	Group   *ServerGroup
 }
 
 func New() *Server {
-
+	var engine = gin.Default()
 	var svc = service.New()
 	s := &Server{
+		engine:  engine,
+		router:  engine.Group("/v1"),
 		service: svc.Group,
 		Group:   nil,
 	}
-	s.Group = NewGroup(s)
-	s.Init()
+	s.initGroup()
+	s.init()
 
 	return s
 }
 
-func NewGroup(d *Server) *ServerGroup {
-	return &ServerGroup{
-		User:             NewUserServer(d),
-		Temp:             NewTempServer(d),
-		Passport:         NewPassportServer(d),
-		File:             NewFileServer(d),
-		Captcha:          NewCaptchaServer(d),
-		AdminUser:        NewAdminUserServer(d),
-		Role:             NewRoleServer(d),
-		PermissionAccess: NewPermissionAccessServer(d),
-		PermissionPolicy: NewPermissionPolicyServer(d),
-		Wx:               NewWxServer(d),
-		WxArticle:        NewWxArticleServer(d),
-		WxCommentLike:    NewWxCommentLikeServer(d),
+func (t *Server) initGroup() {
+	t.Group = &ServerGroup{
+		User:             NewUserServer(t),
+		Temp:             NewTempServer(t),
+		Passport:         NewPassportServer(t),
+		File:             NewFileServer(t),
+		Captcha:          NewCaptchaServer(t),
+		AdminUser:        NewAdminUserServer(t),
+		Role:             NewRoleServer(t),
+		PermissionAccess: NewPermissionAccessServer(t),
+		PermissionPolicy: NewPermissionPolicyServer(t),
+		Wx:               NewWxServer(t),
+		WxArticle:        NewWxArticleServer(t),
+		WxCommentLike:    NewWxCommentLikeServer(t),
 	}
 }
 
-func (s *Server) InitRouter(engine *gin.Engine) {
-	router := engine.Group("v1")
-	s.Group.User.InitRouter(router)
-	s.Group.Temp.InitRouter(router)
-	s.Group.Passport.InitRouter(router)
-	s.Group.File.InitRouter(router)
-	s.Group.Captcha.InitRouter(router)
-	s.Group.AdminUser.InitRouter(router)
-	s.Group.Role.InitRouter(router)
-	s.Group.PermissionAccess.InitRouter(router)
-	s.Group.PermissionPolicy.InitRouter(router)
-	s.Group.Wx.InitRouter(router)
-	s.Group.WxArticle.InitRouter(router)
-	s.Group.WxCommentLike.InitRouter(router)
-}
-
-func (s *Server) Init() {
+func (t *Server) init() {
 
 	// 初始化用户信息的中间件
-	box.Use(s.Group.Passport.PassportGet)
-	box.Use(s.Group.Passport.Auth)
+	box.Use(t.Group.Passport.PassportGet)
+	box.Use(t.Group.Passport.Auth)
 
-	engine := gin.Default()
-	//engine.MaxMultipartMemory = 8 << 20 // 8 MiB
-	engine.Use(middleware.Cors())
-	s.InitRouter(engine)
+	//s.engine.MaxMultipartMemory = 8 << 20 // 8 MiB
+	t.engine.Use(middleware.Cors())
 
-	server := s.InitServer(config.Server.Addr, engine)
+	server := t.initServer(config.Server.Addr, t.engine)
 	if err := server.ListenAndServe(); err != nil {
 		panic(err)
 	}
 }
 
-func (s *Server) InitServer(address string, router *gin.Engine) *http.Server {
+func (t *Server) initServer(address string, router *gin.Engine) *http.Server {
 	return &http.Server{
 		Addr:           address,
 		Handler:        router,

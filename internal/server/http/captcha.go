@@ -10,18 +10,21 @@ import (
 
 type CaptchaServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewCaptchaServer(s *Server) *CaptchaServer {
-	return &CaptchaServer{s}
-}
-
-func (t *CaptchaServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("captcha")
-	{
-		r.POST("send", box.Handler(t.CaptchaSend))
-		r.Any("serverInfo", t.ServerInfo)
+func NewCaptchaServer(server *Server) *CaptchaServer {
+	var s = &CaptchaServer{
+		Server: server,
+		router: server.router.Group("captcha"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *CaptchaServer) initRouter() {
+	t.router.POST("send", box.Handler(t.CaptchaSend))
+	t.router.Any("serverInfo", t.ServerInfo)
 }
 
 func (t *CaptchaServer) CaptchaSend(c *box.Context) {

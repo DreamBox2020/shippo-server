@@ -14,18 +14,21 @@ import (
 
 type PassportServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewPassportServer(s *Server) *PassportServer {
-	return &PassportServer{s}
-}
-
-func (t *PassportServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("passport")
-	{
-		r.POST("create", box.Handler(t.PassportCreate))
-		r.POST("createDev", t.CreateDev)
+func NewPassportServer(server *Server) *PassportServer {
+	var s = &PassportServer{
+		Server: server,
+		router: server.router.Group("passport"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *PassportServer) initRouter() {
+	t.router.POST("create", box.Handler(t.PassportCreate))
+	t.router.POST("createDev", t.CreateDev)
 }
 
 func (t *PassportServer) PassportCreate(c *box.Context) {

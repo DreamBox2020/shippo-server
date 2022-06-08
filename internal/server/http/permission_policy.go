@@ -8,23 +8,26 @@ import (
 
 type PermissionPolicyServer struct {
 	*Server
+	router *gin.RouterGroup
 }
 
-func NewPermissionPolicyServer(s *Server) *PermissionPolicyServer {
-	return &PermissionPolicyServer{s}
-}
-
-func (t *PermissionPolicyServer) InitRouter(Router *gin.RouterGroup) {
-	r := Router.Group("permissionPolicy")
-	{
-		r.POST("create", box.Handler(t.PermissionPolicyCreate))
-		r.POST("del", box.Handler(t.PermissionPolicyDel))
-		r.POST("update", box.Handler(t.PermissionPolicyUpdate))
-		r.POST("updateAccess", box.Handler(t.PermissionAssociationUpdate))
-		r.POST("findAllExtStatus", box.Handler(t.PermissionPolicyFindAllExtStatus))
-		r.POST("findAll", box.Handler(t.PermissionPolicyFindAll))
-		r.POST("find", box.Handler(t.PermissionPolicyFind))
+func NewPermissionPolicyServer(server *Server) *PermissionPolicyServer {
+	var s = &PermissionPolicyServer{
+		Server: server,
+		router: server.router.Group("permissionPolicy"),
 	}
+	s.initRouter()
+	return s
+}
+
+func (t *PermissionPolicyServer) initRouter() {
+	t.router.POST("create", box.Handler(t.PermissionPolicyCreate))
+	t.router.POST("del", box.Handler(t.PermissionPolicyDel))
+	t.router.POST("update", box.Handler(t.PermissionPolicyUpdate))
+	t.router.POST("updateAccess", box.Handler(t.PermissionAssociationUpdate))
+	t.router.POST("findAllExtStatus", box.Handler(t.PermissionPolicyFindAllExtStatus))
+	t.router.POST("findAll", box.Handler(t.PermissionPolicyFindAll))
+	t.router.POST("find", box.Handler(t.PermissionPolicyFind))
 }
 
 func (t *PermissionPolicyServer) PermissionPolicyCreate(c *box.Context) {
