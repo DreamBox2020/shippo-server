@@ -58,10 +58,11 @@ func (engine *Engine) HandlersToGinHandlers(middleware ...HandlerFunc) []gin.Han
 
 func (engine *Engine) allocateContext(ctx *gin.Context) (context *Context) {
 	context = &Context{
-		index:  -1,
-		engine: engine,
-		Ctx:    ctx,
-		Req:    nil,
+		Request: ctx.Request,
+		index:   -1,
+		engine:  engine,
+		Ctx:     ctx,
+		Req:     nil,
 	}
 	if ctx.GetHeader("Content-Type") == "application/json" {
 		if err := ctx.ShouldBindJSON(&context.Req); err != nil {

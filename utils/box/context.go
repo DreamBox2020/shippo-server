@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"math"
+	"mime/multipart"
 	"net/http"
 	"shippo-server/internal/model"
 	"shippo-server/utils/ecode"
@@ -31,6 +32,8 @@ type Request struct {
 }
 
 type Context struct {
+	Request *http.Request
+
 	index    int8
 	engine   *Engine
 	Ctx      *gin.Context
@@ -94,4 +97,65 @@ func (c *Context) DataDownload(contentType string, data []byte, fileName string)
 // NotFound 响应404
 func (c *Context) NotFound() {
 	c.Ctx.String(http.StatusNotFound, "404 page not found")
+}
+
+func (c *Context) ClientIP() string {
+	return c.Ctx.ClientIP()
+}
+
+func (c *Context) ContentType() string {
+	return c.Ctx.ContentType()
+}
+
+func (c *Context) Status(code int) {
+	c.Ctx.Status(code)
+}
+
+func (c *Context) Header(key, value string) {
+	c.Ctx.Header(key, value)
+}
+
+func (c *Context) GetHeader(key string) string {
+	return c.GetHeader(key)
+}
+
+func (c *Context) SetCookie(name, value string, maxAge int, path, domain string, secure, httpOnly bool) {
+	c.Ctx.SetCookie(name, value, maxAge, path, domain, secure, httpOnly)
+}
+
+func (c *Context) Cookie(name string) (string, error) {
+	return c.Ctx.Cookie(name)
+}
+
+func (c *Context) Param(key string) string {
+	return c.Ctx.Param(key)
+}
+
+func (c *Context) Query(key string) (value string) {
+	return c.Query(key)
+}
+
+func (c *Context) GetQuery(key string) (string, bool) {
+	return c.Ctx.GetQuery(key)
+}
+
+func (c *Context) PostForm(key string) (value string) {
+	value, _ = c.GetPostForm(key)
+	return
+}
+
+func (c *Context) GetPostForm(key string) (string, bool) {
+	return c.Ctx.GetPostForm(key)
+}
+
+func (c *Context) FormFile(name string) (*multipart.FileHeader, error) {
+	return c.Ctx.FormFile(name)
+}
+
+func (c *Context) MultipartForm() (*multipart.Form, error) {
+	return c.MultipartForm()
+}
+
+func (c *Context) SaveUploadedFile(file *multipart.FileHeader, dst string) error {
+	return c.Ctx.SaveUploadedFile(file, dst)
 }

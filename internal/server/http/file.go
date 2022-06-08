@@ -32,7 +32,7 @@ func (t *FileServer) initRouter() {
 }
 
 func (t *FileServer) FileDownload(c *box.Context) {
-	param := c.Ctx.Param("filePath")
+	param := c.Param("filePath")
 	fmt.Printf("FileDownload->filePath:%+v\n", param)
 	if param != "" {
 		r, err := t.service.Picture.FindByUri("/pic" + param)
@@ -52,8 +52,8 @@ func (t *FileServer) FileDownload(c *box.Context) {
 }
 
 func (t *FileServer) FileUpload(c *box.Context) {
-	header, _ := c.Ctx.FormFile("file")
-	channel, ok := c.Ctx.GetPostForm("channel")
+	header, _ := c.FormFile("file")
+	channel, ok := c.GetPostForm("channel")
 	if !ok {
 		c.JSON(nil, ecode.ServerErr)
 		return
@@ -99,7 +99,7 @@ func (t *FileServer) FileUpload(c *box.Context) {
 	}
 
 	// 上传文件至指定目录
-	if err := c.Ctx.SaveUploadedFile(header, dst); err != nil {
+	if err := c.SaveUploadedFile(header, dst); err != nil {
 		fmt.Println(err)
 		c.JSON(nil, ecode.ServerErr)
 		return

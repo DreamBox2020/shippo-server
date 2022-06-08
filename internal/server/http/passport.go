@@ -36,10 +36,10 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 	data, err := t.service.Passport.PassportCreate(*c.Passport)
 	if err == nil {
 		var domain string
-		if c.Ctx.ClientIP() != "127.0.0.1" {
+		if c.ClientIP() != "127.0.0.1" {
 			domain = config.Server.CookieDomain
 		}
-		c.Ctx.SetCookie("__PASSPORT", data.Passport, 60*60*24*30,
+		c.SetCookie("__PASSPORT", data.Passport, 60*60*24*30,
 			"/", domain, false, true)
 	}
 	c.JSON(data, err)
@@ -83,12 +83,12 @@ func (t *PassportServer) PassportGet(c *box.Context) {
 		fmt.Printf("http->passportGet:%+v\n", p)
 		c.Passport = &p
 	} else {
-		fmt.Printf("http->passportGet->ip:%+v\n", c.Ctx.ClientIP())
-		fmt.Printf("http->passportGet->ua:%+v\n", c.Ctx.GetHeader("User-Agent"))
+		fmt.Printf("http->passportGet->ip:%+v\n", c.ClientIP())
+		fmt.Printf("http->passportGet->ua:%+v\n", c.GetHeader("User-Agent"))
 
 		c.Passport = &model.Passport{
-			Ip:     c.Ctx.ClientIP(),
-			Ua:     c.Ctx.GetHeader("User-Agent"),
+			Ip:     c.ClientIP(),
+			Ua:     c.GetHeader("User-Agent"),
 			Client: 0,
 		}
 	}
@@ -140,8 +140,8 @@ func (t *PassportServer) Auth(c *box.Context) {
 
 	var tag = false
 	reg, _ := regexp.Compile("^/v1")
-	path := reg.ReplaceAllString(c.Ctx.Request.URL.Path, "")
-	var key1 = strings.ToLower(c.Ctx.Request.Method + ":" + path)
+	path := reg.ReplaceAllString(c.Request.URL.Path, "")
+	var key1 = strings.ToLower(c.Request.Method + ":" + path)
 	for _, access := range list {
 		key2 := strings.ToLower(access.AccessRule)
 		fmt.Printf("http->Auth->key1:%+v\n", key1)
