@@ -23,6 +23,7 @@ type DaoGroup struct {
 	Picture          *PictureDao
 	WxArticle        *WxArticleDao
 	WxCommentLike    *WxCommentLikeDao
+	WxOffiaccount    *WxOffiaccountDao
 }
 
 type Dao struct {
@@ -93,6 +94,7 @@ func (t *Dao) initGroup() {
 		Picture:          NewPictureDao(t),
 		WxArticle:        NewWxArticleDao(t),
 		WxCommentLike:    NewWxCommentLikeDao(t),
+		WxOffiaccount:    NewWxOffiaccountDao(t),
 	}
 }
 
