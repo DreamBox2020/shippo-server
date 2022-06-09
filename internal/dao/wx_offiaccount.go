@@ -19,13 +19,13 @@ func (t *WxOffiaccountDao) FindAll() (r *[]model.WxOffiaccount, err error) {
 }
 
 // FindByUsername 根据username查询公众号
-func (t *WxOffiaccountDao) FindByUsername(username string) (u *model.WxOffiaccount, err error) {
-	err = t.db.Where("username", username).First(&u).Error
+func (t *WxOffiaccountDao) FindByUsername(username string) (r *model.WxOffiaccount, err error) {
+	err = t.db.Where("username", username).First(&r).Error
 	return
 }
 
 // Find 根据id查询公众号
-func (t *WxOffiaccountDao) Find(id uint) (u *model.WxOffiaccount, err error) {
-	err = t.db.First(&u, id).Error
+func (t *WxOffiaccountDao) Find(id uint) (r *model.WxOffiaccount, err error) {
+	err = t.db.First(&r, id).Error
 	return
 }
