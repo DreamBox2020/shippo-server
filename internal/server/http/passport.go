@@ -33,15 +33,58 @@ func (t *PassportServer) initRouter() {
 
 func (t *PassportServer) PassportCreate(c *box.Context) {
 
-	data, err := t.service.Passport.PassportCreate(*c.Passport)
-	if err == nil {
-		var domain string
-		if c.ClientIP() != "127.0.0.1" {
-			domain = config.Server.CookieDomain
-		}
-		c.SetCookie("__PASSPORT", data.Passport, 60*60*24*30,
-			"/", domain, false, true)
+	var param = new(struct {
+		Code string `json:"code"`
+	})
+
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
 	}
+
+	var passport model.Passport
+	var err error = nil
+
+	if param.Code != "" {
+		passport, err = t.service.Passport.WxCreate(*c.Passport, param.Code)
+		if err != nil {
+			c.JSON(nil, err)
+			return
+		}
+	} else {
+		passport, err = t.service.Passport.PassportCreate(*c.Passport)
+		if err != nil {
+			c.JSON(nil, err)
+			return
+		}
+	}
+
+	var domain string
+	if !config.IsLocal() {
+		domain = config.Server.CookieDomain
+	}
+	c.SetCookie("__PASSPORT", passport.Token, 60*60*24*30,
+		"/", domain, false, true)
+
+	var data model.PassportCreateResult
+	var access []model.PermissionAccess
+
+	if passport.IsLogin() {
+		// 根据用户角色查询对应权限信息
+		access, err = t.service.Role.RoleFindPermissionAccess(c.User.Role)
+	} else {
+		// 如果当前没有登录，查询基础权限信息
+		access, err = t.service.PermissionPolicy.FindPermissionAccessByPolicyName("SysBase")
+	}
+
+	if err != nil {
+		c.JSON(nil, err)
+		return
+	}
+
+	data.Passport = passport.Token
+	data.Uid = passport.UserId
+	data.Access = access
+
 	c.JSON(data, err)
 }
 
@@ -60,8 +103,7 @@ func (t *PassportServer) CreateDev(c *gin.Context) {
 		return
 	}
 
-	data, _ := t.service.Passport.Create(model.Passport{
-		Token:  "",
+	data, _ := t.service.Passport.CreateLoginPassport(model.Passport{
 		UserId: param.Uid,
 		Ip:     c.ClientIP(),
 		Ua:     c.GetHeader("User-Agent"),

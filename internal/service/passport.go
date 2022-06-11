@@ -1,10 +1,11 @@
 package service
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"shippo-server/internal/model"
 	"shippo-server/utils/check"
 	"shippo-server/utils/ecode"
-	"time"
 )
 
 type PassportService struct {
@@ -15,76 +16,103 @@ func NewPassportService(s *Service) *PassportService {
 	return &PassportService{s}
 }
 
-func (s *PassportService) Create(m model.Passport) (data model.Passport, err error) {
-	return s.dao.Passport.PassportCreate(model.Passport{
-		Token:  "",
-		UserId: m.UserId,
-		Ip:     m.Ip,
-		Ua:     m.Ua,
-		Client: m.Client,
-	})
-}
+func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passport, err error) {
+	// 获取UnionId
+	session, err := t.Group.Wx.AuthCodeToSession(code)
+	if err != nil {
+		return
+	}
 
-func (s *PassportService) PassportCreate(p model.Passport) (data model.PassportCreateResult, err error) {
+	// 查询绑定该UnionId的微信通行证
+	passport, err := t.dao.WxPassport.FindByUnionId(&model.WxPassport{UnionId: session.Unionid})
+	if err != nil {
+		// 如果没有找到相关通行，就创建一个
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			passport, err = t.dao.WxPassport.Create(&model.WxPassport{
+				UnionId:           session.Unionid,
+				MiniProgramOpenId: session.Openid,
+			})
+			r, err = t.CreateNoLoginPassport(model.Passport{
+				Ip:           p.Ip,
+				Ua:           p.Ua,
+				Client:       p.Client,
+				WxPassportId: p.WxPassportId,
+			})
+		}
+		return
+	}
 
-	// 如果不存在或者到期(30天)，就创建一个新的通行证，否则，就续期旧的。
-	if p.Token == "" || time.Since(p.UpdatedAt) > time.Hour*24*30 {
+	// 查询绑定该微信通行证的用户
+	user, err := t.dao.User.UserFindByWxPassportId(passport.ID)
+	if err != nil {
+		return
+	}
 
-		p, err = s.dao.Passport.PassportCreate(model.Passport{
-			Token:  "",
-			UserId: 0,
-			Ip:     p.Ip,
-			Ua:     p.Ua,
-			Client: p.Client,
+	// 如果没有查到，该通行证可能被解绑过。
+	if user.ID == 0 {
+		r, err = t.CreateNoLoginPassport(model.Passport{
+			Ip:           p.Ip,
+			Ua:           p.Ua,
+			Client:       p.Client,
+			WxPassportId: passport.ID,
 		})
-		if err != nil {
-			return
-		}
-
-	} else {
-
-		// 更新ip和ua
-		p, err = s.dao.Passport.PassportUpdate(p.Token, model.Passport{Ip: p.Ip, Ua: p.Ua})
-		if err != nil {
-			return
-		}
+		return
 	}
 
-	data.Passport = p.Token
-	data.Uid = p.UserId
-
-	var access []model.PermissionAccess
-	var user model.User
-
-	if p.UserId == 0 {
-		// 如果当前没有登录，查询基础权限信息
-		access, err = s.Group.PermissionPolicy.FindPermissionAccessByPolicyName("SysBase")
-		if err != nil {
-			return
-		}
-	} else {
-		// 如果当前登录，就获取用户信息
-		user, err = s.Group.User.UserFindByUID(p.UserId)
-		if err != nil {
-			return
-		}
-
-		// 根据用户角色查询对应权限信息
-		access, err = s.Group.Role.RoleFindPermissionAccess(user.Role)
-		if err != nil {
-			return
-		}
-	}
-
-	data.Access = access
+	// 创建一个含有登录信息的通行证
+	r, err = t.CreateLoginPassport(model.Passport{
+		UserId:       user.ID,
+		Ip:           p.Ip,
+		Ua:           p.Ua,
+		Client:       p.Client,
+		WxPassportId: passport.ID,
+	})
 
 	return
 }
 
-func (s *PassportService) PassportGet(passport string) (p model.Passport, err error) {
+func (t *PassportService) PassportCreate(p model.Passport) (r model.Passport, err error) {
+
+	// 如果不存在或者失效，就创建一个新的通行证，否则，就续期旧的。
+	if p.Token == "" || p.IsExpire() {
+		r, err = t.CreateNoLoginPassport(model.Passport{
+			Ip:     p.Ip,
+			Ua:     p.Ua,
+			Client: p.Client,
+		})
+	} else {
+		// 更新ip和ua
+		r, err = t.dao.Passport.PassportUpdate(p.Token, model.Passport{Ip: p.Ip, Ua: p.Ua})
+	}
+	return
+}
+
+func (t *PassportService) PassportGet(passport string) (p model.Passport, err error) {
 	if !check.CheckPassport(passport) {
 		err = ecode.ServerErr
 		return
 	}
-	return s.dao.Passport.PassportGet(passport)
+	return t.dao.Passport.PassportGet(passport)
+}
+
+func (t *PassportService) CreateNoLoginPassport(m model.Passport) (r model.Passport, err error) {
+	r, err = t.dao.Passport.PassportCreate(model.Passport{
+		UserId:       0,
+		Ip:           m.Ip,
+		Ua:           m.Ua,
+		Client:       m.Client,
+		WxPassportId: m.WxPassportId,
+	})
+	return
+}
+
+func (t *PassportService) CreateLoginPassport(m model.Passport) (r model.Passport, err error) {
+	r, err = t.dao.Passport.PassportCreate(model.Passport{
+		UserId:       m.UserId,
+		Ip:           m.Ip,
+		Ua:           m.Ua,
+		Client:       m.Client,
+		WxPassportId: m.WxPassportId,
+	})
+	return
 }

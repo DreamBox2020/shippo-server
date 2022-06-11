@@ -27,6 +27,11 @@ func (t *UserDao) UserFindByEmail(email string) (u model.User, err error) {
 	return
 }
 
+func (t *UserDao) UserFindByWxPassportId(id uint) (u model.User, err error) {
+	err = t.db.Where("wx_passport_id", id).Limit(1).Find(&u).Error
+	return
+}
+
 func (t *UserDao) UserCreate(phone string) (u model.User, err error) {
 	u.Phone = phone
 	u.Role = 2

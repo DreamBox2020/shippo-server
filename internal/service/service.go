@@ -20,6 +20,7 @@ type ServiceGroup struct {
 	WxCommentLike    *WxCommentLikeService
 	WxOffiaccount    *WxOffiaccountService
 	WxComment        *WxCommentService
+	WxPassport       *WxPassportService
 }
 
 type Service struct {
@@ -56,5 +57,6 @@ func (t *Service) initGroup() {
 		WxCommentLike:    NewWxCommentLikeService(t),
 		WxOffiaccount:    NewWxOffiaccountService(t),
 		WxComment:        NewWxCommentService(t),
+		WxPassport:       NewWxPassportService(t),
 	}
 }

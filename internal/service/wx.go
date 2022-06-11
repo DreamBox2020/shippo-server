@@ -2,10 +2,12 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"shippo-server/utils/box"
+	"shippo-server/internal/model"
+	"shippo-server/utils"
 	"shippo-server/utils/config"
 	"time"
 )
@@ -42,10 +44,26 @@ func (s *WxService) WXRefreshToken() (err error) {
 	return
 }
 
-func (s *WxService) WXGetToken(c *box.Context) (token string, err error) {
+func (s *WxService) WXGetToken() (token string, err error) {
 	if time.Since(s.wxAccessTokenCreatedAt) > time.Hour {
 		err = s.WXRefreshToken()
 	}
 	token = s.wxAccessToken
+	return
+}
+
+func (s *WxService) AuthCodeToSession(code string) (r model.AuthCodeToSessionResult, err error) {
+
+	err = utils.HttpGetJSON("https://api.weixin.qq.com/sns/jscode2session?appid="+config.Common.MiniProgramAppID+
+		"&secret="+config.Common.MiniProgramAppSecret+"&js_code="+code+"&grant_type=authorization_code", &r)
+
+	if err != nil {
+		return
+	}
+
+	if r.Errcode != 0 {
+		err = errors.New("AuthCodeToSession: " + r.Errmsg)
+	}
+
 	return
 }

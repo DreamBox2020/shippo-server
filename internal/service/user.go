@@ -134,6 +134,11 @@ func (s *UserService) UserFindByEmail(email string) (u model.User, err error) {
 	return
 }
 
+func (s *UserService) UserFindByWxPassportId(id uint) (u model.User, err error) {
+	u, err = s.dao.User.UserFindByWxPassportId(id)
+	return
+}
+
 func (s *UserService) FindAll(u model.UserFindAllReq) (m model.UserFindAllResp, err error) {
 	m, err = s.dao.User.FindAll(u)
 	if err != nil {

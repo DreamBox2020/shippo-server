@@ -3,6 +3,7 @@ package utils
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/json"
 	"github.com/google/uuid"
 	"io/ioutil"
 	"math/rand"
@@ -118,6 +119,26 @@ func HttpGet(url string) (bytes []byte, err error) {
 	if err != nil {
 		return
 	}
+
 	defer resp.Body.Close()
 	return ioutil.ReadAll(resp.Body)
+}
+
+func HttpGetString(url string) (str string, err error) {
+	bytes, err := HttpGet(url)
+	if err != nil {
+		return
+	}
+
+	return string(bytes), nil
+}
+
+func HttpGetJSON(url string, obj interface{}) (err error) {
+	bytes, err := HttpGet(url)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(bytes, obj)
+	return
 }
