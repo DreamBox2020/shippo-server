@@ -20,7 +20,7 @@ func NewWxService(s *Service) *WxService {
 	return &WxService{s}
 }
 
-func (s *WxService) WXRefreshToken() (err error) {
+func (t *WxService) WXRefreshToken() (err error) {
 
 	resp, _ := http.Get("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" +
 		config.Common.AppID + "&secret=" + config.Common.AppSecret)
@@ -38,21 +38,21 @@ func (s *WxService) WXRefreshToken() (err error) {
 
 	fmt.Printf("RefreshToken: %+v\n", res)
 
-	s.wxAccessToken = res.AccessToken
-	s.wxAccessTokenCreatedAt = time.Now()
+	t.wxAccessToken = res.AccessToken
+	t.wxAccessTokenCreatedAt = time.Now()
 
 	return
 }
 
-func (s *WxService) WXGetToken() (token string, err error) {
-	if time.Since(s.wxAccessTokenCreatedAt) > time.Hour {
-		err = s.WXRefreshToken()
+func (t *WxService) WXGetToken() (token string, err error) {
+	if time.Since(t.wxAccessTokenCreatedAt) > time.Hour {
+		err = t.WXRefreshToken()
 	}
-	token = s.wxAccessToken
+	token = t.wxAccessToken
 	return
 }
 
-func (s *WxService) AuthCodeToSession(code string) (r model.AuthCodeToSessionResult, err error) {
+func (t *WxService) AuthCodeToSession(code string) (r model.AuthCodeToSessionResult, err error) {
 
 	err = utils.HttpGetJSON("https://api.weixin.qq.com/sns/jscode2session?appid="+config.Common.MiniProgramAppID+
 		"&secret="+config.Common.MiniProgramAppSecret+"&js_code="+code+"&grant_type=authorization_code", &r)
@@ -67,4 +67,8 @@ func (s *WxService) AuthCodeToSession(code string) (r model.AuthCodeToSessionRes
 	}
 
 	return
+}
+
+func (t *WxService) GetUserinfo() {
+
 }

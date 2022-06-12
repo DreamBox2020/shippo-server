@@ -16,7 +16,7 @@ func NewPassportService(s *Service) *PassportService {
 	return &PassportService{s}
 }
 
-func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passport, err error) {
+func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passport, user model.User, err error) {
 	// 获取UnionId
 	session, err := t.Group.Wx.AuthCodeToSession(code)
 	if err != nil {
@@ -24,11 +24,11 @@ func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passp
 	}
 
 	// 查询绑定该UnionId的微信通行证
-	passport, err := t.dao.WxPassport.FindByUnionId(&model.WxPassport{UnionId: session.Unionid})
+	wxPassport, err := t.dao.WxPassport.FindByUnionId(&model.WxPassport{UnionId: session.Unionid})
 	if err != nil {
 		// 如果没有找到相关通行，就创建一个
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			passport, err = t.dao.WxPassport.Create(&model.WxPassport{
+			wxPassport, err = t.dao.WxPassport.Create(&model.WxPassport{
 				UnionId:           session.Unionid,
 				MiniProgramOpenId: session.Openid,
 			})
@@ -36,14 +36,14 @@ func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passp
 				Ip:           p.Ip,
 				Ua:           p.Ua,
 				Client:       p.Client,
-				WxPassportId: passport.ID,
+				WxPassportId: wxPassport.ID,
 			})
 		}
 		return
 	}
 
 	// 查询绑定该微信通行证的用户
-	user, err := t.dao.User.UserFindByWxPassportId(passport.ID)
+	user, err = t.dao.User.UserFindByWxPassportId(wxPassport.ID)
 	if err != nil {
 		return
 	}
@@ -54,7 +54,7 @@ func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passp
 			Ip:           p.Ip,
 			Ua:           p.Ua,
 			Client:       p.Client,
-			WxPassportId: passport.ID,
+			WxPassportId: wxPassport.ID,
 		})
 		return
 	}
@@ -65,13 +65,13 @@ func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passp
 		Ip:           p.Ip,
 		Ua:           p.Ua,
 		Client:       p.Client,
-		WxPassportId: passport.ID,
+		WxPassportId: wxPassport.ID,
 	})
 
 	return
 }
 
-func (t *PassportService) PassportCreate(p model.Passport) (r model.Passport, err error) {
+func (t *PassportService) PassportCreate(p model.Passport) (r model.Passport, user model.User, err error) {
 
 	// 如果不存在或者失效，就创建一个新的通行证，否则，就续期旧的。
 	if p.Token == "" || p.IsExpire() {
@@ -87,6 +87,10 @@ func (t *PassportService) PassportCreate(p model.Passport) (r model.Passport, er
 			return
 		}
 		r, err = t.dao.Passport.PassportGet(p.Token)
+		if err != nil {
+			return
+		}
+		user, err = t.dao.User.UserFindByUID(r.UserId)
 	}
 	return
 }

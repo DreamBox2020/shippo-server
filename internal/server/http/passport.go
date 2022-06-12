@@ -34,7 +34,7 @@ func (t *PassportServer) initRouter() {
 func (t *PassportServer) PassportCreate(c *box.Context) {
 
 	var param = new(struct {
-		Code string `json:"code"`
+		Code string `json:"wxCode"`
 	})
 
 	if err := c.ShouldBindJSON(&param); err != nil {
@@ -43,16 +43,17 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	var passport model.Passport
+	var user model.User
 	var err error = nil
 
 	if param.Code != "" {
-		passport, err = t.service.Passport.WxCreate(*c.Passport, param.Code)
+		passport, user, err = t.service.Passport.WxCreate(*c.Passport, param.Code)
 		if err != nil {
 			c.JSON(nil, err)
 			return
 		}
 	} else {
-		passport, err = t.service.Passport.PassportCreate(*c.Passport)
+		passport, user, err = t.service.Passport.PassportCreate(*c.Passport)
 		if err != nil {
 			c.JSON(nil, err)
 			return
@@ -71,7 +72,7 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 
 	if passport.IsLogin() {
 		// 根据用户角色查询对应权限信息
-		access, err = t.service.Role.RoleFindPermissionAccess(c.User.Role)
+		access, err = t.service.Role.RoleFindPermissionAccess(user.Role)
 	} else {
 		// 如果当前没有登录，查询基础权限信息
 		access, err = t.service.PermissionPolicy.FindPermissionAccessByPolicyName("SysBase")

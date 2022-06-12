@@ -22,8 +22,32 @@ func NewUserServer(server *Server) *UserServer {
 
 func (t *UserServer) initRouter() {
 	t.router.POST("login", t.UserLogin)
+	t.router.POST("logout", t.UserLogout)
 	t.router.POST("findAll", t.FindAll)
 	t.router.POST("updateUserRole", t.UpdateUserRole)
+}
+
+func (t *UserServer) UserLogout(c *box.Context) {
+
+	access, err := t.service.PermissionPolicy.FindPermissionAccessByPolicyName("SysBase")
+
+	if err != nil {
+		c.JSON(nil, err)
+		return
+	}
+
+	passport, err := t.service.Passport.CreateNoLoginPassport(*c.Passport)
+	if err != nil {
+		c.JSON(nil, err)
+		return
+	}
+
+	var data model.PassportCreateResult
+	data.Passport = passport.Token
+	data.Uid = passport.UserId
+	data.Access = access
+
+	c.JSON(data, err)
 }
 
 func (t *UserServer) UserLogin(c *box.Context) {
@@ -35,18 +59,20 @@ func (t *UserServer) UserLogin(c *box.Context) {
 
 	user, err := t.service.User.UserLogin(param, *c.Passport)
 	if err != nil {
+		c.JSON(nil, err)
 		return
 	}
 
 	access, err := t.service.Role.RoleFindPermissionAccess(user.Role)
 	if err != nil {
+		c.JSON(nil, err)
 		return
 	}
 
-	data := make(map[string]interface{})
-	data["access"] = access
-	data["passport"] = c.Passport.Token
-	data["uid"] = user.ID
+	var data model.PassportCreateResult
+	data.Passport = c.Passport.Token
+	data.Uid = user.ID
+	data.Access = access
 
 	c.JSON(data, err)
 }
