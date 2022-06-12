@@ -86,3 +86,8 @@ func (t *UserDao) UpdateUserRole(u model.User) error {
 	return t.db.Model(&model.User{}).Where("id", u.ID).
 		Update("role", u.Role).Error
 }
+
+func (t *UserDao) UpdateUserWxPassportId(u model.User) error {
+	return t.db.Model(&model.User{}).Where("id", u.ID).
+		Update("wx_passport_id", u.WxPassportId).Error
+}

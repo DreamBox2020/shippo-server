@@ -36,7 +36,7 @@ func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passp
 				Ip:           p.Ip,
 				Ua:           p.Ua,
 				Client:       p.Client,
-				WxPassportId: p.WxPassportId,
+				WxPassportId: passport.ID,
 			})
 		}
 		return
@@ -82,7 +82,11 @@ func (t *PassportService) PassportCreate(p model.Passport) (r model.Passport, er
 		})
 	} else {
 		// 更新ip和ua
-		r, err = t.dao.Passport.PassportUpdate(p.Token, model.Passport{Ip: p.Ip, Ua: p.Ua})
+		err = t.dao.Passport.PassportUpdate(p.Token, model.Passport{Ip: p.Ip, Ua: p.Ua})
+		if err != nil {
+			return
+		}
+		r, err = t.dao.Passport.PassportGet(p.Token)
 	}
 	return
 }

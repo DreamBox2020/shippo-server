@@ -60,6 +60,7 @@ func (s *WxService) AuthCodeToSession(code string) (r model.AuthCodeToSessionRes
 	if err != nil {
 		return
 	}
+	fmt.Printf("AuthCodeToSession:%+v\n", r)
 
 	if r.Errcode != 0 {
 		err = errors.New("AuthCodeToSession: " + r.Errmsg)

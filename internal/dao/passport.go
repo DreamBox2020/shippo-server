@@ -22,17 +22,22 @@ func (t *PassportDao) PassportGet(token string) (p model.Passport, err error) {
 // PassportCreate 创建一个通行证
 func (t *PassportDao) PassportCreate(m model.Passport) (r model.Passport, err error) {
 	r = model.Passport{
-		Token:  utils.GenerateToken(),
-		UserId: m.UserId,
-		Ip:     m.Ip,
-		Ua:     m.Ua,
-		Client: m.Client,
+		Token:        utils.GenerateToken(),
+		UserId:       m.UserId,
+		Ip:           m.Ip,
+		Ua:           m.Ua,
+		Client:       m.Client,
+		WxPassportId: m.WxPassportId,
 	}
 
 	tx := t.db
 
 	if m.UserId == 0 {
 		tx = tx.Omit("user_id")
+	}
+
+	if m.WxPassportId == 0 {
+		tx = tx.Omit("wx_passport_id")
 	}
 
 	err = tx.Create(&r).Error
@@ -47,27 +52,25 @@ func (t *PassportDao) PassportDelete(userId uint, client uint) error {
 }
 
 // PassportUpdate 根据token更新通行证信息
-func (t *PassportDao) PassportUpdate(token string, m model.Passport) (r model.Passport, err error) {
-	tx := t.db.Select("updated_at")
+func (t *PassportDao) PassportUpdate(token string, m model.Passport) (err error) {
 
-	if r.UserId != 0 {
-		tx = tx.Select("user_id")
+	var selects = []string{
+		"updated_at",
 	}
 
-	if r.Ip != "" {
-		tx = tx.Select("ip")
+	if m.UserId != 0 {
+		selects = append(selects, "user_id")
 	}
 
-	if r.Ua != "" {
-		tx = tx.Select("ua")
+	if m.Ip != "" {
+		selects = append(selects, "ip")
 	}
 
-	err = tx.Where("token", token).Updates(&m).Error
-
-	if err != nil {
-		return
+	if m.Ua != "" {
+		selects = append(selects, "ua")
 	}
 
-	r, err = t.PassportGet(token)
+	err = t.db.Select(selects).Where("token", token).Updates(&m).Error
+
 	return
 }

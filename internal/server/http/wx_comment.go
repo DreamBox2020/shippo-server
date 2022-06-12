@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -38,6 +39,7 @@ func (t *WxCommentServer) Create(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -50,6 +52,7 @@ func (t *WxCommentServer) Reply(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -62,6 +65,7 @@ func (t *WxCommentServer) AdminReply(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -74,6 +78,7 @@ func (t *WxCommentServer) Delete(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -86,6 +91,7 @@ func (t *WxCommentServer) UpdateElected(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -98,6 +104,7 @@ func (t *WxCommentServer) UpdateTop(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -110,6 +117,7 @@ func (t *WxCommentServer) FindByWxPassportAndOffiaccount(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -122,6 +130,7 @@ func (t *WxCommentServer) FindByWxPassportAndOffiaccountAndElected(c *box.Contex
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -134,6 +143,7 @@ func (t *WxCommentServer) FindByWxPassportAndArticle(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -146,6 +156,7 @@ func (t *WxCommentServer) FindByArticle(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxComment.FindByArticle(param)
 	c.JSON(r, err)
@@ -156,7 +167,8 @@ func (t *WxCommentServer) AdminFindByArticle(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
-	
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
+
 	r, err := t.service.WxComment.AdminFindByArticle(param)
 	c.JSON(r, err)
 }

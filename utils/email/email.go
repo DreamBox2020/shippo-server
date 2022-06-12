@@ -36,6 +36,6 @@ func Send(to string, subject string, context string) {
 	m.SetBody("text/html", context)
 
 	if err := d.DialAndSend(m); err != nil {
-		fmt.Print(err.Error())
+		fmt.Println(err.Error())
 	}
 }

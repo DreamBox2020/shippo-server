@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"shippo-server/utils/box"
@@ -34,6 +35,7 @@ func (t *CaptchaServer) CaptchaSend(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	if param.Phone != "" {
 		err := t.service.Captcha.CaptchaSmsSend(param.Phone, c.Req.Passport)

@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -33,6 +34,7 @@ func (t *PermissionAccessServer) PermissionAccessCreate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.PermissionAccess.PermissionAccessCreate(param)
 	c.JSON(nil, err)
 }
@@ -42,6 +44,7 @@ func (t *PermissionAccessServer) PermissionAccessDel(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.PermissionAccess.PermissionAccessDel(param)
 	c.JSON(nil, err)
 }
@@ -51,6 +54,7 @@ func (t *PermissionAccessServer) PermissionAccessUpdate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.PermissionAccess.PermissionAccessUpdate(param)
 	c.JSON(nil, err)
 }
@@ -60,6 +64,7 @@ func (t *PermissionAccessServer) PermissionAccessFindAllExtStatus(c *box.Context
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	data, err := t.service.PermissionAccess.PermissionAccessFindAllExtStatus(param.ID)
 	c.JSON(data, err)
 }
@@ -74,6 +79,7 @@ func (t *PermissionAccessServer) PermissionAccessFind(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	data, err := t.service.PermissionAccess.PermissionAccessFind(param)
 	c.JSON(data, err)
 }

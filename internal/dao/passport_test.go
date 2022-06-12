@@ -84,7 +84,7 @@ func TestDaoPassportUpdate(t *testing.T) {
 		panic(err)
 	}
 
-	p, err = d.Group.Passport.PassportUpdate(p.Token, model.Passport{Ip: "127.0.0.1"})
+	err = d.Group.Passport.PassportUpdate(p.Token, model.Passport{Ip: "127.0.0.1"})
 	if err != nil {
 		panic(err)
 	}

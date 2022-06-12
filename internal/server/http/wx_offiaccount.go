@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -30,6 +31,7 @@ func (t *WxOffiaccountServer) FindAll(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxOffiaccount.FindAll()
 	c.JSON(r, err)
@@ -41,6 +43,7 @@ func (t *WxOffiaccountServer) FindByUsername(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxOffiaccount.FindByUsername(param.Username)
 	c.JSON(r, err)
@@ -52,6 +55,7 @@ func (t *WxOffiaccountServer) Find(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxOffiaccount.Find(param.ID)
 	c.JSON(r, err)

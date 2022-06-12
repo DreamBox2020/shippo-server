@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -30,8 +31,23 @@ func (t *UserServer) UserLogin(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
-	data, err := t.service.User.UserLogin(param, c.Req.Passport)
+	user, err := t.service.User.UserLogin(param, *c.Passport)
+	if err != nil {
+		return
+	}
+
+	access, err := t.service.Role.RoleFindPermissionAccess(user.Role)
+	if err != nil {
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["access"] = access
+	data["passport"] = c.Passport.Token
+	data["uid"] = user.ID
+
 	c.JSON(data, err)
 }
 
@@ -40,6 +56,7 @@ func (t *UserServer) FindAll(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	data, err := t.service.User.FindAll(param)
 	c.JSON(data, err)
@@ -50,6 +67,7 @@ func (t *UserServer) UpdateUserRole(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	err := t.service.User.UpdateUserRole(param)
 	c.JSON(nil, err)

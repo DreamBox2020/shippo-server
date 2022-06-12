@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -34,6 +35,7 @@ func (t *PermissionPolicyServer) PermissionPolicyCreate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.PermissionPolicy.PermissionPolicyCreate(param)
 	c.JSON(nil, err)
 }
@@ -43,6 +45,7 @@ func (t *PermissionPolicyServer) PermissionPolicyDel(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.PermissionPolicy.PermissionPolicyDel(param)
 	c.JSON(nil, err)
 }
@@ -52,6 +55,7 @@ func (t *PermissionPolicyServer) PermissionPolicyUpdate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.PermissionPolicy.PermissionPolicyUpdate(param)
 	c.JSON(nil, err)
 }
@@ -61,6 +65,7 @@ func (t *PermissionPolicyServer) PermissionPolicyFindAllExtStatus(c *box.Context
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	data, err := t.service.PermissionPolicy.PermissionPolicyFindAllExtStatus(param.ID)
 	c.JSON(data, err)
 }
@@ -75,6 +80,7 @@ func (t *PermissionPolicyServer) PermissionPolicyFind(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	data, err := t.service.PermissionPolicy.PermissionPolicyFind(param)
 	c.JSON(data, err)
 }
@@ -88,6 +94,7 @@ func (t *PermissionPolicyServer) PermissionAssociationUpdate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.PermissionPolicy.PermissionAssociationUpdate(param.Id, param.Access)
 	c.JSON(nil, err)
 }

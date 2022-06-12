@@ -61,12 +61,12 @@ func (c *Context) Abort() {
 
 // JSON 响应json格式的数据
 func (c *Context) JSON(data interface{}, err error) {
-	res, err := json.Marshal(data)
-	if err != nil {
+	res, err1 := json.Marshal(data)
+	if err1 != nil {
 		fmt.Printf("box->context->JSON->data:%+v\n", data)
 		fmt.Printf("box->context->JSON->err:%+v\n", err)
+		err = err1
 	}
-
 	code := ecode.Cause(err)
 	c.Ctx.JSON(http.StatusOK, &Response{
 		Code:     code.Code(),
@@ -83,8 +83,6 @@ func (c *Context) ShouldBindJSON(obj interface{}) error {
 	if err != nil {
 		fmt.Printf("ShouldBindJSON->err:%+v\n", err)
 		c.JSON(nil, ecode.ServerErr)
-	} else {
-		fmt.Printf("ShouldBindJSON->obj:%+v\n", obj)
 	}
 	return err
 }

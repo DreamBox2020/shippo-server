@@ -15,12 +15,10 @@ func NewUserService(s *Service) *UserService {
 	return &UserService{s}
 }
 
-func (s *UserService) UserLogin(param model.UserLoginParam, token string) (
-	data map[string]interface{}, err error) {
-	var user model.User
-	var p model.Passport
+func (s *UserService) UserLogin(param model.UserLoginParam, passport model.Passport) (
+	user model.User, err error) {
 
-	if !check.CheckPassport(token) {
+	if !check.CheckPassport(passport.Token) {
 		err = ecode.ServerErr
 		return
 	}
@@ -52,7 +50,7 @@ func (s *UserService) UserLogin(param model.UserLoginParam, token string) (
 		target = param.Phone
 	}
 
-	captcha, err := s.dao.Captcha.CaptchaByTargetAndCode(target, param.Code, token)
+	captcha, err := s.dao.Captcha.CaptchaByTargetAndCode(target, param.Code, passport.Token)
 	if err != nil {
 		return
 	}
@@ -98,22 +96,21 @@ func (s *UserService) UserLogin(param model.UserLoginParam, token string) (
 	}
 
 	// 更新用户信息
-	p, err = s.dao.Passport.PassportUpdate(token, model.Passport{
+	err = s.dao.Passport.PassportUpdate(passport.Token, model.Passport{
 		UserId: user.ID,
 	})
 	if err != nil {
 		return
 	}
 
-	access, err := s.Group.Role.RoleFindPermissionAccess(user.Role)
-	if err != nil {
-		return
+	// 如果当前用户没有绑定微信通行证，且当前通行证中，含有微信通行证，则进行绑定。
+	if user.WxPassportId == 0 && passport.WxPassportId != 0 {
+		user.WxPassportId = passport.WxPassportId
+		err = s.dao.User.UpdateUserWxPassportId(user)
+		if err != nil {
+			return
+		}
 	}
-
-	data = make(map[string]interface{})
-	data["access"] = access
-	data["passport"] = p.Token
-	data["uid"] = p.UserId
 
 	return
 

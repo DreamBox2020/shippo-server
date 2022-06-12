@@ -39,11 +39,13 @@ func (t *WxArticleDao) Delete(id uint) (err error) {
 
 // Update 修改文章
 func (t *WxArticleDao) Update(m *model.WxArticle) (err error) {
-	tx := t.db.Select("title", "image1", "image2", "offiaccount_id", "updated_at")
-	if m.Url != "" {
-		tx = tx.Select("url")
+	var selects = []string{
+		"title", "image1", "image2", "offiaccount_id", "updated_at",
 	}
-	err = tx.Updates(m).Error
+	if m.Url != "" {
+		selects = append(selects, "url")
+	}
+	err = t.db.Select(selects).Updates(m).Error
 	return
 }
 

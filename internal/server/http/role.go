@@ -36,6 +36,7 @@ func (t *RoleServer) RoleCreate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.Role.RoleCreate(param)
 	c.JSON(nil, err)
 }
@@ -46,6 +47,7 @@ func (t *RoleServer) RoleDel(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.Role.RoleDel(param)
 	c.JSON(nil, err)
 }
@@ -56,6 +58,7 @@ func (t *RoleServer) RoleUpdate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	fmt.Printf("RoleUpdate: %+v\n", param)
 
 	err := t.service.Role.RoleUpdate(param)
@@ -71,6 +74,7 @@ func (t *RoleServer) RoleAssociationUpdate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	err := t.service.Role.RoleAssociationUpdate(param.Id, param.Policies)
 	c.JSON(nil, err)
 }
@@ -87,6 +91,7 @@ func (t *RoleServer) FindPolicies(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	data, err := t.service.Role.RoleFindPermissionPolicy(param.ID)
 	c.JSON(data, err)
 }
@@ -97,6 +102,7 @@ func (t *RoleServer) RoleFind(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 	data, err := t.service.Role.RoleFindPermissionAccess(param.ID)
 	c.JSON(data, err)
 }

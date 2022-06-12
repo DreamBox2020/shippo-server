@@ -1,6 +1,8 @@
 package dao
 
-import "shippo-server/internal/model"
+import (
+	"shippo-server/internal/model"
+)
 
 type WxPassportDao struct {
 	*Dao
@@ -20,61 +22,64 @@ func (t *WxPassportDao) Create(m *model.WxPassport) (r *model.WxPassport, err er
 		AvatarUrl:         m.AvatarUrl,
 	}
 
-	tx := t.db
+	var omits []string
 
 	if m.MiniProgramOpenId == "" {
-		tx = tx.Omit("mini_program_open_id")
+		omits = append(omits, "mini_program_open_id")
 	}
 
 	if m.OffiaccountOpenId == "" {
-		tx = tx.Omit("offiaccount_open_id")
+		omits = append(omits, "offiaccount_open_id")
 	}
 
 	if m.Nickname == "" {
-		tx = tx.Omit("nickname")
+		omits = append(omits, "nickname")
 	}
 
 	if m.AvatarUrl == "" {
-		tx = tx.Omit("avatar_url")
+		omits = append(omits, "avatar_url")
 	}
 
-	err = tx.Create(&r).Error
+	err = t.db.Omit(omits...).Create(&r).Error
 
 	return
 }
 
 // FindByUnionId 根据 UnionId 查找微信通行证
 func (t *WxPassportDao) FindByUnionId(m *model.WxPassport) (r *model.WxPassport, err error) {
-	err = t.db.Where("union_id", m.UnionId).Find(&r).Error
+	err = t.db.Where("union_id", m.UnionId).First(&r).Error
 	return
 }
 
 // Find 查找微信通行证
 func (t *WxPassportDao) Find(m *model.WxPassport) (r *model.WxPassport, err error) {
-	err = t.db.Find(&r, m.ID).Error
+	err = t.db.First(&r, m.ID).Error
 	return
 }
 
 // Update 修改文章
 func (t *WxPassportDao) Update(m *model.WxPassport) (err error) {
-	tx := t.db.Select("updated_at")
+
+	var selects = []string{
+		"updated_at",
+	}
 
 	if m.MiniProgramOpenId != "" {
-		tx = tx.Select("mini_program_open_id")
+		selects = append(selects, "mini_program_open_id")
 	}
 
 	if m.OffiaccountOpenId != "" {
-		tx = tx.Select("offiaccount_open_id")
+		selects = append(selects, "offiaccount_open_id")
 	}
 
 	if m.Nickname != "" {
-		tx = tx.Select("nickname")
+		selects = append(selects, "nickname")
 	}
 
 	if m.AvatarUrl != "" {
-		tx = tx.Select("avatar_url")
+		selects = append(selects, "avatar_url")
 	}
 
-	err = tx.Updates(&m).Error
+	err = t.db.Select(selects).Updates(&m).Error
 	return
 }

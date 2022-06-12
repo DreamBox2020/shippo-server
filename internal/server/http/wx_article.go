@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 	"shippo-server/utils/ecode"
@@ -39,6 +40,7 @@ func (t *WxArticleServer) Create(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -52,6 +54,7 @@ func (t *WxArticleServer) Update(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -65,6 +68,7 @@ func (t *WxArticleServer) UpdateCommentSwitch(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 
@@ -78,6 +82,7 @@ func (t *WxArticleServer) FindByOffiaccount(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxArticle.FindByOffiaccount(&param)
 	c.JSON(r, err)
@@ -89,6 +94,7 @@ func (t *WxArticleServer) Find(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxArticle.Find(param.ID)
 	c.JSON(r, err)
@@ -100,6 +106,7 @@ func (t *WxArticleServer) FindAllByWxPassport(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxArticle.FindAllByWxPassport(&param)
 	c.JSON(r, err)

@@ -40,6 +40,7 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	var passport model.Passport
 	var err error = nil
@@ -102,6 +103,7 @@ func (t *PassportServer) CreateDev(c *gin.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	data, _ := t.service.Passport.CreateLoginPassport(model.Passport{
 		UserId: param.Uid,
@@ -115,6 +117,8 @@ func (t *PassportServer) CreateDev(c *gin.Context) {
 }
 
 func (t *PassportServer) PassportGet(c *box.Context) {
+	fmt.Printf("http->passportGet->ip:%+v\n", c.ClientIP())
+	fmt.Printf("http->passportGet->ua:%+v\n", c.GetHeader("User-Agent"))
 
 	if c.Req.Passport != "" {
 		p, err := t.service.Passport.PassportGet(c.Req.Passport)
@@ -125,11 +129,10 @@ func (t *PassportServer) PassportGet(c *box.Context) {
 			return
 		}
 		fmt.Printf("http->passportGet:%+v\n", p)
+		p.Ip = c.ClientIP()
+		p.Ua = c.GetHeader("User-Agent")
 		c.Passport = &p
 	} else {
-		fmt.Printf("http->passportGet->ip:%+v\n", c.ClientIP())
-		fmt.Printf("http->passportGet->ua:%+v\n", c.GetHeader("User-Agent"))
-
 		c.Passport = &model.Passport{
 			Ip:     c.ClientIP(),
 			Ua:     c.GetHeader("User-Agent"),

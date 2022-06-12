@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
 )
@@ -30,6 +31,7 @@ func (t *WxCommentLikeServer) Create(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 	_, err := t.service.WxCommentLike.Create(&param)
@@ -43,6 +45,7 @@ func (t *WxCommentLikeServer) Delete(c *box.Context) {
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	param.WxPassportId = c.User.WxPassportId
 	err := t.service.WxCommentLike.Delete(&param)
