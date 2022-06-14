@@ -31,6 +31,7 @@ func (t *WxArticleServer) initRouter() {
 
 // Create 新增文章
 func (t *WxArticleServer) Create(c *box.Context) {
+
 	if c.User.WxPassportId == 0 {
 		c.JSON(nil, ecode.WxPassportIsNull)
 		return
@@ -44,12 +45,18 @@ func (t *WxArticleServer) Create(c *box.Context) {
 
 	param.WxPassportId = c.User.WxPassportId
 
-	_, err := t.service.WxArticle.Create(&param)
-	c.JSON(nil, err)
+	r, err := t.service.WxArticle.Create(&param)
+	c.JSON(r, err)
 }
 
 // Update 修改文章
 func (t *WxArticleServer) Update(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param model.WxArticle
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -64,6 +71,12 @@ func (t *WxArticleServer) Update(c *box.Context) {
 
 // UpdateCommentSwitch 修改文章评论开关
 func (t *WxArticleServer) UpdateCommentSwitch(c *box.Context) {
+	
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param model.WxArticle
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -78,6 +91,12 @@ func (t *WxArticleServer) UpdateCommentSwitch(c *box.Context) {
 
 // FindByOffiaccount 查询某公众号文章
 func (t *WxArticleServer) FindByOffiaccount(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param model.WxArticle
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -90,6 +109,12 @@ func (t *WxArticleServer) FindByOffiaccount(c *box.Context) {
 
 // Find 查询文章根据id
 func (t *WxArticleServer) Find(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param model.WxArticle
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -102,11 +127,19 @@ func (t *WxArticleServer) Find(c *box.Context) {
 
 // FindAllByWxPassport 查询某人的全部文章
 func (t *WxArticleServer) FindAllByWxPassport(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param model.WxArticle
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
 	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
+
+	param.WxPassportId = c.User.WxPassportId
 
 	r, err := t.service.WxArticle.FindAllByWxPassport(&param)
 	c.JSON(r, err)

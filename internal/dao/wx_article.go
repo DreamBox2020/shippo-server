@@ -57,18 +57,25 @@ func (t *WxArticleDao) UpdateCommentSwitch(m *model.WxArticle) (err error) {
 
 // FindByOffiaccount 查询某公众号文章
 func (t *WxArticleDao) FindByOffiaccount(m *model.WxArticle) (r *[]model.WxArticle, err error) {
-	err = t.db.Model(&model.WxArticle{}).Where("offiaccount_id", m.OffiaccountId).Find(r).Error
+	err = t.db.Model(&model.WxArticle{}).Where("offiaccount_id", m.OffiaccountId).Find(&r).Error
 	return
 }
 
 // Find 查询文章根据id
-func (t *WxArticleDao) Find(id uint) (r *model.WxArticle, err error) {
-	err = t.db.Model(&model.WxArticle{}).First(r, id).Error
+func (t *WxArticleDao) Find(id uint) (r *model.WxArticleExtOffiaccountNickname, err error) {
+	subQuery := t.db.Model(&model.WxOffiaccount{})
+	err = t.db.Model(&model.WxArticle{}).
+		Select("shippo_wx_article.*", "temp.nickname AS offiaccountNickname").
+		Joins("Left JOIN (?) temp ON temp.id = offiaccount_id", subQuery).First(&r, id).Error
 	return
 }
 
 // FindAllByWxPassport 查询某人的全部文章
-func (t *WxArticleDao) FindAllByWxPassport(m *model.WxArticle) (r *[]model.WxArticle, err error) {
-	err = t.db.Model(&model.WxArticle{}).Where("wx_passport_id", m.WxPassportId).Find(r).Error
+func (t *WxArticleDao) FindAllByWxPassport(m *model.WxArticle) (r *[]model.WxArticleExtOffiaccountNickname, err error) {
+	subQuery := t.db.Model(&model.WxOffiaccount{})
+	err = t.db.Model(&model.WxArticle{}).
+		Select("shippo_wx_article.*", "temp.nickname AS offiaccountNickname").
+		Joins("Left JOIN (?) temp ON temp.id = offiaccount_id", subQuery).
+		Order("created_at DESC").Where("wx_passport_id", m.WxPassportId).Find(&r).Error
 	return
 }

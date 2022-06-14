@@ -10,3 +10,8 @@ type WxArticle struct {
 	OffiaccountId uint   `json:"offiaccountId"`
 	WxPassportId  uint   `json:"wxPassportId"`
 }
+
+type WxArticleExtOffiaccountNickname struct {
+	WxArticle
+	OffiaccountNickname string `json:"offiaccountNickname" gorm:"column:offiaccountNickname"`
+}

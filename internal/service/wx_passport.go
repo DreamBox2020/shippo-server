@@ -39,7 +39,7 @@ func (t *WxPassportService) Find(m *model.WxPassport) (r *model.WxPassport, err 
 	return
 }
 
-// Update 修改文章
+// Update 修改微信通行证
 func (t *WxPassportService) Update(m *model.WxPassport) (err error) {
 	err = t.dao.WxPassport.Update(m)
 

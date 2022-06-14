@@ -17,10 +17,15 @@ var (
 	Temp_trade_20220108_Trade2AmountErr = New(501006, "补款金额不正确")
 
 	// 微信
-	WxPassportIsNull        = New(502001, "微信通行证不存在")
-	WxArticleUpdateProhibit = New(502002, "文章已经发布，不允许修改。")
+	WxPassportIsNull         = New(502001, "微信通行证不存在")
+	WxArticleUpdateProhibit  = New(502002, "文章已经发布，不允许修改。")
+	WxOffiaccountIsNotLinked = New(502003, "该公众号未关联小程序")
+	WxArticleURLError        = New(502004, "文章链接错误")
 
 	// 验证码错误
 	CaptchaError     = New(503001, "验证码错误")
 	CaptchaSendError = New(503002, "验证码发送失败")
+
+	// 文件相关错误
+	FileTypeUnknown = New(504001, "未知文件类型")
 )

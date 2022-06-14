@@ -26,4 +26,5 @@ type PassportCreateResult struct {
 	Passport string             `json:"passport"`
 	Uid      uint               `json:"uid"`
 	Access   []PermissionAccess `json:"access"`
+	User     User               `json:"user"`
 }

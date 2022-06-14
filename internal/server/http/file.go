@@ -70,7 +70,7 @@ func (t *FileServer) FileUpload(c *box.Context) {
 	} else if mime == "image/gif" {
 		fileType = "gif"
 	} else {
-		c.JSON(nil, ecode.ServerErr)
+		c.JSON(nil, ecode.FileTypeUnknown)
 		return
 	}
 	fmt.Printf("fileUpload->fileType:%+v\n", fileType)
@@ -84,7 +84,7 @@ func (t *FileServer) FileUpload(c *box.Context) {
 	dir := "/pic/" + channel + "/" + date + "/"
 
 	fileName := fileUuid + "." + fileType
-	fmt.Printf("FileUpload->fileName:%+v\n", header.Filename)
+	fmt.Printf("FileUpload->fileName:%+v\n", fileName)
 
 	uri := dir + fileName
 	fmt.Printf("fileUpload->uri:%+v\n", uri)

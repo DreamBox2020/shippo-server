@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"errors"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -100,6 +101,10 @@ func (t *Dao) initGroup() {
 		WxComment:        NewWxCommentDao(t),
 		WxPassport:       NewWxPassportDao(t),
 	}
+}
+
+func (t *Dao) IsErrRecordNotFound(err error) bool {
+	return errors.Is(err, gorm.ErrRecordNotFound)
 }
 
 func newTest() *Dao {

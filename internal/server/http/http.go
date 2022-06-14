@@ -35,6 +35,9 @@ type Server struct {
 
 func New() *Server {
 	var engine = box.New()
+	engine.GinEngine.Use(middleware.Cors())
+	//engine.MaxMultipartMemory = 8 << 20 // 8 MiB
+
 	var svc = service.New()
 	s := &Server{
 		engine:  engine,
@@ -72,9 +75,6 @@ func (t *Server) init() {
 	// 初始化用户信息的中间件
 	t.engine.Use(t.Group.Passport.PassportGet)
 	t.engine.Use(t.Group.Passport.Auth)
-
-	t.engine.GinEngine.Use(middleware.Cors())
-	//t.engine.MaxMultipartMemory = 8 << 20 // 8 MiB
 
 	server := t.initServer(config.Server.Addr, t.engine)
 	if err := server.ListenAndServe(); err != nil {

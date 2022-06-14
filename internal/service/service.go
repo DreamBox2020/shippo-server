@@ -1,6 +1,8 @@
 package service
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"shippo-server/internal/dao"
 	"time"
 )
@@ -21,6 +23,7 @@ type ServiceGroup struct {
 	WxOffiaccount    *WxOffiaccountService
 	WxComment        *WxCommentService
 	WxPassport       *WxPassportService
+	File             *FileService
 }
 
 type Service struct {
@@ -58,5 +61,10 @@ func (t *Service) initGroup() {
 		WxOffiaccount:    NewWxOffiaccountService(t),
 		WxComment:        NewWxCommentService(t),
 		WxPassport:       NewWxPassportService(t),
+		File:             NewFileService(t),
 	}
+}
+
+func (t *Service) IsErrRecordNotFound(err error) bool {
+	return errors.Is(err, gorm.ErrRecordNotFound)
 }

@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"regexp"
 	"shippo-server/internal/model"
+	"shippo-server/utils"
 	"shippo-server/utils/box"
 	"shippo-server/utils/config"
 	"shippo-server/utils/ecode"
@@ -86,6 +87,10 @@ func (t *PassportServer) PassportCreate(c *box.Context) {
 	data.Passport = passport.Token
 	data.Uid = passport.UserId
 	data.Access = access
+
+	user.Email = utils.QQEmailMasking(user.Email)
+	user.Phone = utils.PhoneMasking(user.Phone)
+	data.User = user
 
 	c.JSON(data, err)
 }

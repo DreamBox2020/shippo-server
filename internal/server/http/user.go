@@ -3,6 +3,7 @@ package http
 import (
 	"fmt"
 	"shippo-server/internal/model"
+	"shippo-server/utils"
 	"shippo-server/utils/box"
 )
 
@@ -44,8 +45,10 @@ func (t *UserServer) UserLogout(c *box.Context) {
 
 	var data model.PassportCreateResult
 	data.Passport = passport.Token
-	data.Uid = passport.UserId
+	data.Uid = 0
 	data.Access = access
+
+	data.User = model.User{}
 
 	c.JSON(data, err)
 }
@@ -73,6 +76,10 @@ func (t *UserServer) UserLogin(c *box.Context) {
 	data.Passport = c.Passport.Token
 	data.Uid = user.ID
 	data.Access = access
+
+	user.Email = utils.QQEmailMasking(user.Email)
+	user.Phone = utils.PhoneMasking(user.Phone)
+	data.User = user
 
 	c.JSON(data, err)
 }

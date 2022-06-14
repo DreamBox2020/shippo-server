@@ -142,3 +142,14 @@ func HttpGetJSON(url string, obj interface{}) (err error) {
 	err = json.Unmarshal(bytes, obj)
 	return
 }
+
+func SaveFile(bytes []byte, dst string) (err error) {
+	out, err := os.Create(dst)
+	if err != nil {
+		return
+	}
+	defer out.Close()
+
+	_, err = out.Write(bytes)
+	return
+}

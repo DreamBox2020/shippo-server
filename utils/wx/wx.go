@@ -35,7 +35,7 @@ func (t *Article) URL() string {
 }
 
 func (t *Article) IsTempURL() bool {
-	return strings.Contains(t.URL(), "tempKey")
+	return strings.Contains(t.URL(), "tempkey")
 }
 
 func (t *Article) Description() string {
@@ -62,4 +62,10 @@ func (t *Article) Image1() string {
 // Image2 获取封面 2.35:1
 func (t *Article) Image2() string {
 	return t.find(regexp.MustCompile(`var cdn_url_235_1 = "(.*?)"`))
+}
+
+// IsWX 是否是微信文章
+func (t *Article) IsWX() bool {
+	site := t.find(regexp.MustCompile(`<meta property="og:site_name" content="(.*?)"`))
+	return site == "微信公众平台"
 }
