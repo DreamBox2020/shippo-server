@@ -71,11 +71,30 @@ func (t *WxArticleDao) Find(id uint) (r *model.WxArticleExtOffiaccountNickname, 
 }
 
 // FindAllByWxPassport 查询某人的全部文章
-func (t *WxArticleDao) FindAllByWxPassport(m *model.WxArticle) (r *[]model.WxArticleExtOffiaccountNickname, err error) {
+func (t *WxArticleDao) FindAllByWxPassport(m *model.WxArticle) (
+	r *[]model.WxArticleExtOffiaccountNickname, err error) {
 	subQuery := t.db.Model(&model.WxOffiaccount{})
 	err = t.db.Model(&model.WxArticle{}).
 		Select("shippo_wx_article.*", "temp.nickname AS offiaccountNickname").
 		Joins("Left JOIN (?) temp ON temp.id = offiaccount_id", subQuery).
-		Order("created_at DESC").Where("wx_passport_id", m.WxPassportId).Find(&r).Error
+		Order("created_at DESC").
+		Where("wx_passport_id", m.WxPassportId).Find(&r).Error
+	return
+}
+
+func (t *WxArticleDao) FindAllByWxPassportAndComment(m *model.WxArticle) (
+	r *[]model.WxArticleExtOffiaccountNickname, err error) {
+	subQuery := t.db.Model(&model.WxOffiaccount{})
+	subQuery2 := t.db.Model(&model.WxComment{}).
+		Select("article_id").
+		Where("wx_passport_id", m.WxPassportId).
+		Where("reply_comment_id IS NULL").
+		Group("article_id")
+
+	err = t.db.Model(&model.WxArticle{}).
+		Select("shippo_wx_article.*", "temp.nickname AS offiaccountNickname").
+		Joins("Left JOIN (?) temp ON temp.id = offiaccount_id", subQuery).
+		Order("created_at DESC").
+		Where("shippo_wx_article.id IN (?)", subQuery2).Find(&r).Error
 	return
 }

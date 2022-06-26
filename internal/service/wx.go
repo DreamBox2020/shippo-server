@@ -9,6 +9,7 @@ import (
 	"shippo-server/internal/model"
 	"shippo-server/utils"
 	"shippo-server/utils/config"
+	"shippo-server/utils/ecode"
 	"time"
 )
 
@@ -69,6 +70,34 @@ func (t *WxService) AuthCodeToSession(code string) (r model.AuthCodeToSessionRes
 	return
 }
 
-func (t *WxService) GetUserinfo() {
+func (t *WxService) GetAccessToken(code string) (r model.WxOauth2Result, err error) {
+	err = utils.HttpGetJSON(
+		"https://api.weixin.qq.com/sns/oauth2/access_token?appid="+config.Common.AppID+
+			"&secret="+config.Common.AppSecret+
+			"&code="+code+"&grant_type=authorization_code", &r)
+	if err != nil {
+		return
+	}
+	fmt.Printf("GetAccessToken:%+v\n", r)
 
+	return
+}
+
+func (t *WxService) GetUserinfo(code string) (r model.WxUserinfoResult, err error) {
+
+	oauth, err := t.GetAccessToken(code)
+
+	if oauth.Scope != "snsapi_userinfo" {
+		err = ecode.ServerErr
+		return
+	}
+
+	err = utils.HttpGetJSON("https://api.weixin.qq.com/sns/userinfo?access_token="+oauth.AccessToken+
+		"&openid="+config.Common.AppID+"&lang=zh_CN", &r)
+	if err != nil {
+		return
+	}
+	fmt.Printf("GetUserinfo:%+v\n", r)
+
+	return
 }

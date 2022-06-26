@@ -27,6 +27,7 @@ func (t *WxArticleServer) initRouter() {
 	t.router.POST("findByOffiaccount", t.FindByOffiaccount)
 	t.router.POST("find", t.Find)
 	t.router.POST("findAllByWxPassport", t.FindAllByWxPassport)
+	t.router.POST("findAllByWxPassportAndComment", t.FindAllByWxPassportAndComment)
 }
 
 // Create 新增文章
@@ -71,7 +72,7 @@ func (t *WxArticleServer) Update(c *box.Context) {
 
 // UpdateCommentSwitch 修改文章评论开关
 func (t *WxArticleServer) UpdateCommentSwitch(c *box.Context) {
-	
+
 	if c.User.WxPassportId == 0 {
 		c.JSON(nil, ecode.WxPassportIsNull)
 		return
@@ -142,5 +143,24 @@ func (t *WxArticleServer) FindAllByWxPassport(c *box.Context) {
 	param.WxPassportId = c.User.WxPassportId
 
 	r, err := t.service.WxArticle.FindAllByWxPassport(&param)
+	c.JSON(r, err)
+}
+
+func (t *WxArticleServer) FindAllByWxPassportAndComment(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
+	var param model.WxArticle
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
+
+	param.WxPassportId = c.User.WxPassportId
+
+	r, err := t.service.WxArticle.FindAllByWxPassportAndComment(&param)
 	c.JSON(r, err)
 }

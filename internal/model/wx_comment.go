@@ -11,7 +11,13 @@ type WxComment struct {
 	ReplyCommentId uint   `json:"replyCommentId"`
 }
 
-type WxCommentExtReplyList struct {
+type WxCommentExt struct {
 	WxComment
-	ReplyList []WxComment `json:"replyList"`
+	Nickname  string `json:"nickname"`
+	AvatarUrl string `json:"avatarUrl"`
+}
+
+type WxCommentExtReplyList struct {
+	WxCommentExt
+	ReplyList []WxCommentExt `json:"replyList"`
 }

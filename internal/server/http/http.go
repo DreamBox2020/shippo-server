@@ -15,7 +15,6 @@ type ServerGroup struct {
 	Passport         *PassportServer
 	File             *FileServer
 	Captcha          *CaptchaServer
-	AdminUser        *AdminUserServer
 	Role             *RoleServer
 	PermissionAccess *PermissionAccessServer
 	PermissionPolicy *PermissionPolicyServer
@@ -24,6 +23,7 @@ type ServerGroup struct {
 	WxCommentLike    *WxCommentLikeServer
 	WxOffiaccount    *WxOffiaccountServer
 	WxComment        *WxCommentServer
+	WxPassport       *WxPassportServer
 }
 
 type Server struct {
@@ -58,7 +58,6 @@ func (t *Server) initGroup() {
 		Passport:         NewPassportServer(t),
 		File:             NewFileServer(t),
 		Captcha:          NewCaptchaServer(t),
-		AdminUser:        NewAdminUserServer(t),
 		Role:             NewRoleServer(t),
 		PermissionAccess: NewPermissionAccessServer(t),
 		PermissionPolicy: NewPermissionPolicyServer(t),
@@ -67,6 +66,7 @@ func (t *Server) initGroup() {
 		WxCommentLike:    NewWxCommentLikeServer(t),
 		WxOffiaccount:    NewWxOffiaccountServer(t),
 		WxComment:        NewWxCommentServer(t),
+		WxPassport:       NewWxPassportServer(t),
 	}
 }
 

@@ -21,6 +21,7 @@ var (
 	WxArticleUpdateProhibit  = New(502002, "文章已经发布，不允许修改。")
 	WxOffiaccountIsNotLinked = New(502003, "该公众号未关联小程序")
 	WxArticleURLError        = New(502004, "文章链接错误")
+	WxArticleNotTempURLError = New(502005, "创建文章请使用临时链接")
 
 	// 验证码错误
 	CaptchaError     = New(503001, "验证码错误")

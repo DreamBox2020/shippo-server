@@ -26,6 +26,8 @@ func (t *UserServer) initRouter() {
 	t.router.POST("logout", t.UserLogout)
 	t.router.POST("findAll", t.FindAll)
 	t.router.POST("updateUserRole", t.UpdateUserRole)
+	// 暂时禁用
+	//t.router.POST("create", t.UserCreateEmail)
 }
 
 func (t *UserServer) UserLogout(c *box.Context) {
@@ -103,5 +105,18 @@ func (t *UserServer) UpdateUserRole(c *box.Context) {
 	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	err := t.service.User.UpdateUserRole(param)
+	c.JSON(nil, err)
+}
+
+func (t *UserServer) UserCreateEmail(c *box.Context) {
+	var param = new(struct {
+		Email string `json:"email"`
+	})
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
+
+	_, err := t.service.User.UserCreateEmail(param.Email)
 	c.JSON(nil, err)
 }

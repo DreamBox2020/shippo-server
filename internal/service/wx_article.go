@@ -20,6 +20,12 @@ func NewWxArticleService(s *Service) *WxArticleService {
 func (t *WxArticleService) Create(m *model.WxArticle) (r *model.WxArticle, err error) {
 	article, err := t.createWxArticle(m)
 
+	// 不允许直接通过永久链接创建文章
+	if article.Url != "" {
+		err = ecode.WxArticleNotTempURLError
+		return
+	}
+
 	r, err = t.dao.WxArticle.Create(article)
 	return
 }
@@ -27,6 +33,7 @@ func (t *WxArticleService) Create(m *model.WxArticle) (r *model.WxArticle, err e
 // Update 修改文章
 func (t *WxArticleService) Update(m *model.WxArticle) (err error) {
 
+	// 没有查到要被修改的文章
 	old, err := t.dao.WxArticle.Find(m.ID)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -35,10 +42,12 @@ func (t *WxArticleService) Update(m *model.WxArticle) (err error) {
 		return
 	}
 
+	// 修改者和创建者不是一个人
 	if old.WxPassportId != m.WxPassportId {
 		return ecode.ServerErr
 	}
 
+	// 如果被修改的文章，已经拥有永久地址，则不允许修改
 	if old.Url != "" {
 		return ecode.WxArticleUpdateProhibit
 	}
@@ -135,7 +144,14 @@ func (t *WxArticleService) Find(id uint) (r *model.WxArticleExtOffiaccountNickna
 }
 
 // FindAllByWxPassport 查询某人的全部文章
-func (t *WxArticleService) FindAllByWxPassport(m *model.WxArticle) (r *[]model.WxArticleExtOffiaccountNickname, err error) {
+func (t *WxArticleService) FindAllByWxPassport(m *model.WxArticle) (
+	r *[]model.WxArticleExtOffiaccountNickname, err error) {
 	r, err = t.dao.WxArticle.FindAllByWxPassport(m)
+	return
+}
+
+func (t *WxArticleService) FindAllByWxPassportAndComment(m *model.WxArticle) (
+	r *[]model.WxArticleExtOffiaccountNickname, err error) {
+	r, err = t.dao.WxArticle.FindAllByWxPassportAndComment(m)
 	return
 }

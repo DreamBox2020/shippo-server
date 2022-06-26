@@ -43,8 +43,8 @@ func (t *WxCommentServer) Create(c *box.Context) {
 
 	param.WxPassportId = c.User.WxPassportId
 
-	_, err := t.service.WxComment.Create(param)
-	c.JSON(nil, err)
+	r, err := t.service.WxComment.Create(param)
+	c.JSON(r, err)
 }
 
 func (t *WxCommentServer) Reply(c *box.Context) {

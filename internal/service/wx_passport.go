@@ -45,3 +45,20 @@ func (t *WxPassportService) Update(m *model.WxPassport) (err error) {
 
 	return
 }
+
+// UpdateInfo 修改微信通行证
+func (t *WxPassportService) UpdateInfo(code string, wxPassportId uint) (err error) {
+	info, err := t.Group.Wx.GetUserinfo(code)
+
+	if err != nil {
+		return
+	}
+
+	err = t.Update(&model.WxPassport{
+		Model:             model.Model{ID: wxPassportId},
+		Nickname:          info.Nickname,
+		AvatarUrl:         info.Headimgurl,
+		OffiaccountOpenId: info.Openid,
+	})
+	return
+}

@@ -13,46 +13,78 @@ func NewWxCommentDao(s *Dao) *WxCommentDao {
 }
 
 // FindCommentByArticle 查询某文章的全部一级评论
-func (t *WxCommentDao) FindCommentByArticle(m *model.WxComment) (r *[]model.WxComment, err error) {
-	err = t.db.Order("created_at DESC").Where("article_id", m.ArticleId).
+func (t *WxCommentDao) FindCommentByArticle(m *model.WxComment) (r *[]model.WxCommentExt, err error) {
+	subQuery := t.db.Model(&model.WxPassport{})
+	err = t.db.Model(&model.WxComment{}).
+		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
+		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
+		Order("created_at DESC").
+		Where("article_id", m.ArticleId).
 		Where("reply_comment_id IS NULL").Find(&r).Error
 	return
 }
 
 // FindReplyByArticle 查询某文章的全部二级评论
-func (t *WxCommentDao) FindReplyByArticle(m *model.WxComment) (r *[]model.WxComment, err error) {
-	err = t.db.Order("created_at ASC").Where("article_id", m.ArticleId).
+func (t *WxCommentDao) FindReplyByArticle(m *model.WxComment) (r *[]model.WxCommentExt, err error) {
+	subQuery := t.db.Model(&model.WxPassport{})
+	err = t.db.Model(&model.WxComment{}).
+		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
+		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
+		Order("created_at ASC").
+		Where("article_id", m.ArticleId).
 		Where("reply_comment_id IS NOT NULL").Find(&r).Error
 	return
 }
 
 // FindCommentByArticleAndElected 查询某文章的精选一级评论
-func (t *WxCommentDao) FindCommentByArticleAndElected(m *model.WxComment) (r *[]model.WxComment, err error) {
-	err = t.db.Order("is_top DESC").Order("like_num DESC").Where("article_id", m.ArticleId).
-		Where("reply_comment_id IS NULL").Where("is_elected", 1).Find(&r).Error
+func (t *WxCommentDao) FindCommentByArticleAndElected(m *model.WxComment) (r *[]model.WxCommentExt, err error) {
+	subQuery := t.db.Model(&model.WxPassport{})
+	err = t.db.Model(&model.WxComment{}).
+		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
+		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
+		Order("is_top DESC").Order("like_num DESC").
+		Where("article_id", m.ArticleId).
+		Where("reply_comment_id IS NULL").
+		Where("is_elected", 1).Find(&r).Error
 	return
 }
 
 // FindReplyByArticleAndElected 查询某文章的精选二级评论
-func (t *WxCommentDao) FindReplyByArticleAndElected(m *model.WxComment) (r *[]model.WxComment, err error) {
-	err = t.db.Order("created_at ASC").Where("article_id", m.ArticleId).
-		Where("reply_comment_id IS NOT NULL").Where("is_elected", 1).Find(&r).Error
+func (t *WxCommentDao) FindReplyByArticleAndElected(m *model.WxComment) (r *[]model.WxCommentExt, err error) {
+	subQuery := t.db.Model(&model.WxPassport{})
+	err = t.db.Model(&model.WxComment{}).
+		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
+		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
+		Order("created_at ASC").
+		Where("article_id", m.ArticleId).
+		Where("reply_comment_id IS NOT NULL").
+		Where("is_elected", 1).Find(&r).Error
 	return
 }
 
 // FindCommentByWxPassportAndArticle 查询某用户在某文章的全部一级评论
-func (t *WxCommentDao) FindCommentByWxPassportAndArticle(m *model.WxComment) (r *[]model.WxComment, err error) {
-	err = t.db.Order("created_at DESC").Where("article_id", m.ArticleId).
-		Where("wx_passport_id", m.WxPassportId).Where("reply_comment_id IS NULL").Find(&r).Error
+func (t *WxCommentDao) FindCommentByWxPassportAndArticle(m *model.WxComment) (r *[]model.WxCommentExt, err error) {
+	subQuery := t.db.Model(&model.WxPassport{})
+	err = t.db.Model(&model.WxComment{}).
+		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
+		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
+		Where("article_id", m.ArticleId).
+		Where("wx_passport_id", m.WxPassportId).
+		Where("reply_comment_id IS NULL").Find(&r).Error
 	return
 }
 
 // FindReplyByCommentAndArticle 查询某用户在某文章的全部一级评论 的全部二级评论
-func (t *WxCommentDao) FindReplyByCommentAndArticle(m *model.WxComment) (r *[]model.WxComment, err error) {
-	subQuery := t.db.Select("id").Where("article_id", m.ArticleId).
+func (t *WxCommentDao) FindReplyByCommentAndArticle(m *model.WxComment) (r *[]model.WxCommentExt, err error) {
+	subQuery := t.db.Model(&model.WxComment{}).Select("id").Where("article_id", m.ArticleId).
 		Where("wx_passport_id", m.WxPassportId).Where("reply_comment_id IS NULL")
-	err = t.db.Order("created_at ASC").Where("article_id", m.ArticleId).
-		Where("wx_passport_id IN (?)", subQuery).Where("reply_comment_id IS NOT NULL").Find(&r).Error
+	subQuery2 := t.db.Model(&model.WxPassport{})
+	err = t.db.Model(&model.WxComment{}).
+		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
+		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery2).
+		Order("created_at ASC").
+		Where("article_id", m.ArticleId).
+		Where("reply_comment_id IN (?)", subQuery).Find(&r).Error
 	return
 }
 

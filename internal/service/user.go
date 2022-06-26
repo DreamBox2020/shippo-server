@@ -151,3 +151,15 @@ func (s *UserService) FindAll(u model.UserFindAllReq) (m model.UserFindAllResp, 
 func (s *UserService) UpdateUserRole(u model.User) error {
 	return s.dao.User.UpdateUserRole(u)
 }
+
+func (s *UserService) UserCreateEmail(email string) (u model.User, err error) {
+
+	if !check.CheckQQEmail(email) {
+		err = ecode.ServerErr
+		return
+	}
+
+	u, err = s.dao.User.UserCreateEmail(email)
+
+	return
+}

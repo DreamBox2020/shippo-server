@@ -51,12 +51,12 @@ func (t *WxCommentService) AdminFindByArticle(m *model.WxComment) (r *[]model.Wx
 }
 
 // mergeComment 合并评论
-func (t *WxCommentService) mergeComment(comments, replies *[]model.WxComment) *[]model.WxCommentExtReplyList {
+func (t *WxCommentService) mergeComment(comments, replies *[]model.WxCommentExt) *[]model.WxCommentExtReplyList {
 	// 转为map结构
 	var commentMap = make(map[uint]model.WxCommentExtReplyList, len(*comments))
 	for _, comment := range *comments {
 		commentMap[comment.ID] = model.WxCommentExtReplyList{
-			WxComment: comment,
+			WxCommentExt: comment,
 		}
 	}
 
@@ -70,9 +70,16 @@ func (t *WxCommentService) mergeComment(comments, replies *[]model.WxComment) *[
 	}
 
 	// 转为slice结构
-	var result = make([]model.WxCommentExtReplyList, len(commentMap))
+	var result []model.WxCommentExtReplyList
 	for _, comment := range commentMap {
+		if len(comment.ReplyList) == 0 {
+			comment.ReplyList = make([]model.WxCommentExt, 0)
+		}
 		result = append(result, comment)
+	}
+
+	if len(result) == 0 {
+		result = make([]model.WxCommentExtReplyList, 0)
 	}
 
 	return &result

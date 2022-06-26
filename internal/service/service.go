@@ -14,7 +14,6 @@ type ServiceGroup struct {
 	Temp             *TempService
 	Passport         *PassportService
 	Captcha          *CaptchaService
-	AdminUser        *AdminUserService
 	Role             *RoleService
 	PermissionAccess *PermissionAccessService
 	PermissionPolicy *PermissionPolicyService
@@ -52,7 +51,6 @@ func (t *Service) initGroup() {
 		Temp:             NewTempService(t),
 		Passport:         NewPassportService(t),
 		Captcha:          NewCaptchaService(t),
-		AdminUser:        NewAdminUserService(t),
 		Role:             NewRoleService(t),
 		PermissionAccess: NewPermissionAccessService(t),
 		PermissionPolicy: NewPermissionPolicyService(t),
