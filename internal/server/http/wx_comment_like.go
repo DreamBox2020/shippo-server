@@ -22,7 +22,7 @@ func NewWxCommentLikeServer(server *Server) *WxCommentLikeServer {
 
 func (t *WxCommentLikeServer) initRouter() {
 	t.router.POST("create", t.Create)
-	t.router.POST("delete", t.Delete)
+	t.router.POST("del", t.Delete)
 }
 
 // Create 新增点赞

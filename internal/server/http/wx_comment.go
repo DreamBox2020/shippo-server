@@ -24,7 +24,7 @@ func (t *WxCommentServer) initRouter() {
 	t.router.POST("create", t.Create)
 	t.router.POST("reply", t.Reply)
 	t.router.POST("admin/reply", t.AdminReply)
-	t.router.POST("delete", t.Delete)
+	t.router.POST("del", t.Delete)
 	t.router.POST("updateElected", t.UpdateElected)
 	t.router.POST("updateTop", t.UpdateTop)
 	t.router.POST("findByWxPassportAndOffiaccount", t.FindByWxPassportAndOffiaccount)
