@@ -18,8 +18,6 @@ dev
 
 prod
 
->export GIN_MODE=release
-
 >netstat -tunlp|grep ${port}
 
 >kill ${id}
