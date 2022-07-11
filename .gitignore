@@ -1,4 +1,3 @@
 .idea
-go.sum
 configs/*.json
 out
