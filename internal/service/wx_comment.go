@@ -122,12 +122,34 @@ func (t *WxCommentService) FindByWxPassportAndOffiaccountAndElected(m *model.WxA
 
 // UpdateElected 更新评论 精选状态
 func (t *WxCommentService) UpdateElected(m *model.WxComment) (err error) {
+
+	isAdmin, err := t.IsAdmin(m.ID, m.WxPassportId)
+	if err != nil {
+		return
+	}
+
+	if !isAdmin {
+		err = ecode.ServerErr
+		return
+	}
+
 	err = t.dao.WxComment.UpdateElected(m)
 	return
 }
 
 // UpdateTop 更新评论 置顶状态
 func (t *WxCommentService) UpdateTop(m *model.WxComment) (err error) {
+
+	isAdmin, err := t.IsAdmin(m.ID, m.WxPassportId)
+	if err != nil {
+		return
+	}
+
+	if !isAdmin {
+		err = ecode.ServerErr
+		return
+	}
+
 	err = t.dao.WxComment.UpdateTop(m)
 	return
 }
@@ -140,6 +162,39 @@ func (t *WxCommentService) UpdateLikeNum(m *model.WxComment) (err error) {
 
 // Delete 删除某评论
 func (t *WxCommentService) Delete(m *model.WxComment) (err error) {
+	// 查询要删除的评论，是否存在
+	comment, err := t.dao.WxComment.Find(m.ReplyCommentId)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	// 查询评论的文章，是否存在
+	article, err := t.dao.WxArticle.Find(comment.ArticleId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	// 只能删除自己的评论
+	if comment.WxPassportId == 0 {
+		// 如果不是管理员
+		if article.WxPassportId != m.WxPassportId {
+			err = ecode.ServerErr
+			return
+		}
+	} else {
+		if comment.WxPassportId != m.WxPassportId {
+			err = ecode.ServerErr
+			return
+		}
+	}
+
 	err = t.dao.WxComment.Delete(m.ID)
 	return
 }
@@ -254,5 +309,31 @@ func (t *WxCommentService) AdminReply(m *model.WxComment) (r *model.WxComment, e
 		ReplyCommentId: m.ReplyCommentId,
 	})
 
+	return
+}
+
+// IsAdmin 检查通行证是否是某评论文章的作者
+func (t *WxCommentService) IsAdmin(commentId uint, wxPassportId uint) (r bool, err error) {
+
+	// 查询评论，是否存在
+	comment, err := t.dao.WxComment.Find(commentId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	// 查询评论的文章，是否存在
+	article, err := t.dao.WxArticle.Find(comment.ArticleId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	// 是否管理员
+	r = article.WxPassportId == wxPassportId
 	return
 }

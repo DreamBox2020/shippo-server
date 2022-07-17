@@ -144,7 +144,15 @@ func (t *WxCommentDao) UpdateLikeNum(m *model.WxComment) (err error) {
 
 // Delete 删除某评论
 func (t *WxCommentDao) Delete(id uint) (err error) {
+
+	// 先删除全部回复
+	err = t.db.Where("reply_comment_id", id).Delete(&model.WxComment{}).Error
+	if err != nil {
+		return
+	}
+
 	err = t.db.Delete(&model.WxComment{}, id).Error
+
 	return err
 }
 
