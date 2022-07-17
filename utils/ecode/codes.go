@@ -22,6 +22,8 @@ var (
 	WxOffiaccountIsNotLinked = New(502003, "该公众号未关联小程序")
 	WxArticleURLError        = New(502004, "文章链接错误")
 	WxArticleNotTempURLError = New(502005, "创建文章请使用临时链接")
+	WxCommentErr             = New(502006, "评论失败")
+	WxCommentIsEmptyErr      = New(502007, "评论内容为空")
 
 	// 验证码错误
 	CaptchaError     = New(503001, "验证码错误")

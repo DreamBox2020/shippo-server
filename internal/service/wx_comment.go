@@ -1,7 +1,10 @@
 package service
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"shippo-server/internal/model"
+	"shippo-server/utils/ecode"
 )
 
 type WxCommentService struct {
@@ -71,11 +74,12 @@ func (t *WxCommentService) mergeComment(comments, replies *[]model.WxCommentExt)
 
 	// 转为slice结构
 	var result []model.WxCommentExtReplyList
-	for _, comment := range commentMap {
-		if len(comment.ReplyList) == 0 {
-			comment.ReplyList = make([]model.WxCommentExt, 0)
+	for _, comment := range *comments {
+		c := commentMap[comment.ID]
+		if len(c.ReplyList) == 0 {
+			c.ReplyList = make([]model.WxCommentExt, 0)
 		}
-		result = append(result, comment)
+		result = append(result, c)
 	}
 
 	if len(result) == 0 {
@@ -142,19 +146,113 @@ func (t *WxCommentService) Delete(m *model.WxComment) (err error) {
 
 // Create 评论
 func (t *WxCommentService) Create(m *model.WxComment) (r *model.WxComment, err error) {
-	m.ReplyCommentId = 0
-	r, err = t.dao.WxComment.Create(m)
+
+	// 评论内容不能为空
+	if m.Content == "" {
+		err = ecode.WxCommentIsEmptyErr
+		return
+	}
+
+	// 查询要评论的文章，是否存在
+	_, err = t.dao.WxArticle.Find(m.ArticleId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	r, err = t.dao.WxComment.Create(&model.WxComment{
+		Content:        m.Content,
+		ArticleId:      m.ArticleId,
+		WxPassportId:   m.WxPassportId,
+		LikeNum:        0,
+		IsElected:      0,
+		IsTop:          0,
+		ReplyCommentId: 0,
+	})
 	return
 }
 
 // Reply 回复评论
 func (t *WxCommentService) Reply(m *model.WxComment) (r *model.WxComment, err error) {
-	r, err = t.dao.WxComment.Create(m)
+
+	// 评论内容不能为空
+	if m.Content == "" {
+		err = ecode.WxCommentIsEmptyErr
+		return
+	}
+
+	// 查询要回复的评论，是否存在
+	comment, err := t.dao.WxComment.Find(m.ReplyCommentId)
+
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	// 只能回复自己的评论
+	if comment.WxPassportId != m.WxPassportId {
+		err = ecode.WxCommentErr
+		return
+	}
+
+	r, err = t.dao.WxComment.Create(&model.WxComment{
+		Content:        m.Content,
+		ArticleId:      comment.ArticleId,
+		WxPassportId:   m.WxPassportId,
+		LikeNum:        0,
+		IsElected:      0,
+		IsTop:          0,
+		ReplyCommentId: m.ReplyCommentId,
+	})
 	return
 }
 
 // AdminReply 管理员回复评论
 func (t *WxCommentService) AdminReply(m *model.WxComment) (r *model.WxComment, err error) {
-	r, err = t.dao.WxComment.Create(m)
+
+	// 评论内容不能为空
+	if m.Content == "" {
+		err = ecode.WxCommentIsEmptyErr
+		return
+	}
+
+	// 查询要回复的评论，是否存在
+	comment, err := t.dao.WxComment.Find(m.ReplyCommentId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	// 查询要评论的文章，是否存在
+	article, err := t.dao.WxArticle.Find(comment.ArticleId)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = ecode.ServerErr
+		}
+		return
+	}
+
+	// 管理员只能回复自己文章上的评论
+	if article.WxPassportId != m.WxPassportId {
+		err = ecode.WxCommentErr
+		return
+	}
+
+	r, err = t.dao.WxComment.Create(&model.WxComment{
+		Content:        m.Content,
+		ArticleId:      comment.ArticleId,
+		WxPassportId:   0,
+		LikeNum:        0,
+		IsElected:      0,
+		IsTop:          0,
+		ReplyCommentId: m.ReplyCommentId,
+	})
+
 	return
 }

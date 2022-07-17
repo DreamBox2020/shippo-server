@@ -77,8 +77,9 @@ func (t *WxArticleDao) FindAllByWxPassport(m *model.WxArticle) (
 	err = t.db.Model(&model.WxArticle{}).
 		Select("shippo_wx_article.*", "temp.nickname AS offiaccountNickname").
 		Joins("Left JOIN (?) temp ON temp.id = offiaccount_id", subQuery).
+		Where("wx_passport_id", m.WxPassportId).
 		Order("created_at DESC").
-		Where("wx_passport_id", m.WxPassportId).Find(&r).Error
+		Find(&r).Error
 	return
 }
 
@@ -94,7 +95,8 @@ func (t *WxArticleDao) FindAllByWxPassportAndComment(m *model.WxArticle) (
 	err = t.db.Model(&model.WxArticle{}).
 		Select("shippo_wx_article.*", "temp.nickname AS offiaccountNickname").
 		Joins("Left JOIN (?) temp ON temp.id = offiaccount_id", subQuery).
+		Where("shippo_wx_article.id IN (?)", subQuery2).
 		Order("created_at DESC").
-		Where("shippo_wx_article.id IN (?)", subQuery2).Find(&r).Error
+		Find(&r).Error
 	return
 }

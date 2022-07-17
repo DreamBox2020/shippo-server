@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"shippo-server/internal/model"
 	"shippo-server/utils/box"
+	"shippo-server/utils/ecode"
 )
 
 type WxCommentServer struct {
@@ -35,6 +36,12 @@ func (t *WxCommentServer) initRouter() {
 }
 
 func (t *WxCommentServer) Create(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -48,6 +55,12 @@ func (t *WxCommentServer) Create(c *box.Context) {
 }
 
 func (t *WxCommentServer) Reply(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -61,6 +74,12 @@ func (t *WxCommentServer) Reply(c *box.Context) {
 }
 
 func (t *WxCommentServer) AdminReply(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -74,6 +93,12 @@ func (t *WxCommentServer) AdminReply(c *box.Context) {
 }
 
 func (t *WxCommentServer) Delete(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -87,6 +112,12 @@ func (t *WxCommentServer) Delete(c *box.Context) {
 }
 
 func (t *WxCommentServer) UpdateElected(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -100,6 +131,12 @@ func (t *WxCommentServer) UpdateElected(c *box.Context) {
 }
 
 func (t *WxCommentServer) UpdateTop(c *box.Context) {
+
+	if c.User.WxPassportId == 0 {
+		c.JSON(nil, ecode.WxPassportIsNull)
+		return
+	}
+
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return

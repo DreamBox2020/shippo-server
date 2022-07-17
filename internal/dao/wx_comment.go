@@ -18,9 +18,10 @@ func (t *WxCommentDao) FindCommentByArticle(m *model.WxComment) (r *[]model.WxCo
 	err = t.db.Model(&model.WxComment{}).
 		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
 		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
-		Order("created_at DESC").
 		Where("article_id", m.ArticleId).
-		Where("reply_comment_id IS NULL").Find(&r).Error
+		Where("reply_comment_id IS NULL").
+		Order("created_at DESC").
+		Find(&r).Error
 	return
 }
 
@@ -30,9 +31,10 @@ func (t *WxCommentDao) FindReplyByArticle(m *model.WxComment) (r *[]model.WxComm
 	err = t.db.Model(&model.WxComment{}).
 		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
 		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
-		Order("created_at ASC").
 		Where("article_id", m.ArticleId).
-		Where("reply_comment_id IS NOT NULL").Find(&r).Error
+		Where("reply_comment_id IS NOT NULL").
+		Order("created_at ASC").
+		Find(&r).Error
 	return
 }
 
@@ -42,10 +44,12 @@ func (t *WxCommentDao) FindCommentByArticleAndElected(m *model.WxComment) (r *[]
 	err = t.db.Model(&model.WxComment{}).
 		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
 		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
-		Order("is_top DESC").Order("like_num DESC").
 		Where("article_id", m.ArticleId).
 		Where("reply_comment_id IS NULL").
-		Where("is_elected", 1).Find(&r).Error
+		Where("is_elected", 1).
+		Order("like_num DESC").
+		Order("is_top DESC").
+		Find(&r).Error
 	return
 }
 
@@ -55,10 +59,11 @@ func (t *WxCommentDao) FindReplyByArticleAndElected(m *model.WxComment) (r *[]mo
 	err = t.db.Model(&model.WxComment{}).
 		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
 		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery).
-		Order("created_at ASC").
 		Where("article_id", m.ArticleId).
 		Where("reply_comment_id IS NOT NULL").
-		Where("is_elected", 1).Find(&r).Error
+		Where("is_elected", 1).
+		Order("created_at ASC").
+		Find(&r).Error
 	return
 }
 
@@ -82,32 +87,39 @@ func (t *WxCommentDao) FindReplyByCommentAndArticle(m *model.WxComment) (r *[]mo
 	err = t.db.Model(&model.WxComment{}).
 		Select("shippo_wx_comment.*", "temp.nickname AS nickname", "temp.avatar_url AS avatar_url").
 		Joins("Left JOIN (?) temp ON temp.id = wx_passport_id", subQuery2).
-		Order("created_at ASC").
 		Where("article_id", m.ArticleId).
-		Where("reply_comment_id IN (?)", subQuery).Find(&r).Error
+		Where("reply_comment_id IN (?)", subQuery).
+		Order("created_at ASC").
+		Find(&r).Error
 	return
 }
 
 // FindByWxPassportAndOffiaccount 查询某用户在某公众号的全部一级评论
 func (t *WxCommentDao) FindByWxPassportAndOffiaccount(m *model.WxArticle) (r *[]model.WxComment, err error) {
 	subQuery := t.db.Model(&model.WxArticle{}).Select("id").Where("offiaccount_id", m.OffiaccountId)
-	err = t.db.Order("created_at ASC").Where("article_id IN (?)", subQuery).
-		Where("wx_passport_id", m.WxPassportId).Where("reply_comment_id IS NULL").Find(&r).Error
+	err = t.db.Where("article_id IN (?)", subQuery).
+		Where("wx_passport_id", m.WxPassportId).
+		Where("reply_comment_id IS NULL").
+		Order("created_at ASC").
+		Find(&r).Error
 	return
 }
 
 // FindByWxPassportAndOffiaccountAndElected 查询某用户在某公众号的精选一级评论
 func (t *WxCommentDao) FindByWxPassportAndOffiaccountAndElected(m *model.WxArticle) (r *[]model.WxComment, err error) {
 	subQuery := t.db.Model(&model.WxArticle{}).Select("id").Where("offiaccount_id", m.OffiaccountId)
-	err = t.db.Order("created_at ASC").Where("article_id IN (?)", subQuery).
-		Where("wx_passport_id", m.WxPassportId).Where("reply_comment_id IS NULL").
-		Where("is_elected", 1).Find(&r).Error
+	err = t.db.Where("article_id IN (?)", subQuery).
+		Where("wx_passport_id", m.WxPassportId).
+		Where("reply_comment_id IS NULL").
+		Where("is_elected", 1).
+		Order("created_at ASC").
+		Find(&r).Error
 	return
 }
 
 // Find 根据id查询评论
 func (t *WxCommentDao) Find(id uint) (r *model.WxComment, err error) {
-	err = t.db.First(r, id).Error
+	err = t.db.First(&r, id).Error
 	return
 }
 
