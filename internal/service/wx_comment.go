@@ -163,7 +163,7 @@ func (t *WxCommentService) UpdateLikeNum(m *model.WxComment) (err error) {
 // Delete 删除某评论
 func (t *WxCommentService) Delete(m *model.WxComment) (err error) {
 	// 查询要删除的评论，是否存在
-	comment, err := t.dao.WxComment.Find(m.ReplyCommentId)
+	comment, err := t.dao.WxComment.Find(m.ID)
 
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
