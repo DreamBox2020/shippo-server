@@ -35,6 +35,7 @@ func (t *WxCommentServer) initRouter() {
 	t.router.POST("admin/findByArticle", t.AdminFindByArticle)
 }
 
+// Create 创建一条评论
 func (t *WxCommentServer) Create(c *box.Context) {
 
 	if c.User.WxPassportId == 0 {
@@ -54,6 +55,7 @@ func (t *WxCommentServer) Create(c *box.Context) {
 	c.JSON(r, err)
 }
 
+// Reply 回复一条评论
 func (t *WxCommentServer) Reply(c *box.Context) {
 
 	if c.User.WxPassportId == 0 {
@@ -73,6 +75,7 @@ func (t *WxCommentServer) Reply(c *box.Context) {
 	c.JSON(r, err)
 }
 
+// AdminReply 管理员回复一条评论
 func (t *WxCommentServer) AdminReply(c *box.Context) {
 
 	if c.User.WxPassportId == 0 {
@@ -92,6 +95,7 @@ func (t *WxCommentServer) AdminReply(c *box.Context) {
 	c.JSON(r, err)
 }
 
+// Delete 删除一条评论
 func (t *WxCommentServer) Delete(c *box.Context) {
 
 	if c.User.WxPassportId == 0 {
@@ -111,6 +115,7 @@ func (t *WxCommentServer) Delete(c *box.Context) {
 	c.JSON(nil, err)
 }
 
+// UpdateElected 更新评论精选状态
 func (t *WxCommentServer) UpdateElected(c *box.Context) {
 
 	if c.User.WxPassportId == 0 {
@@ -130,6 +135,7 @@ func (t *WxCommentServer) UpdateElected(c *box.Context) {
 	c.JSON(nil, err)
 }
 
+// UpdateTop 更新评论置顶状态
 func (t *WxCommentServer) UpdateTop(c *box.Context) {
 
 	if c.User.WxPassportId == 0 {
@@ -175,6 +181,7 @@ func (t *WxCommentServer) FindByWxPassportAndOffiaccountAndElected(c *box.Contex
 	c.JSON(r, err)
 }
 
+// FindByWxPassportAndArticle 查询某用户在某文章的全部评论
 func (t *WxCommentServer) FindByWxPassportAndArticle(c *box.Context) {
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
@@ -188,6 +195,7 @@ func (t *WxCommentServer) FindByWxPassportAndArticle(c *box.Context) {
 	c.JSON(r, err)
 }
 
+// FindByArticle 查询某文章的全部精选评论
 func (t *WxCommentServer) FindByArticle(c *box.Context) {
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {
@@ -199,6 +207,7 @@ func (t *WxCommentServer) FindByArticle(c *box.Context) {
 	c.JSON(r, err)
 }
 
+// AdminFindByArticle 查询某文章的全部评论，包含未精选
 func (t *WxCommentServer) AdminFindByArticle(c *box.Context) {
 	var param *model.WxComment
 	if err := c.ShouldBindJSON(&param); err != nil {

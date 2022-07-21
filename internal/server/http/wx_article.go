@@ -93,11 +93,6 @@ func (t *WxArticleServer) UpdateCommentSwitch(c *box.Context) {
 // FindByOffiaccount 查询某公众号文章
 func (t *WxArticleServer) FindByOffiaccount(c *box.Context) {
 
-	if c.User.WxPassportId == 0 {
-		c.JSON(nil, ecode.WxPassportIsNull)
-		return
-	}
-
 	var param model.WxArticle
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
@@ -110,11 +105,6 @@ func (t *WxArticleServer) FindByOffiaccount(c *box.Context) {
 
 // Find 查询文章根据id
 func (t *WxArticleServer) Find(c *box.Context) {
-
-	if c.User.WxPassportId == 0 {
-		c.JSON(nil, ecode.WxPassportIsNull)
-		return
-	}
 
 	var param model.WxArticle
 	if err := c.ShouldBindJSON(&param); err != nil {
@@ -146,6 +136,7 @@ func (t *WxArticleServer) FindAllByWxPassport(c *box.Context) {
 	c.JSON(r, err)
 }
 
+// FindAllByWxPassportAndComment 查询某人评论过的全部文章
 func (t *WxArticleServer) FindAllByWxPassportAndComment(c *box.Context) {
 
 	if c.User.WxPassportId == 0 {
