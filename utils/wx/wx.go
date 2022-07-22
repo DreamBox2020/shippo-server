@@ -1,6 +1,7 @@
 package wx
 
 import (
+	"fmt"
 	"regexp"
 	"shippo-server/utils"
 	"strings"
@@ -13,6 +14,8 @@ type Article struct {
 func NewArticle(url string) (*Article, error) {
 	bytes, err := utils.HttpGet(url)
 	if err != nil {
+		fmt.Printf("wx->NewArticle->url:%+v\n", url)
+		fmt.Printf("wx->NewArticle->err:%+v\n", err)
 		return nil, err
 	}
 	return &Article{html: string(bytes)}, nil

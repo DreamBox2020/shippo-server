@@ -24,6 +24,7 @@ var (
 	WxArticleNotTempURLError = New(502005, "创建文章请使用临时链接")
 	WxCommentErr             = New(502006, "评论失败")
 	WxCommentIsEmptyErr      = New(502007, "评论内容为空")
+	WxArticleImageIsEmptyErr = New(502008, "文章封面为空，请添加封面后重试")
 
 	// 验证码错误
 	CaptchaError     = New(503001, "验证码错误")

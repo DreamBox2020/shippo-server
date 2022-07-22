@@ -19,6 +19,9 @@ func NewWxArticleService(s *Service) *WxArticleService {
 // Create 新增文章
 func (t *WxArticleService) Create(m *model.WxArticle) (r *model.WxArticle, err error) {
 	article, err := t.createWxArticle(m)
+	if err != nil {
+		return
+	}
 
 	// 不允许直接通过永久链接创建文章
 	if article.Url != "" {
@@ -81,12 +84,20 @@ func (t *WxArticleService) createWxArticle(m *model.WxArticle) (r *model.WxArtic
 		return
 	}
 
-	image1, err := t.Group.File.ToLocalUrl(article.Image1(), "wx")
+	img1 := article.Image1()
+	if img1 == "" {
+		return nil, ecode.WxArticleImageIsEmptyErr
+	}
+	image1, err := t.Group.File.ToLocalUrl(img1, "wx")
 	if err != nil {
 		return
 	}
 
-	image2, err := t.Group.File.ToLocalUrl(article.Image2(), "wx")
+	img2 := article.Image2()
+	if img2 == "" {
+		return nil, ecode.WxArticleImageIsEmptyErr
+	}
+	image2, err := t.Group.File.ToLocalUrl(img2, "wx")
 	if err != nil {
 		return
 	}

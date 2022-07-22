@@ -20,6 +20,10 @@ func (t *PassportService) WxCreate(p model.Passport, code string) (r model.Passp
 	// 获取UnionId
 	session, err := t.Group.Wx.AuthCodeToSession(code)
 	if err != nil {
+		// oauth_code已使用 一般是前端没有处理好导致的，这里后端也做一下兼容。
+		if session.Errcode == 40163 {
+			return t.PassportCreate(p)
+		}
 		return
 	}
 
