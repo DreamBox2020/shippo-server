@@ -70,6 +70,15 @@ func (t *WxArticleDao) Find(id uint) (r *model.WxArticleExtOffiaccountNickname, 
 	return
 }
 
+// FindAll 查询全部文章
+func (t *WxArticleDao) FindAll() (r *[]model.WxArticleExtOffiaccountNickname, err error) {
+	subQuery := t.db.Model(&model.WxOffiaccount{})
+	err = t.db.Model(&model.WxArticle{}).
+		Select("shippo_wx_article.*", "temp.nickname AS offiaccountNickname").
+		Joins("Left JOIN (?) temp ON temp.id = offiaccount_id", subQuery).Find(&r).Error
+	return
+}
+
 // FindAllByWxPassport 查询某人的全部文章
 func (t *WxArticleDao) FindAllByWxPassport(m *model.WxArticle) (
 	r *[]model.WxArticleExtOffiaccountNickname, err error) {

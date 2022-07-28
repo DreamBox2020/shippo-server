@@ -154,6 +154,12 @@ func (t *WxArticleService) Find(id uint) (r *model.WxArticleExtOffiaccountNickna
 	return
 }
 
+// FindAll 查询全部文章
+func (t *WxArticleService) FindAll() (r *[]model.WxArticleExtOffiaccountNickname, err error) {
+	r, err = t.dao.WxArticle.FindAll()
+	return
+}
+
 // FindAllByWxPassport 查询某人的全部文章
 func (t *WxArticleService) FindAllByWxPassport(m *model.WxArticle) (
 	r *[]model.WxArticleExtOffiaccountNickname, err error) {

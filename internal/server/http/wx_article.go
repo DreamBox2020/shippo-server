@@ -26,6 +26,7 @@ func (t *WxArticleServer) initRouter() {
 	t.router.POST("updateCommentSwitch", t.UpdateCommentSwitch)
 	t.router.POST("findByOffiaccount", t.FindByOffiaccount)
 	t.router.POST("find", t.Find)
+	t.router.POST("findAll", t.FindAll)
 	t.router.POST("findAllByWxPassport", t.FindAllByWxPassport)
 	t.router.POST("findAllByWxPassportAndComment", t.FindAllByWxPassportAndComment)
 }
@@ -113,6 +114,13 @@ func (t *WxArticleServer) Find(c *box.Context) {
 	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	r, err := t.service.WxArticle.Find(param.ID)
+	c.JSON(r, err)
+}
+
+// FindAll 查询全部文章
+func (t *WxArticleServer) FindAll(c *box.Context) {
+
+	r, err := t.service.WxArticle.FindAll()
 	c.JSON(r, err)
 }
 
