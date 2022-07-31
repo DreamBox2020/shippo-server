@@ -91,3 +91,13 @@ func (t *UserDao) UpdateUserWxPassportId(u model.User) error {
 	return t.db.Model(&model.User{}).Where("id", u.ID).
 		Update("wx_passport_id", u.WxPassportId).Error
 }
+
+func (t *UserDao) FindByPhone(u *model.User) (r *model.User, err error) {
+	err = t.db.Where("phone", u.Phone).First(&r).Error
+	return
+}
+
+func (t *UserDao) FindByEmail(u *model.User) (r *model.User, err error) {
+	err = t.db.Where("email", u.Email).First(&r).Error
+	return
+}

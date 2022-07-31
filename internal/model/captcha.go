@@ -9,23 +9,24 @@ const (
 
 type Captcha struct {
 	Model
-	Target string
-	Code   string
-	Token  string
-	Type   int
+	Target  string
+	Code    string
+	Token   string
+	Type    int // 0: phone, 1: email
+	Channel string
 }
 
-// IsExpire 是否失效 有效期15分钟
+// IsExpire 是否失效 有效期15分钟 true为失效
 func (t *Captcha) IsExpire() bool {
 	return time.Since(t.UpdatedAt) > time.Minute*15
 }
 
-// ShadowIsExpire 影子是否失效 有效期30分钟
+// ShadowIsExpire 影子是否失效 有效期30分钟 true为失效
 func (t *Captcha) ShadowIsExpire(c *Captcha) bool {
-	// 如果影子被删除的时间，大于30分钟，则无效
-	if time.Since(c.DeletedAt.Time) > time.Minute*30 {
-		return true
+	// 影子必须已经被删除
+	if t.DeletedAt.Valid {
+		return time.Since(c.DeletedAt.Time) > time.Minute*30
 	}
 
-	return t.IsExpire()
+	return false
 }

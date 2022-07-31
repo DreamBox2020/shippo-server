@@ -2,11 +2,13 @@ package ecode
 
 var (
 	// 特殊错误
-	OK                = New(0, "成功")
-	NoLogin           = New(-101, "未登录")
-	ServerErr         = New(-500, "服务器繁忙")
-	AccessDenied      = New(-403, "访问权限不足")
-	ErrRecordNotFound = New(-601, "查询结果为空")
+	OK                  = New(0, "成功")
+	NoLogin             = New(-101, "未登录")
+	ServerErr           = New(-500, "服务器繁忙")
+	AccessDenied        = New(-403, "访问权限不足")
+	ErrRecordNotFound   = New(-601, "查询结果为空")
+	AccountUnregistered = New(-701, "账号未注册")
+	AccountRegistered   = New(-702, "账号已注册")
 
 	// 临时订单
 	Temp_trade_20220108_Trade1NotFind   = New(501001, "定金订单不存在")
@@ -29,6 +31,7 @@ var (
 	// 验证码错误
 	CaptchaError     = New(503001, "验证码错误")
 	CaptchaSendError = New(503002, "验证码发送失败")
+	CaptchaIsExpire  = New(503003, "验证码失效")
 
 	// 文件相关错误
 	FileTypeUnknown = New(504001, "未知文件类型")

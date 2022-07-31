@@ -29,19 +29,24 @@ func (t *CaptchaServer) initRouter() {
 
 func (t *CaptchaServer) CaptchaSend(c *box.Context) {
 	var param = new(struct {
-		Phone string `json:"phone"`
-		Email string `json:"email"`
+		Phone   string `json:"phone"`
+		Email   string `json:"email"`
+		Channel string `json:"channel"`
 	})
 	if err := c.ShouldBindJSON(&param); err != nil {
 		return
 	}
 	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
+	if param.Channel == "" {
+		param.Channel = "login"
+	}
+
 	if param.Phone != "" {
-		err := t.service.Captcha.CaptchaSmsSend(param.Phone, c.Req.Passport)
+		err := t.service.Captcha.CaptchaSmsSend(param.Phone, c.Req.Passport, param.Channel)
 		c.JSON(nil, err)
 	} else {
-		err := t.service.Captcha.CaptchaEmailSend(param.Email, c.Req.Passport)
+		err := t.service.Captcha.CaptchaEmailSend(param.Email, c.Req.Passport, param.Channel)
 		c.JSON(nil, err)
 	}
 }
