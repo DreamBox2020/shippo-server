@@ -15,51 +15,117 @@ func NewCaptchaService(s *Service) *CaptchaService {
 	return &CaptchaService{s}
 }
 
-func (s *CaptchaService) CaptchaSmsSend(phone string, token string) (err error) {
+func (t *CaptchaService) CaptchaSmsSend(phone string, token string, channel string) (err error) {
 
 	if !check.CheckPhone(phone) {
 		err = ecode.ServerErr
 		return
 	}
 
+	// bind 绑定 rebind-set 更换绑定，设置新绑定
+	// 必须没有被注册
+	if channel == "bind" || channel == "rebind-set" {
+		var tag bool
+		tag, err = t.Group.User.PhoneIsRegistered(phone)
+		if err != nil {
+			return
+		}
+
+		if tag {
+			err = ecode.AccountRegistered
+			return
+		}
+	}
+
+	// rebind-verify 更换绑定，验证旧绑定
+	// 必须已经注册
+	if channel == "rebind-verify" {
+		var tag bool
+		tag, err = t.Group.User.PhoneIsRegistered(phone)
+		if err != nil {
+			return
+		}
+
+		if !tag {
+			err = ecode.AccountUnregistered
+			return
+		}
+	}
+
 	// 过期所有验证码
-	err = s.dao.Captcha.CaptchaDel(phone)
+	err = t.dao.Captcha.CaptchaDel(phone)
 	if err != nil {
 		return
 	}
+
 	// 生成新的验证码
-	r, err := s.dao.Captcha.CaptchaSmsInsert(phone, token)
+	r, err := t.dao.Captcha.CaptchaSmsInsert(phone, token, channel)
 	if err != nil {
 		return
 	}
 
 	// 发送验证码
-	if sms.SendSms(r.Target, r.Code) {
-		return
-	} else {
+	if !sms.SendSms(r.Target, r.Code) {
 		return ecode.CaptchaSendError
 	}
+
+	return
+
 }
 
-func (s *CaptchaService) CaptchaEmailSend(email string, token string) (err error) {
+func (t *CaptchaService) CaptchaEmailSend(email string, token string, channel string) (err error) {
 
 	if !check.CheckQQEmail(email) {
 		err = ecode.ServerErr
 		return
 	}
 
+	// bind 绑定 rebind-set 更换绑定，设置新绑定
+	// 必须没有被注册
+	if channel == "bind" || channel == "rebind-set" {
+		var tag bool
+		tag, err = t.Group.User.EmailIsRegistered(email)
+		if err != nil {
+			return
+		}
+
+		if tag {
+			err = ecode.AccountRegistered
+			return
+		}
+	}
+
+	// rebind-verify 更换绑定，验证旧绑定
+	// 必须已经注册
+	if channel == "rebind-verify" {
+		var tag bool
+		tag, err = t.Group.User.EmailIsRegistered(email)
+		if err != nil {
+			return
+		}
+
+		if !tag {
+			err = ecode.AccountUnregistered
+			return
+		}
+	}
+
 	// 过期所有验证码
-	err = s.dao.Captcha.CaptchaDel(email)
+	err = t.dao.Captcha.CaptchaDel(email)
 	if err != nil {
 		return
 	}
+
 	// 生成新的验证码
-	r, err := s.dao.Captcha.CaptchaEmailInsert(email, token)
+	r, err := t.dao.Captcha.CaptchaEmailInsert(email, token, channel)
 	if err != nil {
 		return
 	}
 
 	// 发送验证码
-	email2.SendEmail(r.Target, r.Code)
+	if !email2.SendEmail(r.Target, r.Code) {
+		return ecode.CaptchaSendError
+	}
+
 	return
 }

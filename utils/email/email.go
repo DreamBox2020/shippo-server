@@ -7,25 +7,25 @@ import (
 	"shippo-server/utils/config"
 )
 
-func SendEmail(to string, code string) {
+func SendEmail(to string, code string) bool {
 	if config.IsLocal() {
-		return
+		return true
 	}
 
-	Send(to, "邮箱验证码(请勿回复此邮件)", "<span style=\"border-bottom: 1px dashed rgb(204, 204, 204);\">"+code+"</span>")
+	return Send(to, "邮箱验证码(请勿回复此邮件)", "<span style=\"border-bottom: 1px dashed rgb(204, 204, 204);\">"+code+"</span>")
 
 }
 
-func SendWarningEmail(msg string) {
+func SendWarningEmail(msg string) bool {
 	if config.IsLocal() {
-		return
+		return true
 	}
 
-	Send(config.Email.AdminEmail, "服务器告警邮件", "<span>"+msg+"</span>")
+	return Send(config.Email.AdminEmail, "服务器告警邮件", "<span>"+msg+"</span>")
 
 }
 
-func Send(to string, subject string, context string) {
+func Send(to string, subject string, context string) bool {
 	d := gomail.NewDialer(config.Email.Host, config.Email.Port, config.Email.Username, config.Email.Password)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
@@ -37,5 +37,8 @@ func Send(to string, subject string, context string) {
 
 	if err := d.DialAndSend(m); err != nil {
 		fmt.Println(err.Error())
+		return false
 	}
+
+	return true
 }

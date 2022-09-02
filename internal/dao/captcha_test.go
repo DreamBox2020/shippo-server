@@ -2,13 +2,14 @@ package dao
 
 import (
 	"fmt"
+	"shippo-server/internal/model"
 	"shippo-server/utils"
 	"testing"
 )
 
 func TestDaoCaptchaSmsInsert(t *testing.T) {
 	d := newTest()
-	s, err := d.Group.Captcha.CaptchaSmsInsert("12345678900", utils.GenerateToken())
+	s, err := d.Group.Captcha.CaptchaSmsInsert("12345678900", utils.GenerateToken(), "")
 	if err != nil {
 		panic(err)
 	}
@@ -17,7 +18,7 @@ func TestDaoCaptchaSmsInsert(t *testing.T) {
 
 func TestDaoCaptchaEmailInsert(t *testing.T) {
 	d := newTest()
-	s, err := d.Group.Captcha.CaptchaEmailInsert("123456@qq.com", utils.GenerateToken())
+	s, err := d.Group.Captcha.CaptchaEmailInsert("123456@qq.com", utils.GenerateToken(), "")
 	if err != nil {
 		panic(err)
 	}
@@ -36,10 +37,15 @@ func TestDaoCaptchaDel(t *testing.T) {
 func TestDaoCaptchaByTargetAndCode(t *testing.T) {
 	d := newTest()
 	token := utils.GenerateToken()
-	s, _ := d.Group.Captcha.CaptchaSmsInsert("12345678900", token)
+	s, _ := d.Group.Captcha.CaptchaSmsInsert("12345678900", token, "")
 	fmt.Printf("TestDaoCaptchaByTargetAndCode:%+v\n%+v\n", s.Target, s.Code)
 
-	s, err := d.Group.Captcha.CaptchaByTargetAndCode(s.Target, s.Code, token)
+	s, err := d.Group.Captcha.FindByTargetAndCode(&model.Captcha{
+		Target:  s.Target,
+		Code:    s.Code,
+		Token:   token,
+		Channel: "login",
+	})
 	if err != nil {
 		panic(err)
 	}
