@@ -24,6 +24,7 @@ type ServerGroup struct {
 	WxOffiaccount    *WxOffiaccountServer
 	WxComment        *WxCommentServer
 	WxPassport       *WxPassportServer
+	Express          *ExpressServer
 }
 
 type Server struct {
@@ -67,6 +68,7 @@ func (t *Server) initGroup() {
 		WxOffiaccount:    NewWxOffiaccountServer(t),
 		WxComment:        NewWxCommentServer(t),
 		WxPassport:       NewWxPassportServer(t),
+		Express:          NewExpressServer(t),
 	}
 }
 

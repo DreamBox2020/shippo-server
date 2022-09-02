@@ -23,6 +23,7 @@ type ServiceGroup struct {
 	WxComment        *WxCommentService
 	WxPassport       *WxPassportService
 	File             *FileService
+	Express          *ExpressService
 }
 
 type Service struct {
@@ -60,6 +61,7 @@ func (t *Service) initGroup() {
 		WxComment:        NewWxCommentService(t),
 		WxPassport:       NewWxPassportService(t),
 		File:             NewFileService(t),
+		Express:          NewExpressService(t),
 	}
 }
 
