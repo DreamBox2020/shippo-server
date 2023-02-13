@@ -24,6 +24,7 @@ func (t *TempServer) initRouter() {
 	t.router.POST("temp_trade_20220108/find", t.Temp_trade_20220108_find)
 	t.router.POST("temp_trade_20220108/add", t.Temp_trade_20220108_add)
 	t.router.POST("temp_trade_20220108/findNoExist", t.Temp_trade_20220108_findNoExist)
+	t.router.POST("temp_express_20220914/findByQQAndPhone", t.Temp_express_20220914_findByQQAndPhone)
 }
 
 func (t *TempServer) Temp_trade_20220108_find(c *box.Context) {
@@ -68,5 +69,16 @@ func (t *TempServer) Temp_trade_20220108_findNoExist(c *box.Context) {
 	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
 
 	data, err := t.service.Temp.Temp_trade_20220108_findNoExist(param.List)
+	c.JSON(data, err)
+}
+
+func (t *TempServer) Temp_express_20220914_findByQQAndPhone(c *box.Context) {
+	var param model.Temp_express_20220914
+	if err := c.ShouldBindJSON(&param); err != nil {
+		return
+	}
+	fmt.Printf("c.ShouldBindJSON->param:%+v\n", param)
+
+	data, err := t.service.Temp.Temp_express_20220914_findByQQAndPhone(&param)
 	c.JSON(data, err)
 }

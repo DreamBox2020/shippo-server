@@ -188,3 +188,9 @@ func (s *TempService) Temp_trade_20220108_findNoExist(list []string) (data []str
 	}
 	return
 }
+
+func (s *TempService) Temp_express_20220914_findByQQAndPhone(m *model.Temp_express_20220914) (
+	r *[]model.Temp_express_20220914, err error) {
+	r, err = s.dao.Temp.Temp_express_20220914_findByQQAndPhone(m)
+	return
+}
