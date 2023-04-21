@@ -24,6 +24,7 @@ type ServiceGroup struct {
 	WxPassport       *WxPassportService
 	File             *FileService
 	Express          *ExpressService
+	Googleapis       *GoogleapisService
 }
 
 type Service struct {
@@ -62,6 +63,7 @@ func (t *Service) initGroup() {
 		WxPassport:       NewWxPassportService(t),
 		File:             NewFileService(t),
 		Express:          NewExpressService(t),
+		Googleapis:       NewGoogleapisService(t),
 	}
 }
 

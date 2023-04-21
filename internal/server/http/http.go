@@ -25,6 +25,7 @@ type ServerGroup struct {
 	WxComment        *WxCommentServer
 	WxPassport       *WxPassportServer
 	Express          *ExpressServer
+	Googleapis       *GoogleapisServer
 }
 
 type Server struct {
@@ -69,6 +70,7 @@ func (t *Server) initGroup() {
 		WxComment:        NewWxCommentServer(t),
 		WxPassport:       NewWxPassportServer(t),
 		Express:          NewExpressServer(t),
+		Googleapis:       NewGoogleapisServer(t),
 	}
 }
 
