@@ -64,6 +64,7 @@ func (t *GoogleapisService) GetAccessToken(authCode string) (token *model.Google
 		return
 	}
 
+	fmt.Printf("GoogleapisService->GetAccessToken:%+v\n", string(body))
 	fmt.Printf("GoogleapisService->GetAccessToken:%+v\n", token)
 
 	return
@@ -86,6 +87,7 @@ func (t *GoogleapisService) GetUserinfo(code string) (userinfo *model.Googleapis
 
 	json.Unmarshal(body, &userinfo)
 
+	fmt.Printf("GoogleapisService->GetUserinfo:%+v\n", string(body))
 	fmt.Printf("GoogleapisService->GetUserinfo:%+v\n", userinfo)
 
 	return
