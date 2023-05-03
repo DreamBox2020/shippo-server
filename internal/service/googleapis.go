@@ -1,14 +1,22 @@
 package service
 
 import (
-	"context"
+	"encoding/json"
 	"fmt"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	googleapis_oauth2 "google.golang.org/api/oauth2/v2"
-	"google.golang.org/api/option"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"shippo-server/internal/model"
+	"shippo-server/utils"
 	"shippo-server/utils/config"
+	"strings"
 )
+
+const basePath = "https://www.googleapis.com/"
 
 type GoogleapisService struct {
 	*Service
@@ -31,10 +39,27 @@ func NewGoogleapisService(s *Service) *GoogleapisService {
 	}
 }
 
-func (t *GoogleapisService) GetAccessToken(authCode string) (token *oauth2.Token, err error) {
+func (t *GoogleapisService) GetAccessToken(authCode string) (token *model.GoogleapisToken, err error) {
 
-	ctx := context.Background()
-	token, err = t.Oauth2Cfg.Exchange(ctx, authCode)
+	v := url.Values{
+		"client_id":     {config.Common.GoogleapisClientID},
+		"client_secret": {config.Common.GoogleapisClientSecret},
+		"code":          {authCode},
+		"grant_type":    {"authorization_code"},
+		"redirect_uri":  {t.Oauth2Cfg.RedirectURL},
+	}
+
+	req, err := http.NewRequest("POST", google.Endpoint.TokenURL, strings.NewReader(v.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	client, err := utils.NewProxyClient(config.Common.ProxyURL)
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
+
+	json.Unmarshal(body, &token)
+
 	if err != nil {
 		return
 	}
@@ -44,23 +69,22 @@ func (t *GoogleapisService) GetAccessToken(authCode string) (token *oauth2.Token
 	return
 }
 
-func (t *GoogleapisService) GetUserinfo(code string) (userinfo *googleapis_oauth2.Userinfo, err error) {
+func (t *GoogleapisService) GetUserinfo(code string) (userinfo *model.GoogleapisUserinfo, err error) {
 
-	ctx := context.Background()
 	token, err := t.GetAccessToken(code)
 	if err != nil {
 		return
 	}
 
-	service, err := googleapis_oauth2.NewService(ctx, option.WithTokenSource(t.Oauth2Cfg.TokenSource(ctx, token)))
-	if err != nil {
-		return
-	}
+	req, err := http.NewRequest("GET", basePath+"oauth2/v2/userinfo?access_token="+token.AccessToken, strings.NewReader(""))
+	client, err := utils.NewProxyClient(config.Common.ProxyURL)
 
-	userinfo, err = service.Userinfo.Get().Do()
-	if err != nil {
-		return
-	}
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(io.LimitReader(resp.Body, 1<<20))
+
+	json.Unmarshal(body, &userinfo)
 
 	fmt.Printf("GoogleapisService->GetUserinfo:%+v\n", userinfo)
 

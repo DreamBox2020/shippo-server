@@ -8,4 +8,5 @@ type Common struct {
 	MiniProgramAppID       string `json:"miniProgramAppID"`
 	GoogleapisClientID     string `json:"googleapisClientID"`
 	GoogleapisClientSecret string `json:"googleapisClientSecret"`
+	ProxyURL               string `json:"proxyURL"`
 }

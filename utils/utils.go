@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"mime/multipart"
 	"net/http"
+	"net/url"
 	"os"
 	"reflect"
 	"strconv"
@@ -152,4 +153,20 @@ func SaveFile(bytes []byte, dst string) (err error) {
 
 	_, err = out.Write(bytes)
 	return
+}
+
+func NewProxyClient(proxyURL string) (client *http.Client, err error) {
+	client = &http.Client{}
+
+	fixedURL, err := url.Parse(proxyURL)
+	if err != nil {
+		return
+	}
+
+	client.Transport = &http.Transport{
+		Proxy: http.ProxyURL(fixedURL),
+	}
+
+	return
+
 }

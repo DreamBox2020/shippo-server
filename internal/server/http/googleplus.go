@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
+	"net/http"
 	"shippo-server/utils/box"
 )
 
@@ -34,20 +35,26 @@ func (t *GoogleapisServer) Authorize(c *gin.Context) {
 	if code != "" {
 
 		t.service.Googleapis.GetUserinfo(code)
+		c.String(200, "Code:"+code)
 
 	} else {
 
 		if oauth2Cfg.RedirectURL == "" {
-			oauth2Cfg.RedirectURL = c.Request.URL.Scheme + "://" + c.Request.Host + c.Request.URL.Path
+
+			protocol := "http://"
+			if c.Request.TLS != nil {
+				protocol = "https://"
+			}
+			oauth2Cfg.RedirectURL = protocol + c.Request.Host + c.Request.URL.Path
 		}
 
-		location := oauth2Cfg.AuthCodeURL("state", oauth2.AccessTypeOffline,
-			oauth2.SetAuthURLParam("include_granted_scopes", "true"),
+		location := oauth2Cfg.AuthCodeURL("state", oauth2.AccessTypeOnline,
+			oauth2.SetAuthURLParam("prompt", "select_account"),
 		)
 
 		fmt.Printf("GoogleapisServer->Authorize->location: %+v\n", location)
 
-		//c.Redirect(http.StatusMovedPermanently, location)
+		c.Redirect(http.StatusMovedPermanently, location)
 	}
 
 }

@@ -8,7 +8,7 @@ import (
 
 func Cors() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		fmt.Println("Cors")
+		fmt.Println("Cors->", ctx.Request.URL)
 		origin := ctx.GetHeader("origin")
 		if origin == "" {
 			origin = "*"
