@@ -158,6 +158,10 @@ func SaveFile(bytes []byte, dst string) (err error) {
 func NewProxyClient(proxyURL string) (client *http.Client, err error) {
 	client = &http.Client{}
 
+	if proxyURL == "" {
+		return
+	}
+
 	fixedURL, err := url.Parse(proxyURL)
 	if err != nil {
 		return
